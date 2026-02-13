@@ -281,7 +281,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // ============================================
     // 8. POPULATE SPONSORS GRID (From your image)
     // ============================================
-    const sponsorsGrid = document.getElementById('sponsors-grid');
+    /*const sponsorsGrid = document.getElementById('sponsors-grid');
     if (sponsorsGrid) {
         const sponsors = [
             'aevo', 'FELIX', 'Viveros BROKAW', 'dudutech', 'GEERLOFS', 'SGS'
@@ -293,7 +293,60 @@ document.addEventListener('DOMContentLoaded', function() {
             div.innerHTML = `<span class="sponsor-name">${sponsor}</span>`;
             sponsorsGrid.appendChild(div);
         });
-    }
+    }*/
+
+        
+   // ============================================
+// 8. POPULATE SPONSORS GRID (Clean scrolling logos)
+// ============================================
+const sponsorsGrid = document.getElementById('sponsors-grid');
+if (sponsorsGrid) {
+    const sponsors = [
+        { name: 'aevo', logo: 'WillsGuyLogo.png', url: 'https://willstech.store' },
+        { name: 'FELIX', logo: 'WillsGuyLogo.png', url: 'https://willstech.store' },
+        { name: 'Viveros BROKAW', logo: 'WillsGuyLogo.png', url: 'https://willstech.store' },
+        { name: 'dudutech', logo: 'WillsGuyLogo.png', url: 'https://willstech.store' },
+        { name: 'GEERLOFS', logo: 'WillsGuyLogo.png', url: 'https://willstech.store' },
+        { name: 'SGS', logo: 'WillsGuyLogo.png', url: 'https://willstech.store' }
+    ];
+
+    // Clear everything
+    sponsorsGrid.innerHTML = '';
+    sponsorsGrid.style.cssText = 'width: 100%; overflow: hidden; background: linear-gradient(90deg, #f8f9fa, #e9ecef); padding: 30px 0;';
+    
+    // Create container
+    const container = document.createElement('div');
+    container.style.cssText = 'display: flex; gap: 50px; width: fit-content; animation: scrollLogos 25s linear infinite;';
+    
+    // Add items twice for seamless loop
+    [...sponsors, ...sponsors].forEach(sponsor => {
+        const item = document.createElement('div');
+        item.style.cssText = 'flex: 0 0 auto; width: 140px; height: 80px; display: flex; align-items: center; justify-content: center;';
+        
+        const link = document.createElement('a');
+        link.href = sponsor.url;
+        link.target = '_blank';
+        link.style.cssText = 'display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;';
+        
+        const img = document.createElement('img');
+        img.src = `images/sponsors/${sponsor.logo}`;
+        img.alt = sponsor.name;
+        img.style.cssText = 'max-width: 100%; max-height: 100%; object-fit: contain; filter: brightness(1); transition: filter 0.3s;';
+        
+        img.onerror = function() {
+            this.outerHTML = `<span style="font-weight: 600; color: #495057;">${sponsor.name}</span>`;
+        };
+        
+        img.onmouseenter = function() { this.style.filter = 'brightness(1.2)'; };
+        img.onmouseleave = function() { this.style.filter = 'brightness(1)'; };
+        
+        link.appendChild(img);
+        item.appendChild(link);
+        container.appendChild(item);
+    });
+    
+    sponsorsGrid.appendChild(container);
+}
 
     // ============================================
     // 9. POPULATE PARTNERS GRID (4 categories)
