@@ -3,52 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avocado Conference Uganda</title>
-    <!-- Font Awesome for Icons -->
+    <title>Avocado Africa 2026 | 6th International Avocado Congress</title>
+    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Main CSS -->
-    <link rel="stylesheet"href="css/style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <!-- ***** NAVIGATION ***** -->
+    <!-- ***** NAVIGATION (Glassmorphism Style) ***** -->
     <nav class="navbar">
         <div class="container">
             <div class="nav-brand">
-                <a href="#home">Avocado Converence</a>
+                <a href="#home">
+                    <span class="brand-icon"><i class="fas fa-leaf"></i></span>
+                    Avocado Africa<span class="year">2026</span>
+                </a>
             </div>
             <ul class="nav-menu" id="nav-menu">
                 <li><a href="#home" class="active">Home</a></li>
                 
-                <!-- DROPDOWN 1: Sponsorship -->
+                <!-- Sponsorship Dropdown -->
                 <li class="dropdown">
                     <a href="#" class="dropdown-trigger">Sponsorship <i class="fas fa-chevron-down"></i></a>
-                    <ul class="dropdown-content" id="sponsor-dropdown">
-                        <!-- JS will populate this -->
-                    </ul>
+                    <ul class="dropdown-content" id="sponsor-dropdown"></ul>
                 </li>
                 
-                <!-- DROPDOWN 2: Exhibition -->
+                <!-- Exhibition -->
                 <li><a href="#exhibition">Exhibition</a></li>
                 
-                <!-- DROPDOWN 3: Field Tour -->
+                <!-- Field Tour Dropdown -->
                 <li class="dropdown">
-                    <a href="#" class="dropdown-trigger">Field Tour <i class="fas fa-chevron-down"></i></a>
-                    <ul class="dropdown-content" id="fieldtour-dropdown">
-                        <!-- JS will populate this -->
-                    </ul>
+                    <a href="#" class="dropdown-trigger">Field Tours <i class="fas fa-chevron-down"></i></a>
+                    <ul class="dropdown-content" id="fieldtour-dropdown"></ul>
                 </li>
                 
-                <!-- DROPDOWN 4: Partners (Mega Menu style) -->
+                <!-- Partners Mega Menu -->
                 <li class="dropdown">
                     <a href="#" class="dropdown-trigger">Partners <i class="fas fa-chevron-down"></i></a>
-                    <div class="dropdown-content mega-menu" id="partners-dropdown">
-                        <!-- JS will populate this grid -->
-                    </div>
+                    <div class="dropdown-content mega-menu" id="partners-dropdown"></div>
                 </li>
                 
+                <!-- Thematic Areas -->
+                <li><a href="#thematic">Thematic</a></li>
+                
+                <!-- Awards -->
                 <li><a href="#awards">Awards</a></li>
+                
+                <!-- Contact -->
                 <li><a href="#contact">Contact</a></li>
             </ul>
+            <div class="nav-cta">
+                <a href="#" class="btn btn-sm btn-primary">Register <i class="fas fa-arrow-right"></i></a>
+            </div>
             <div class="hamburger" id="hamburger">
                 <span class="bar"></span>
                 <span class="bar"></span>
@@ -57,138 +65,540 @@
         </div>
     </nav>
 
-    <!-- ***** MAIN CONTENT ***** -->
-    <main>
-        <!-- HOME / HERO SECTION -->
-        <section id="home" class="hero">
-            <div class="container">
-                <h1>6th International Africa Avocado Congress</h1>
-                <p class="date-location">26th - 29th May 2026 | Sarit Expo Centre, Nairobi</p>
-                <p class="theme">Theme: "Innovation, Efficiency & Sustainability"</p>
-                <div class="hero-stats">
-                    <div class="stat"><span>50+</span> Speakers</div>
-                    <div class="stat"><span>100+</span> Sessions</div>
-                    <div class="stat"><span>4</span> Farm Tours</div>
-                    <div class="stat"><span>200+</span> Exhibition Booths</div>
-                </div>
-                <a href="#" class="btn btn-primary">Register Now</a>
-            </div>
-        </section>
-
-        <!-- SPONSORSHIP DETAILS SECTION (Linked from Dropdown) -->
-        <section id="sponsorship-details" class="section">
-            <div class="container">
-                <h2>Sponsorship Packages</h2>
-                <div class="pricing-grid" id="pricing-grid">
-                    <!-- JS will populate Sponsor, Partner, Delegate cards -->
-                </div>
-            </div>
-        </section>
-
-        <!-- EXHIBITION SECTION -->
-        <section id="exhibition" class="section bg-light">
-            <div class="container">
-                <h2>Exhibition</h2>
-                <p>Showcase your brand to the global avocado value chain. Secure a booth today.</p>
-                <div class="exhibition-highlights">
-                    <div class="card">
-                        <i class="fas fa-users fa-3x"></i>
-                        <h3>5,000+ Attendees</h3>
+    <!-- ***** HERO SECTION - IMAGE SLIDER ***** -->
+    <section id="home" class="hero">
+        <div class="hero-slider" id="heroSlider">
+            <div class="slide active">
+                <div class="slide-image" style="background-image: url('https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=1600');"></div>
+                <div class="slide-content">
+                    <span class="slide-subtitle">6th International Africa Avocado Congress</span>
+                    <h1>Innovation, Efficiency & <span class="highlight">Sustainability</span></h1>
+                    <div class="event-details">
+                        <div class="detail-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>26th - 29th May 2026</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Sarit Expo Centre, Nairobi</span>
+                        </div>
                     </div>
-                    <div class="card">
-                        <i class="fas fa-handshake fa-3x"></i>
-                        <h3>B2B Meetings</h3>
-                    </div>
-                    <div class="card">
-                        <i class="fas fa-globe fa-3x"></i>
-                        <h3>30+ Countries</h3>
+                    <div class="hero-buttons">
+                        <a href="#" class="btn btn-primary btn-large">Register Now <i class="fas fa-ticket-alt"></i></a>
+                        <a href="#" class="btn btn-outline btn-large">Download Brochure <i class="fas fa-download"></i></a>
                     </div>
                 </div>
-                <a href="#" class="btn btn-secondary">Book Exhibition Space</a>
             </div>
-        </section>
-
-        <!-- FIELD TOUR SECTION (Linked from Dropdown) -->
-        <section id="field-tour" class="section">
-            <div class="container">
-                <h2>Field Tours</h2>
-                <div class="tour-grid" id="tour-grid">
-                    <!-- JS will populate the 4 tours -->
+            <div class="slide">
+                <div class="slide-image" style="background-image: url('https://www.monitor.co.ug/resource/image/1856922/landscape_ratio3x2/1200/800/79bc6c190b0721a0cd8867b37ed50402/ab/farm1-pic.jpg?w=1600');"></div>
+                <div class="slide-content">
+                    <span class="slide-subtitle">Africa's Largest Avocado Convergence</span>
+                    <h1>5000+ Attendees | 200+ <span class="highlight">Exhibitors</span></h1>
+                    <p class="slide-description">Connect with the entire avocado value chain from farm to fork</p>
+                    <div class="hero-buttons">
+                        <a href="#" class="btn btn-primary btn-large">Book Exhibition Space</a>
+                        <a href="#" class="btn btn-outline btn-large">Become a Sponsor</a>
+                    </div>
                 </div>
             </div>
-        </section>
-
-        <!-- PARTNERS SECTION (Grid View) -->
-        <section id="partners" class="section bg-light">
-            <div class="container">
-                <h2>Our Partners</h2>
-                <div class="partners-grid" id="partners-grid">
-                    <!-- JS will populate 4 categories of partners -->
+            <div class="slide">
+                <div class="slide-image" style="background-image: url('https://images.unsplash.com/photo-1595261318317-3ce985c1e967?w=1600');"></div>
+                <div class="slide-content">
+                    <span class="slide-subtitle">Field Tours & Farm Visits</span>
+                    <h1>Experience Kenyan <span class="highlight">Avocado Excellence</span></h1>
+                    <p class="slide-description">Factory tours, packaging houses, nurseries & commercial farms</p>
+                    <div class="hero-buttons">
+                        <a href="#" class="btn btn-primary btn-large">Book a Tour</a>
+                        <a href="#" class="btn btn-outline btn-large">View Schedule</a>
+                    </div>
                 </div>
             </div>
-        </section>
-
-        <!-- AWARDS SECTION -->
-        <section id="awards" class="section">
+        </div>
+        
+        <!-- Slider Controls -->
+        <div class="slider-controls">
+            <button class="slider-prev"><i class="fas fa-chevron-left"></i></button>
+            <div class="slider-dots"></div>
+            <button class="slider-next"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        
+        <!-- Stats Bar Overlay -->
+        <div class="hero-stats-bar">
             <div class="container">
-                <h2>Avocado Excellence Awards 2026</h2>
-                <p>Celebrating innovation and leadership in the African avocado industry.</p>
-                <div class="awards-grid">
-                    <div class="award-card">
-                        <i class="fas fa-trophy"></i>
-                        <h3>Best Exporter</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-number">52+</span>
+                        <span class="stat-label">Speakers</span>
                     </div>
-                    <div class="award-card">
-                        <i class="fas fa-leaf"></i>
-                        <h3>Sustainable Farmer</h3>
+                    <div class="stat-item">
+                        <span class="stat-number">13+</span>
+                        <span class="stat-label">Sessions</span>
                     </div>
-                    <div class="award-card">
+                    <div class="stat-item">
+                        <span class="stat-number">1 Day</span>
+                        <span class="stat-label">Farm Tour</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">201+</span>
+                        <span class="stat-label">Exhibition Booths</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">3 Days</span>
+                        <span class="stat-label">Congress</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ***** REGISTRATION TABS SECTION (From your image) ***** -->
+    <section class="registration-tabs">
+        <div class="container">
+            <div class="tabs-container">
+                <div class="tab active" data-tab="full">
+                    <i class="fas fa-universal-access"></i>
+                    <h3>FULL ACCESS</h3>
+                    <p>Registration</p>
+                </div>
+                <div class="tab" data-tab="exhibitor">
+                    <i class="fas fa-store"></i>
+                    <h3>EXHIBITOR</h3>
+                    <p>Registration</p>
+                </div>
+                <div class="tab" data-tab="speaker">
+                    <i class="fas fa-microphone"></i>
+                    <h3>SPEAKER</h3>
+                    <p>Registration</p>
+                </div>
+                <div class="tab" data-tab="sponsorship">
+                    <i class="fas fa-handshake"></i>
+                    <h3>SPONSORSHIPS</h3>
+                    <p>Registration</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ***** ABOUT CONFERENCE ***** -->
+    <section class="section about-section">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-content">
+                    <span class="section-tag">About the Congress</span>
+                    <h2>The 6th International <span class="text-gradient">Africa Avocado Congress</span></h2>
+                    <div class="about-text">
+                        <p class="lead">The AVOCADO SOCIETY OF KENYA in collaboration with other regional and international organizations in the Fruits and vegetables value chain in Africa and beyond are pleased to announce to all stakeholders around the world that the sixth International Africa Avocado Congress (2026 Avocado Fruits & Vegetables Africa) will be held at Sarit Expo Centre, Nairobi, Kenya on 26th - 29th. May 2026.</p>
+                        <p>Themed, <strong>"Innovation, efficiency and sustainability"</strong>, the event will draw participation of stakeholders from all over the world.</p>
+                        <p>Avocado Fruits & Vegetables Africa 2026 is the largest convergence of stakeholders in the world for Africa. It is a platform specifically aimed at stimulating trade, technology, knowledge transfer and sharing.</p>
+                    </div>
+                    <div class="about-cta">
+                        <a href="#" class="btn btn-primary">Learn More</a>
+                        <a href="#" class="btn btn-text">View Past Events <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <div class="about-stats-card">
+                    <div class="stats-card">
+                        <div class="stat-circle">
+                            <span class="stat-big">2026</span>
+                            <span class="stat-small">6th Edition</span>
+                        </div>
+                        <div class="stat-list">
+                            <div class="stat-row">
+                                <span class="stat-label">Countries</span>
+                                <span class="stat-value">30+</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">Attendees</span>
+                                <span class="stat-value">5000+</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">Exhibitors</span>
+                                <span class="stat-value">200+</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">Speakers</span>
+                                <span class="stat-value">52+</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ***** WHY ATTEND? (NEW SECTION) ***** -->
+    <section class="section why-attend">
+        <div class="container">
+            <div class="section-header center">
+                <span class="section-tag">Why Attend?</span>
+                <h2>Unlock Opportunities in the <span class="text-gradient">Avocado Value Chain</span></h2>
+                <p class="section-description">Join the largest gathering of avocado stakeholders in Africa</p>
+            </div>
+            
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3>Networking</h3>
+                    <p>Connect with 5000+ professionals, farmers, exporters, and buyers from 30+ countries</p>
+                    <span class="benefit-stat">30+ Countries</span>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Market Access</h3>
+                    <p>Direct access to international buyers, new export markets, and B2B matchmaking</p>
+                    <span class="benefit-stat">200+ Buyers</span>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">
                         <i class="fas fa-flask"></i>
-                        <h3>Agri-Tech Innovator</h3>
                     </div>
-                    <div class="award-card">
-                        <i class="fas fa-seedling"></i>
-                        <h3>Emerging Grower</h3>
+                    <h3>Latest Innovations</h3>
+                    <p>Discover cutting-edge technologies in farming, processing, and sustainability</p>
+                    <span class="benefit-stat">50+ Exhibitors</span>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-graduation-cap"></i>
                     </div>
-                    <div class="award-card">
-                        <i class="fas fa-heart"></i>
-                        <h3>Community Impact</h3>
+                    <h3>Knowledge</h3>
+                    <p>Learn from 52+ industry experts across 13+ sessions and workshops</p>
+                    <span class="benefit-stat">13+ Sessions</span>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-tree"></i>
+                    </div>
+                    <h3>Field Tours</h3>
+                    <p>Visit commercial farms, nurseries, packaging houses, and processing factories</p>
+                    <span class="benefit-stat">4 Exclusive Tours</span>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h3>Awards</h3>
+                    <p>Recognition for excellence in innovation, sustainability, and community impact</p>
+                    <span class="benefit-stat">5 Award Categories</span>
+                </div>
+            </div>
+            
+            <div class="why-attend-cta">
+                <a href="#" class="btn btn-primary btn-large">Register Now</a>
+                <a href="#" class="btn btn-outline btn-large">View Full Program</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ***** THEMATIC AREAS (From your image) ***** -->
+    <section id="thematic" class="section thematic-section bg-pattern">
+        <div class="container">
+            <div class="section-header center">
+                <span class="section-tag">Conference Themes</span>
+                <h2>Thematic Areas</h2>
+                <p class="section-description">Exploring critical topics shaping the future of avocado in Africa</p>
+            </div>
+            
+            <div class="thematic-grid" id="thematic-grid">
+                <!-- Will be populated by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ***** WHAT TO EXPECT (From your image) ***** -->
+    <section class="section expectation-section">
+        <div class="container">
+            <div class="section-header center">
+                <span class="section-tag">Event Experience</span>
+                <h2>What To Expect</h2>
+            </div>
+            
+            <div class="expectation-grid">
+                <div class="expectation-card conference">
+                    <div class="card-header">
+                        <i class="fas fa-users"></i>
+                        <h3>Conference</h3>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat-detail">
+                            <span class="detail-label">Attendees:</span>
+                            <span class="detail-value">100+</span>
+                        </div>
+                        <div class="stat-detail">
+                            <span class="detail-label">Activities:</span>
+                            <span class="detail-value">Workshops, Networking, Keynote Speaker</span>
+                        </div>
                     </div>
                 </div>
-                <a href="#" class="btn btn-primary">Nominate Now</a>
-            </div>
-        </section>
-
-        <!-- CONTACT / FOOTER -->
-        <footer id="contact">
-            <div class="container">
-                <div class="footer-grid">
-                    <div>
-                        <h3>Avocado Africa 2026</h3>
-                        <p>The largest convergence of avocado stakeholders in Africa.</p>
+                
+                <div class="expectation-card exhibitions">
+                    <div class="card-header">
+                        <i class="fas fa-store-alt"></i>
+                        <h3>Exhibitions</h3>
                     </div>
-                    <div>
-                        <h4>Useful Links</h4>
+                    <div class="card-stats">
+                        <div class="stat-detail">
+                            <span class="detail-label">Attendees:</span>
+                            <span class="detail-value">50+</span>
+                        </div>
+                        <div class="stat-detail">
+                            <span class="detail-label">Activities:</span>
+                            <span class="detail-value">Trade Show, Vendor Show, Product Demos</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="expectation-card seminars">
+                    <div class="card-header">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        <h3>Private Seminars</h3>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat-detail">
+                            <span class="detail-label">Attendees:</span>
+                            <span class="detail-value">20+</span>
+                        </div>
+                        <div class="stat-detail">
+                            <span class="detail-label">Activities:</span>
+                            <span class="detail-value">Panel Discussions, Case Studies, Presentations</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ***** SPONSORSHIP PRICING SECTION ***** -->
+    <section id="sponsorship-details" class="section pricing-section">
+        <div class="container">
+            <div class="section-header center">
+                <span class="section-tag">Investment Opportunities</span>
+                <h2>Sponsorship Packages</h2>
+                <p class="section-description">Choose the perfect package to showcase your brand</p>
+            </div>
+            
+            <div class="pricing-grid" id="pricing-grid">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ***** FIELD TOURS ***** -->
+    <section id="field-tour" class="section tours-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Avo Tours</span>
+                <h2>Field Tours & Farm Visits</h2>
+                <p class="section-description">Experience the journey from farm to fork</p>
+            </div>
+            
+            <div class="tour-grid" id="tour-grid">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ***** EXHIBITION SECTION ***** -->
+    <section id="exhibition" class="section exhibition-section">
+        <div class="container">
+            <div class="exhibition-wrapper">
+                <div class="exhibition-content">
+                    <span class="section-tag">Exhibition</span>
+                    <h2>Showcase Your Brand to the World</h2>
+                    <p>Join 200+ exhibitors and connect with 5000+ attendees from the global avocado value chain</p>
+                    
+                    <div class="exhibition-features">
+                        <div class="feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Premium booth locations available</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>B2B matchmaking with international buyers</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Product demonstration opportunities</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Listing in official event program</span>
+                        </div>
+                    </div>
+                    
+                    <a href="#" class="btn btn-primary btn-large">Book Exhibition Space</a>
+                </div>
+                <div class="exhibition-stats">
+                    <div class="stat-circle-large">
+                        <span class="big-number">201+</span>
+                        <span class="stat-label">Exhibition Booths</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>50+</span> Product Demonstrations
+                    </div>
+                    <div class="stat-row">
+                        <span>30+</span> Countries Represented
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ***** EVENT SPONSORS & EXHIBITORS (From your image) ***** -->
+    <section class="section sponsors-section">
+        <div class="container">
+            <div class="section-header center">
+                <span class="section-tag">Our Partners</span>
+                <h2>Event Sponsors & Exhibitors</h2>
+            </div>
+            
+            <div class="sponsors-grid" id="sponsors-grid">
+                <!-- Populated by JS - AEVO, FELIX, Viveros BROKAW, dudutech, GEERLOFS, SGS etc -->
+            </div>
+            
+            <div class="sponsors-cta">
+                <a href="#" class="btn btn-outline">Become a Sponsor</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ***** PARTNERS CATEGORIES SECTION ***** -->
+    <section id="partners" class="section partners-section">
+        <div class="container">
+            <div class="section-header center">
+                <span class="section-tag">Collaborators</span>
+                <h2>Our Partners & Supporters</h2>
+            </div>
+            
+            <div class="partners-grid" id="partners-grid">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ***** AWARDS SECTION ***** -->
+    <section id="awards" class="section awards-section">
+        <div class="container">
+            <div class="awards-header">
+                <div class="awards-title">
+                    <span class="section-tag">Recognition</span>
+                    <h2>Avocado Excellence Awards 2026</h2>
+                    <p>Celebrating innovation, sustainability, and leadership in the African avocado industry</p>
+                </div>
+                <a href="#" class="btn btn-primary">Nominate Now <i class="fas fa-arrow-right"></i></a>
+            </div>
+            
+            <div class="awards-grid" id="awards-grid">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ***** DOWNLOAD BROCHURE SECTION ***** -->
+    <section class="section brochure-section">
+        <div class="container">
+            <div class="brochure-card">
+                <div class="brochure-content">
+                    <span class="section-tag light">Get the Full Picture</span>
+                    <h2>Download Event Brochure</h2>
+                    <p>Detailed program, speaker lineup, sponsorship opportunities, and tour schedules</p>
+                    
+                    <div class="brochure-formats">
+                        <span><i class="fas fa-file-pdf"></i> PDF (8.5MB)</span>
+                        <span><i class="fas fa-file-powerpoint"></i> PPT (15MB)</span>
+                    </div>
+                    
+                    <a href="#" class="btn btn-white">
+                        <i class="fas fa-download"></i> Download Brochure
+                    </a>
+                </div>
+                <div class="brochure-image">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ***** FOOTER / CONTACT (With all links from image) ***** -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-main">
+                <div class="footer-about">
+                    <div class="footer-logo">
+                        <i class="fas fa-leaf"></i> Avocado Africa 2026
+                    </div>
+                    <p>The largest convergence of avocado stakeholders in Africa, bringing together the entire value chain from farm to global markets.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-links-group">
+                    <div class="footer-links">
+                        <h4>About Us</h4>
                         <ul>
-                            <li><a href="#">About Us</a></li>
-                            <li><a href="#">Venue</a></li>
+                            <li><a href="#">Avocado Society of Kenya</a></li>
+                            <li><a href="#">Organizing Committee</a></li>
+                            <li><a href="#">Past Congresses</a></li>
+                            <li><a href="#">Venue (Sarit Expo Centre)</a></li>
                             <li><a href="#">FAQs</a></li>
                         </ul>
                     </div>
-                    <div>
-                        <h4>Contact</h4>
-                        <p><i class="fas fa-envelope"></i> secretariat@avocadoafrica.com</p>
-                        <p><i class="fas fa-phone"></i> +254 722 292360</p>
+                    
+                    <div class="footer-links">
+                        <h4>Payment Options</h4>
+                        <ul>
+                            <li><a href="#">Bank Transfer</a></li>
+                            <li><a href="#">M-Pesa</a></li>
+                            <li><a href="#">Credit Card</a></li>
+                            <li><a href="#">Invoice Request</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-links">
+                        <h4>Useful Links</h4>
+                        <ul>
+                            <li><a href="#">Registration</a></li>
+                            <li><a href="#">Sponsorship Deck</a></li>
+                            <li><a href="#">Exhibition Floor Plan</a></li>
+                            <li><a href="#">Travel & Accommodation</a></li>
+                            <li><a href="#">Visa Invitation Letter</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-contact">
+                        <h4>Contacts</h4>
+                        <ul>
+                            <li><i class="fas fa-envelope"></i> secretariat@avocadoafrica.com</li>
+                            <li><i class="fas fa-phone-alt"></i> +254 722 292360</li>
+                            <li><i class="fas fa-phone-alt"></i> +254 722 406941</li>
+                            <li><i class="fas fa-phone-alt"></i> +254 722 457388</li>
+                            <li><i class="fas fa-map-marker-alt"></i> Nairobi, Kenya</li>
+                        </ul>
                     </div>
                 </div>
+            </div>
+            
+            <div class="footer-bottom">
                 <div class="copyright">
-                    <p>&copy; 2026 Avocado Society of Kenya. All rights reserved.</p>
+                    <p>&copy; 2026 Avocado Society of Kenya. All rights reserved. | 6th International Africa Avocado Congress</p>
+                </div>
+                <div class="footer-bottom-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Use</a>
+                    <a href="#">Cookie Policy</a>
                 </div>
             </div>
-        </footer>
-    </main>
+        </div>
+    </footer>
 
-    <!-- Main JavaScript -->
     <script src="js/script.js"></script>
 </body>
 </html>
