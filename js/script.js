@@ -113,10 +113,10 @@ document.addEventListener('DOMContentLoaded', function() {
         partnersDropdown.classList.add('mega-menu');
         
         const partnersData = {
-            'Avocado Companies/Farms': ['Avocado Kenya Ltd', 'Hass Growers Co-op', 'SunRipe Estates', 'Green Gold Farms', 'Kakuzi PLC'],
-            'NGOs/Development Partners': ['GIZ', 'USAID Kenya', 'Solidaridad', 'TechnoServe', 'World Vision'],
-            'Research Institutions': ['KALRO', 'JKUAT', 'World Avocado Organization', 'CABI', 'University of Nairobi'],
-            'Agro Input Dealers': ['Syngenta', 'Bayer', 'Yara', 'Osho Chemicals', 'Elgon Kenya']
+            'Avocado Companies/Farms': ['Avocado Uganda Ltd', 'Hass Growers Co-op', 'SunRipe Estates', 'Green Gold Farms', 'Kakuzi PLC'],
+            'NGOs/Development Partners': ['GIZ', 'USAID Uganda', 'Solidaridad', 'TechnoServe', 'World Vision'],
+            'Research Institutions': ['KALRO', 'JKUAT', 'World Avocado Organization', 'CABI', 'University of Kampala'],
+            'Agro Input Dealers': ['Syngenta', 'Bayer', 'Yara', 'Osho Chemicals', 'Elgon Uganda']
         };
 
         const gridDiv = document.createElement('div');
@@ -236,26 +236,26 @@ document.addEventListener('DOMContentLoaded', function() {
         const tours = [
             { 
                 name: 'Avocado Factory Tour', 
-                desc: 'See processing, cold storage, and value addition in action at Kenya\'s largest avocado processing facility.',
-                img: 'https://images.unsplash.com/photo-1584968173934-bc7eacb78008?w=600',
+                desc: 'See processing, cold storage, and value addition in action at Uganda\'s largest avocado processing facility.',
+                img: 'https://worldbusinessjournal.com/wp-content/uploads/2025/11/MG_7890-scaled.jpg?w=600',
                 duration: 'Half Day'
             },
             { 
                 name: 'Packaging House Visit', 
                 desc: 'Modern grading, sorting, and packaging technologies for export-ready avocados.',
-                img: 'https://images.unsplash.com/photo-1607457561901-e6ec3a6d16cf?w=600',
+                img: 'https://israelagri.com/wp-content/uploads/2022/07/granot3.jpg?w=600',
                 duration: '3 Hours'
             },
             { 
                 name: 'Avocado Nursery', 
                 desc: 'Learn about certified grafting, tissue culture, and high-quality seedling production.',
-                img: 'https://images.unsplash.com/photo-1595261318317-3ce985c1e967?w=600',
+                img: 'https://www.awanursery.co.nz/wp-content/uploads/Avocado-Hass-Jan-2019.jpg?w=600',
                 duration: '2 Hours'
             },
             { 
                 name: 'Commercial Farm', 
                 desc: 'Best practices in orchard management, irrigation, and sustainable farming.',
-                img: 'https://images.unsplash.com/photo-1520338661084-680395057c93?w=600',
+                img: 'https://www.monitor.co.ug/resource/image/4267190/landscape_ratio3x2/1200/800/e901b48f991ccaa014b4897781878205/PQ/prosper003pixx.jpg?w=600',
                 duration: 'Full Day'
             }
         ];
@@ -301,10 +301,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const partnersGrid = document.getElementById('partners-grid');
     if (partnersGrid) {
         const partnersData = {
-            'Avocado Companies/Farms': ['Avocado Kenya Ltd', 'Hass Growers Co-op', 'SunRipe Estates', 'Green Gold Farms', 'Kakuzi PLC', 'Jetro Holdings'],
-            'NGOs/Development Partners': ['GIZ', 'USAID Kenya', 'Solidaridad', 'TechnoServe', 'World Vision', 'SNV Netherlands'],
-            'Research Institutions': ['KALRO', 'JKUAT', 'World Avocado Organization', 'CABI', 'University of Nairobi', 'ICIPE'],
-            'Agro Input Dealers': ['Syngenta', 'Bayer', 'Yara', 'Osho Chemicals', 'Elgon Kenya', 'Amiran Kenya']
+            'Avocado Companies/Farms': ['Avocado Uganda Ltd', 'Hass Growers Co-op', 'SunRipe Estates', 'Green Gold Farms', 'Kakuzi PLC', 'Jetro Holdings'],
+            'NGOs/Development Partners': ['GIZ', 'USAID Uganda', 'Solidaridad', 'TechnoServe', 'World Vision', 'SNV Netherlands'],
+            'Research Institutions': ['KALRO', 'JKUAT', 'World Avocado Organization', 'CABI', 'University of Kampala', 'ICIPE'],
+            'Agro Input Dealers': ['Syngenta', 'Bayer', 'Yara', 'Osho Chemicals', 'Elgon Uganda', 'Amiran Uganda']
         };
 
         for (let [category, companies] of Object.entries(partnersData)) {
