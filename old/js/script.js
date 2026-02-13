@@ -62,19 +62,19 @@ document.addEventListener('DOMContentLoaded', function() {
         const packages = [
             {
                 title: 'Sponsor',
-                price: 'KSh 500,000',
+                price: 'USD 500',
                 period: '/package',
                 features: ['Keynote speaking slot', '10x10 booth', '5 delegate passes', 'Logo on all materials']
             },
             {
                 title: 'Partner',
-                price: 'KSh 250,000',
+                price: 'USD 300',
                 period: '/package',
                 features: ['Exhibition booth', '3 delegate passes', 'Logo in program', 'Website listing']
             },
             {
                 title: 'Delegate',
-                price: 'KSh 15,000',
+                price: 'USD 30',
                 period: '/person',
                 features: ['Full access to sessions', 'Lunch & refreshments', 'Conference kit', 'Networking access']
             }

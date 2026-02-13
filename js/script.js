@@ -76,10 +76,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const sponsorDropdown = document.getElementById('sponsor-dropdown');
     if (sponsorDropdown) {
         const sponsorItems = [
-            'Platinum Sponsor - KSh 500,000',
-            'Gold Sponsor - KSh 350,000',
-            'Silver Sponsor - KSh 200,000',
-            'Bronze Sponsor - KSh 100,000'
+            'Sponsor - USD 500',
+            'Partner - USD 300',
+            'Delegate - USD 30',
         ];
         sponsorItems.forEach(item => {
             const li = document.createElement('li');
@@ -171,7 +170,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const packages = [
             {
                 title: 'Sponsor',
-                price: 'KSh 500,000',
+                price: 'USD 500',
                 period: '/package',
                 features: [
                     'Keynote speaking slot',
@@ -184,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             {
                 title: 'Partner',
-                price: 'KSh 250,000',
+                price: 'USD 300',
                 period: '/package',
                 features: [
                     'Standard 3x3 booth',
@@ -197,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             {
                 title: 'Delegate',
-                price: 'KSh 15,000',
+                price: 'USD 30',
                 period: '/person',
                 features: [
                     'Full access to sessions',
