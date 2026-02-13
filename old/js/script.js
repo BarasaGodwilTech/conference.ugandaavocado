@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const partnersGrid = document.getElementById('partners-grid');
     if (partnersGrid) {
         const partnersData = {
-            'Avocado Companies/Farms': ['Avocado Uganda Ltd', 'Hass Growers Co-op', 'SunRipe Estates', 'Green Gold Farms', 'Fairtrade Africa'],
+            'Avocado Companies/Farms': ['Avocado Uganda Ltd', 'Hass Growers Co-op', 'SunRipe Estates', 'Green Gold Farms', 'Fairtrade Uganda'],
             'NGOs/Development Partners': ['GIZ', 'USAID Uganda', 'Solidaridad', 'TechnoServe', 'World Vision'],
             'Research Institutions': ['KALRO', 'JKUAT', 'World Avocado Organization', 'CABI', 'University of Kampala'],
             'Agro Input Dealers': ['Syngenta', 'Bayer', 'Yara', 'Osho Chemicals', 'Elgon Uganda']
