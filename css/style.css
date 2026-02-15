@@ -1464,6 +1464,540 @@ footer {
     color: var(--avocado-green-light);
 }
 
+/* ----- Registration Page Styles ----- */
+
+/* Registration Hero */
+.registration-hero {
+    background: linear-gradient(135deg, var(--avocado-green-dark) 0%, var(--avocado-green) 100%);
+    color: var(--white);
+    text-align: center;
+    padding: 120px 0 80px;
+}
+
+.registration-hero .slide-subtitle {
+    color: var(--avocado-yellow-light);
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+}
+
+.registration-hero h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
+
+.registration-hero .lead {
+    font-size: 1.3rem;
+    margin-bottom: 30px;
+    opacity: 0.9;
+}
+
+.registration-hero .event-details {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+}
+
+.registration-hero .detail-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1rem;
+}
+
+.registration-hero .detail-item i {
+    color: var(--avocado-yellow);
+    font-size: 1.2rem;
+}
+
+/* Enhanced Pricing Cards */
+.pricing-section .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+    margin-bottom: 60px;
+}
+
+.pricing-card {
+    background: var(--white);
+    border-radius: var(--border-radius-xl);
+    padding: 40px 30px;
+    box-shadow: var(--box-shadow-md);
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.pricing-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--box-shadow-hover);
+}
+
+.pricing-card.featured {
+    border: 3px solid var(--avocado-green-light);
+    transform: scale(1.05);
+}
+
+.pricing-card.premium {
+    background: var(--gradient-avocado);
+    color: var(--white);
+}
+
+.pricing-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: var(--avocado-yellow);
+    color: var(--avocado-green-dark);
+    padding: 5px 15px;
+    border-radius: var(--border-radius-lg);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.pricing-header h3 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--avocado-green);
+}
+
+.pricing-card.premium .pricing-header h3 {
+    color: var(--white);
+}
+
+.pricing-price {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.currency {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--avocado-green);
+}
+
+.pricing-card.premium .currency {
+    color: var(--avocado-yellow);
+}
+
+.amount {
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: var(--avocado-green-dark);
+    margin: 0 5px;
+}
+
+.pricing-card.premium .amount {
+    color: var(--white);
+}
+
+.period {
+    font-size: 1rem;
+    color: var(--medium-gray);
+}
+
+.pricing-card.premium .period {
+    color: var(--avocado-yellow-light);
+}
+
+.pricing-description {
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--medium-gray);
+}
+
+.pricing-card.premium .pricing-description {
+    color: var(--avocado-yellow-light);
+}
+
+.pricing-features ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 30px 0;
+}
+
+.pricing-features li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--light-gray);
+    font-size: 0.95rem;
+}
+
+.pricing-card.premium .pricing-features li {
+    border-bottom-color: rgba(255,255,255,0.1);
+    color: var(--white);
+}
+
+.pricing-features li:last-child {
+    border-bottom: none;
+}
+
+.pricing-features .fas.fa-check {
+    color: var(--avocado-green-light);
+    font-size: 1rem;
+}
+
+.pricing-features .fas.fa-times {
+    color: var(--sunset-orange);
+    font-size: 1rem;
+}
+
+.pricing-card.premium .pricing-features .fas.fa-check {
+    color: var(--avocado-yellow);
+}
+
+/* Special Pricing Grid */
+.special-pricing {
+    text-align: center;
+    margin-top: 60px;
+}
+
+.special-pricing h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 40px;
+    color: var(--avocado-green-dark);
+}
+
+.special-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.special-card {
+    background: var(--white);
+    padding: 30px;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--box-shadow-sm);
+    transition: all var(--transition-normal);
+    text-align: center;
+}
+
+.special-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow-md);
+}
+
+.special-icon {
+    width: 60px;
+    height: 60px;
+    background: var(--gradient-green);
+    border-radius: var(--border-radius-circle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+}
+
+.special-icon i {
+    color: var(--white);
+    font-size: 1.5rem;
+}
+
+.special-card h4 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--avocado-green-dark);
+}
+
+.special-price {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--avocado-green);
+    margin-bottom: 10px;
+}
+
+.special-card p {
+    color: var(--medium-gray);
+    font-size: 0.9rem;
+}
+
+/* Registration Form Styles */
+.registration-form-section {
+    background: var(--off-white);
+}
+
+.registration-form-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    background: var(--white);
+    border-radius: var(--border-radius-xl);
+    padding: 50px;
+    box-shadow: var(--box-shadow-lg);
+}
+
+.form-section {
+    margin-bottom: 40px;
+}
+
+.form-section h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 25px;
+    color: var(--avocado-green-dark);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.form-section h3 i {
+    color: var(--avocado-green);
+    font-size: 1.2rem;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--dark-gray);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--light-gray);
+    border-radius: var(--border-radius-md);
+    font-size: 1rem;
+    transition: all var(--transition-fast);
+    font-family: var(--font-primary);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--avocado-green-light);
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+/* Registration Type Cards */
+.registration-types {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.type-option input[type="radio"] {
+    display: none;
+}
+
+.type-card {
+    display: block;
+    padding: 25px 20px;
+    border: 2px solid var(--light-gray);
+    border-radius: var(--border-radius-lg);
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    background: var(--white);
+}
+
+.type-card:hover {
+    border-color: var(--avocado-green-light);
+    box-shadow: var(--box-shadow-sm);
+}
+
+.type-option input[type="radio"]:checked + .type-card {
+    border-color: var(--avocado-green);
+    background: var(--avocado-green-lighter);
+    box-shadow: var(--box-shadow-md);
+}
+
+.type-header {
+    margin-bottom: 10px;
+}
+
+.type-header h4 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--avocado-green-dark);
+}
+
+.type-price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--avocado-green);
+}
+
+.type-card p {
+    color: var(--medium-gray);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* Checkbox Groups */
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    cursor: pointer;
+    padding: 15px;
+    border: 2px solid var(--light-gray);
+    border-radius: var(--border-radius-md);
+    transition: all var(--transition-fast);
+}
+
+.checkbox-item:hover {
+    border-color: var(--avocado-green-light);
+    background: var(--avocado-green-lighter);
+}
+
+.checkbox-item input[type="checkbox"] {
+    display: none;
+}
+
+.checkmark {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--medium-gray);
+    border-radius: var(--border-radius-sm);
+    flex-shrink: 0;
+    margin-top: 2px;
+    position: relative;
+    transition: all var(--transition-fast);
+}
+
+.checkbox-item input[type="checkbox"]:checked + .checkmark {
+    background: var(--avocado-green);
+    border-color: var(--avocado-green);
+}
+
+.checkbox-item input[type="checkbox"]:checked + .checkmark::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--white);
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.checkbox-content strong {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--avocado-green-dark);
+}
+
+.checkbox-content span {
+    color: var(--medium-gray);
+    font-size: 0.9rem;
+}
+
+/* Form Actions */
+.form-actions {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.form-note {
+    margin-top: 20px;
+    color: var(--medium-gray);
+    font-size: 0.9rem;
+}
+
+/* Payment Section */
+.payment-section {
+    background: var(--white);
+}
+
+.payment-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.payment-card {
+    background: var(--off-white);
+    padding: 30px;
+    border-radius: var(--border-radius-lg);
+    text-align: center;
+    transition: all var(--transition-normal);
+}
+
+.payment-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow-md);
+}
+
+.payment-icon {
+    width: 70px;
+    height: 70px;
+    background: var(--gradient-green);
+    border-radius: var(--border-radius-circle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+}
+
+.payment-icon i {
+    color: var(--white);
+    font-size: 2rem;
+}
+
+.payment-card h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: var(--avocado-green-dark);
+}
+
+.payment-card p {
+    color: var(--medium-gray);
+    margin-bottom: 20px;
+}
+
+.payment-card ul {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+}
+
+.payment-card li {
+    padding: 8px 0;
+    color: var(--dark-gray);
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.payment-card li:last-child {
+    border-bottom: none;
+}
+
 /* ----- Responsive Design ----- */
 @media (max-width: 1200px) {
     .benefits-grid,
@@ -1563,5 +2097,43 @@ footer {
     .brochure-card {
         grid-template-columns: 1fr;
         padding: 40px;
+    }
+    
+    /* Registration Page Mobile Styles */
+    .registration-hero {
+        padding: 80px 0 60px;
+    }
+    
+    .registration-hero h1 {
+        font-size: 2.5rem;
+    }
+    
+    .registration-hero .event-details {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .registration-form-wrapper {
+        padding: 30px 20px;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .registration-types {
+        grid-template-columns: 1fr;
+    }
+    
+    .special-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .payment-options {
+        grid-template-columns: 1fr;
+    }
+    
+    .pricing-card.featured {
+        transform: none;
     }
 }
