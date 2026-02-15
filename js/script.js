@@ -1,6 +1,16 @@
 // Wait for the DOM to load
 document.addEventListener('DOMContentLoaded', function() {
 
+
+    // Add this function for mobile dropdowns
+    window.toggleDropdown = function(element) {
+        if (window.innerWidth <= 991) {
+            const dropdown = element.closest('.dropdown');
+            dropdown.classList.toggle('active');
+        }
+    };
+
+
     // ============================================
     // 1. HERO SLIDER FUNCTIONALITY
     // ============================================
@@ -71,39 +81,32 @@ document.addEventListener('DOMContentLoaded', function() {
     initHeroSlider();
 
     // ============================================
-    // 2. POPULATE SPONSORSHIP DROPDOWN
-    // ============================================
-    const sponsorDropdown = document.getElementById('sponsor-dropdown');
-    if (sponsorDropdown) {
-        const sponsorItems = [
-            'Sponsor - USD 500',
-            'Partner - USD 300',
-            'Delegate - USD 30',
-        ];
-        sponsorItems.forEach(item => {
-            const li = document.createElement('li');
-            li.innerHTML = `<a href="#sponsorship-details">${item}</a>`;
-            sponsorDropdown.appendChild(li);
-        });
-    }
+// 2. POPULATE SPONSORSHIP DROPDOWN FROM DATA
+// ============================================
+const sponsorDropdown = document.getElementById('sponsor-dropdown');
+if (sponsorDropdown && typeof conferenceData !== 'undefined') {
+    sponsorDropdown.innerHTML = ''; // Clear existing
+    
+    conferenceData.sponsorshipPackages.forEach(pkg => {
+        const li = document.createElement('li');
+        li.innerHTML = `<a href="#sponsorship-details">${pkg.title} - ${pkg.price}</a>`;
+        sponsorDropdown.appendChild(li);
+    });
+}
 
     // ============================================
-    // 3. POPULATE FIELD TOUR DROPDOWN (4 items)
-    // ============================================
-    const fieldtourDropdown = document.getElementById('fieldtour-dropdown');
-    if (fieldtourDropdown) {
-        const tours = [
-            'Visit Avocado Factory',
-            'Visit Packaging House',
-            'Visit Avocado Nursery',
-            'Visit Avocado Farm'
-        ];
-        tours.forEach(tour => {
-            const li = document.createElement('li');
-            li.innerHTML = `<a href="#field-tour">${tour}</a>`;
-            fieldtourDropdown.appendChild(li);
-        });
-    }
+// 3. POPULATE FIELD TOUR DROPDOWN FROM DATA
+// ============================================
+const fieldtourDropdown = document.getElementById('fieldtour-dropdown');
+if (fieldtourDropdown && typeof conferenceData !== 'undefined') {
+    fieldtourDropdown.innerHTML = ''; // Clear existing
+    
+    conferenceData.fieldTours.forEach(tour => {
+        const li = document.createElement('li');
+        li.innerHTML = `<a href="#field-tour">${tour.name}</a>`;
+        fieldtourDropdown.appendChild(li);
+    });
+}
 
     // ============================================
     // 4. POPULATE PARTNERS MEGA MENU (4 categories)
@@ -136,147 +139,79 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ============================================
-    // 5. POPULATE THEMATIC AREAS (From your image)
-    // ============================================
-    const thematicGrid = document.getElementById('thematic-grid');
-    if (thematicGrid) {
-        const thematicAreas = [
-            { name: 'Quality & Safety', subtitle: 'Food Safety', icon: 'fa-shield-alt' },
-            { name: 'Phytosanitary', subtitle: 'Food Safety', icon: 'fa-biohazard' },
-            { name: 'Genetic Resources', subtitle: 'Food Safety', icon: 'fa-dna' },
-            { name: 'Production & Productivity', subtitle: 'Food Safety', icon: 'fa-tractor' },
-            { name: 'Supply Chain & Marketing', subtitle: 'Food Safety', icon: 'fa-truck' }
-        ];
+// 5. POPULATE THEMATIC AREAS FROM DATA
+// ============================================
+const thematicGrid = document.getElementById('thematic-grid');
+if (thematicGrid && typeof conferenceData !== 'undefined') {
+    thematicGrid.innerHTML = ''; // Clear existing
+    
+    conferenceData.thematicAreas.forEach(area => {
+        const card = document.createElement('div');
+        card.className = 'thematic-card';
+        card.innerHTML = `
+            <div class="thematic-icon">
+                <i class="fas ${area.icon}"></i>
+            </div>
+            <h3>${area.shortTitle}</h3>
+            <p>${area.description}</p>
+            <small style="display: block; margin-top: 10px; color: var(--avocado-green);">
+                <i class="fas fa-bullseye"></i> ${area.strategicObjective.substring(0, 60)}...
+            </small>
+        `;
+        thematicGrid.appendChild(card);
+    });
+}
 
-        thematicAreas.forEach(area => {
-            const card = document.createElement('div');
-            card.className = 'thematic-card';
-            card.innerHTML = `
-                <div class="thematic-icon">
-                    <i class="fas ${area.icon}"></i>
+    // ============================================
+// 6. POPULATE PRICING GRID FROM DATA
+// ============================================
+const pricingGrid = document.getElementById('pricing-grid');
+if (pricingGrid && typeof conferenceData !== 'undefined') {
+    pricingGrid.innerHTML = ''; // Clear existing
+    
+    conferenceData.sponsorshipPackages.forEach(pkg => {
+        const card = document.createElement('div');
+        card.className = `pricing-card ${pkg.featured ? 'featured' : ''}`;
+        
+        let featuresList = '';
+        pkg.features.forEach(f => {
+            featuresList += `<li><i class="fas fa-check-circle"></i> ${f}</li>`;
+        });
+
+        card.innerHTML = `
+            <h3>${pkg.title}</h3>
+            <div class="price">${pkg.price}<small>/${pkg.period}</small></div>
+            <ul>${featuresList}</ul>
+            <a href="#" class="btn btn-primary">Select Plan</a>
+        `;
+        pricingGrid.appendChild(card);
+    });
+}
+
+    // ============================================
+// 7. POPULATE FIELD TOUR GRID FROM DATA
+// ============================================
+const tourGrid = document.getElementById('tour-grid');
+if (tourGrid && typeof conferenceData !== 'undefined') {
+    tourGrid.innerHTML = ''; // Clear existing
+    
+    conferenceData.fieldTours.forEach(tour => {
+        const card = document.createElement('div');
+        card.className = 'tour-card';
+        card.innerHTML = `
+            <img src="${tour.image}" alt="${tour.name}" loading="lazy">
+            <div class="content">
+                <h3>${tour.name}</h3>
+                <p>${tour.description}</p>
+                <div class="tour-meta">
+                    <span><i class="fas fa-clock"></i> ${tour.duration}</span>
                 </div>
-                <h3>${area.name}</h3>
-                <p>${area.subtitle}</p>
-            `;
-            thematicGrid.appendChild(card);
-        });
-    }
-
-    // ============================================
-    // 6. POPULATE PRICING GRID (Sponsor, Partner, Delegate)
-    // ============================================
-    const pricingGrid = document.getElementById('pricing-grid');
-    if (pricingGrid) {
-        const packages = [
-            {
-                title: 'Sponsor',
-                price: 'USD 500',
-                period: '/package',
-                features: [
-                    'Keynote speaking slot',
-                    'Premium 6x3 booth',
-                    '5 delegate passes',
-                    'Logo on all materials',
-                    'Social media promotion'
-                ],
-                featured: true
-            },
-            {
-                title: 'Partner',
-                price: 'USD 300',
-                period: '/package',
-                features: [
-                    'Standard 3x3 booth',
-                    '3 delegate passes',
-                    'Logo in program',
-                    'Website listing',
-                    'Networking access'
-                ],
-                featured: false
-            },
-            {
-                title: 'Delegate',
-                price: 'USD 30',
-                period: '/person',
-                features: [
-                    'Full access to sessions',
-                    'Lunch & refreshments',
-                    'Conference kit',
-                    'Networking access',
-                    'Virtual attendance option'
-                ],
-                featured: false
-            }
-        ];
-
-        packages.forEach(pkg => {
-            const card = document.createElement('div');
-            card.className = `pricing-card ${pkg.featured ? 'featured' : ''}`;
-            
-            let featuresList = '';
-            pkg.features.forEach(f => {
-                featuresList += `<li><i class="fas fa-check-circle"></i> ${f}</li>`;
-            });
-
-            card.innerHTML = `
-                <h3>${pkg.title}</h3>
-                <div class="price">${pkg.price}<small>${pkg.period}</small></div>
-                <ul>${featuresList}</ul>
-                <a href="#" class="btn btn-primary">Select Plan</a>
-            `;
-            pricingGrid.appendChild(card);
-        });
-    }
-
-    // ============================================
-    // 7. POPULATE FIELD TOUR GRID (4 cards)
-    // ============================================
-    const tourGrid = document.getElementById('tour-grid');
-    if (tourGrid) {
-        const tours = [
-            { 
-                name: 'Avocado Factory Tour', 
-                desc: 'See processing, cold storage, and value addition in action at Uganda\'s largest avocado processing facility.',
-                img: 'https://worldbusinessjournal.com/wp-content/uploads/2025/11/MG_7890-scaled.jpg?w=600',
-                duration: 'Half Day'
-            },
-            { 
-                name: 'Packaging House Visit', 
-                desc: 'Modern grading, sorting, and packaging technologies for export-ready avocados.',
-                img: 'https://israelagri.com/wp-content/uploads/2022/07/granot3.jpg?w=600',
-                duration: '3 Hours'
-            },
-            { 
-                name: 'Avocado Nursery', 
-                desc: 'Learn about certified grafting, tissue culture, and high-quality seedling production.',
-                img: 'https://www.awanursery.co.nz/wp-content/uploads/Avocado-Hass-Jan-2019.jpg?w=600',
-                duration: '2 Hours'
-            },
-            { 
-                name: 'Commercial Farm', 
-                desc: 'Best practices in orchard management, irrigation, and sustainable farming.',
-                img: 'https://www.monitor.co.ug/resource/image/4267190/landscape_ratio3x2/1200/800/e901b48f991ccaa014b4897781878205/PQ/prosper003pixx.jpg?w=600',
-                duration: 'Full Day'
-            }
-        ];
-
-        tours.forEach(tour => {
-            const card = document.createElement('div');
-            card.className = 'tour-card';
-            card.innerHTML = `
-                <img src="${tour.img}" alt="${tour.name}" loading="lazy">
-                <div class="content">
-                    <h3>${tour.name}</h3>
-                    <p>${tour.desc}</p>
-                    <div class="tour-meta">
-                        <span><i class="fas fa-clock"></i> ${tour.duration}</span>
-                    </div>
-                    <a href="#" class="btn btn-primary btn-sm">Book Tour</a>
-                </div>
-            `;
-            tourGrid.appendChild(card);
-        });
-    }
+                <a href="#" class="btn btn-primary btn-sm">Book Tour</a>
+            </div>
+        `;
+        tourGrid.appendChild(card);
+    });
+}
 
     // ============================================
     // 8. POPULATE SPONSORS GRID (From your image)
@@ -349,57 +284,53 @@ if (sponsorsGrid) {
 }
 
     // ============================================
-    // 9. POPULATE PARTNERS GRID (4 categories)
-    // ============================================
-    const partnersGrid = document.getElementById('partners-grid');
-    if (partnersGrid) {
-        const partnersData = {
-            'Avocado Companies/Farms': ['Avocado Uganda Ltd', 'Hass Growers Co-op', 'SunRipe Estates', 'Green Gold Farms', 'Kakuzi PLC', 'Jetro Holdings'],
-            'NGOs/Development Partners': ['GIZ', 'USAID Uganda', 'Solidaridad', 'TechnoServe', 'World Vision', 'SNV Netherlands'],
-            'Research Institutions': ['KALRO', 'JKUAT', 'World Avocado Organization', 'CABI', 'University of Kampala', 'ICIPE'],
-            'Agro Input Dealers': ['Syngenta', 'Bayer', 'Yara', 'Osho Chemicals', 'Elgon Uganda', 'Amiran Uganda']
-        };
+// 9. POPULATE PARTNERS GRID FROM DATA
+// ============================================
+const partnersGrid = document.getElementById('partners-grid');
+if (partnersGrid && typeof conferenceData !== 'undefined') {
+    partnersGrid.innerHTML = ''; // Clear existing
+    
+    const categories = [
+        { title: 'Avocado Companies/Farms', items: conferenceData.partners.companies },
+        { title: 'NGOs/Development Partners', items: conferenceData.partners.ngos },
+        { title: 'Research Institutions', items: conferenceData.partners.research },
+        { title: 'Agro Input Dealers', items: conferenceData.partners.inputDealers }
+    ];
 
-        for (let [category, companies] of Object.entries(partnersData)) {
-            const div = document.createElement('div');
-            div.className = 'partner-category';
-            let listItems = '';
-            companies.slice(0, 5).forEach(company => {
-                listItems += `<li><i class="fas fa-building"></i> ${company}</li>`;
-            });
-            div.innerHTML = `
-                <h3>${category}</h3>
-                <ul>${listItems}</ul>
-                <a href="#" class="view-all">View All →</a>
-            `;
-            partnersGrid.appendChild(div);
-        }
-    }
-
-    // ============================================
-    // 10. POPULATE AWARDS GRID
-    // ============================================
-    const awardsGrid = document.getElementById('awards-grid');
-    if (awardsGrid) {
-        const awards = [
-            { name: 'Best Exporter', icon: 'fa-ship', description: 'Outstanding export performance' },
-            { name: 'Sustainable Farmer', icon: 'fa-leaf', description: 'Excellence in sustainable practices' },
-            { name: 'Agri-Tech Innovator', icon: 'fa-microchip', description: 'Innovation in avocado technology' },
-            { name: 'Emerging Grower', icon: 'fa-seedling', description: 'Rising star in avocado farming' },
-            { name: 'Community Impact', icon: 'fa-heart', description: 'Positive community contribution' }
-        ];
-
-        awards.forEach(award => {
-            const card = document.createElement('div');
-            card.className = 'award-card';
-            card.innerHTML = `
-                <i class="fas ${award.icon}"></i>
-                <h3>${award.name}</h3>
-                <p>${award.description}</p>
-            `;
-            awardsGrid.appendChild(card);
+    categories.forEach(category => {
+        const div = document.createElement('div');
+        div.className = 'partner-category';
+        let listItems = '';
+        category.items.slice(0, 5).forEach(item => {
+            listItems += `<li><i class="fas fa-building"></i> ${item}</li>`;
         });
-    }
+        div.innerHTML = `
+            <h3>${category.title}</h3>
+            <ul>${listItems}</ul>
+            <a href="#" class="view-all" style="color: var(--avocado-green); text-decoration: none; font-weight: 600;">View All →</a>
+        `;
+        partnersGrid.appendChild(div);
+    });
+}
+
+    // ============================================
+// 10. POPULATE AWARDS GRID FROM DATA
+// ============================================
+const awardsGrid = document.getElementById('awards-grid');
+if (awardsGrid && typeof conferenceData !== 'undefined') {
+    awardsGrid.innerHTML = ''; // Clear existing
+    
+    conferenceData.awards.categories.forEach(award => {
+        const card = document.createElement('div');
+        card.className = 'award-card';
+        card.innerHTML = `
+            <i class="fas ${award.icon}"></i>
+            <h3>${award.name}</h3>
+            <p>${award.description}</p>
+        `;
+        awardsGrid.appendChild(card);
+    });
+}
 
     // ============================================
     // 11. MOBILE HAMBURGER MENU
@@ -459,4 +390,32 @@ if (sponsorsGrid) {
             navbar.style.boxShadow = '0 2px 20px rgba(0,0,0,0.05)';
         }
     });
+
+    // ============================================
+// NEW: POPULATE AWARDS EXPECTATIONS
+// ============================================
+const awardsExpectationsGrid = document.getElementById('awards-expectations-grid');
+if (awardsExpectationsGrid && typeof conferenceData !== 'undefined') {
+    conferenceData.awards.expectations.forEach(expectation => {
+        const card = document.createElement('div');
+        card.className = 'expectation-card';
+        card.innerHTML = `
+            <div class="card-header">
+                <i class="fas fa-bullseye"></i>
+                <h3>${expectation.title}</h3>
+            </div>
+            <div class="card-stats">
+                <div class="stat-detail">
+                    <span class="detail-label">Focus:</span>
+                    <span class="detail-value">${expectation.description}</span>
+                </div>
+                <div class="stat-detail">
+                    <span class="detail-label">Impact:</span>
+                    <span class="detail-value">${expectation.impact}</span>
+                </div>
+            </div>
+        `;
+        awardsExpectationsGrid.appendChild(card);
+    });
+}
 });

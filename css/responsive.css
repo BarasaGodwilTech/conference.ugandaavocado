@@ -1,0 +1,951 @@
+/* ============================================
+   RESPONSIVE DESIGN SYSTEM
+   All Devices Coverage
+   ============================================ */
+
+/* ----- Variables for Responsive Design ----- */
+:root {
+    --container-padding: 24px;
+    --section-padding: 100px;
+}
+
+/* ============================================
+   LARGE DESKTOPS (1400px and above)
+   ============================================ */
+@media screen and (min-width: 1400px) {
+    .container {
+        max-width: 1320px;
+    }
+    
+    h1 { font-size: 4rem; }
+    h2 { font-size: 3rem; }
+}
+
+/* ============================================
+   DESKTOPS (1200px to 1399px)
+   ============================================ */
+@media screen and (max-width: 1399px) {
+    .container {
+        max-width: 1140px;
+    }
+    
+    h1 { font-size: 3.5rem; }
+    h2 { font-size: 2.5rem; }
+    
+    /* Navigation */
+    .nav-menu {
+        gap: 24px;
+    }
+    
+    /* Hero */
+    .slide-content h1 {
+        font-size: 3.5rem;
+    }
+}
+
+/* ============================================
+   LAPTOPS/SMALL DESKTOPS (992px to 1199px)
+   ============================================ */
+@media screen and (max-width: 1199px) {
+    .container {
+        max-width: 960px;
+    }
+    
+    h1 { font-size: 3rem; }
+    h2 { font-size: 2.2rem; }
+    
+    /* Navigation */
+    .nav-menu {
+        gap: 16px;
+    }
+    
+    .nav-menu a {
+        font-size: 0.85rem;
+    }
+    
+    /* Hero */
+    .slide-content h1 {
+        font-size: 3rem;
+    }
+    
+    .slide-content {
+        margin-left: 5%;
+    }
+    
+    /* Grid Adjustments */
+    .benefits-grid,
+    .pricing-grid,
+    .tour-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+    
+    .thematic-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .sponsors-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .awards-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .partners-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    /* Mega Menu */
+    .mega-menu {
+        width: 500px;
+    }
+    
+    .mega-menu .grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+    
+    /* Footer */
+    .footer-links-group {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+}
+
+/* ============================================
+   TABLETS LANDSCAPE (768px to 991px)
+   ============================================ */
+@media screen and (max-width: 991px) {
+    :root {
+        --container-padding: 20px;
+        --section-padding: 70px;
+    }
+    
+    .container {
+        max-width: 720px;
+        padding: 0 var(--container-padding);
+    }
+    
+    .section {
+        padding: var(--section-padding) 0;
+    }
+    
+    h1 { font-size: 2.5rem; }
+    h2 { font-size: 2rem; }
+    h3 { font-size: 1.3rem; }
+    
+    /* ----- MOBILE NAVIGATION ----- */
+    .navbar {
+        padding: 12px 0;
+    }
+    
+    .nav-menu {
+        position: fixed;
+        top: 80px;
+        left: -100%;
+        width: 80%;
+        height: calc(100vh - 80px);
+        background: var(--white);
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 40px 24px;
+        transition: left 0.3s ease;
+        box-shadow: var(--box-shadow-lg);
+        overflow-y: auto;
+        z-index: 999;
+    }
+    
+    .nav-menu.active {
+        left: 0;
+    }
+    
+    .nav-menu > li {
+        width: 100%;
+    }
+    
+    .nav-menu a {
+        padding: 12px 0;
+        font-size: 1rem;
+        border-bottom: 1px solid var(--light-gray);
+    }
+    
+    /* Dropdown Styles for Mobile */
+    .dropdown {
+        position: static;
+    }
+    
+    .dropdown-content {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        box-shadow: none;
+        padding: 0 0 0 20px;
+        min-width: auto;
+        display: none;
+    }
+    
+    .dropdown.active .dropdown-content {
+        display: block;
+    }
+    
+    .dropdown-trigger {
+        justify-content: space-between;
+        width: 100%;
+    }
+    
+    .dropdown-trigger i {
+        transition: transform 0.3s;
+    }
+    
+    .dropdown.active .dropdown-trigger i {
+        transform: rotate(180deg);
+    }
+    
+    /* Mega Menu Mobile */
+    .mega-menu {
+        width: 100%;
+        padding: 16px;
+    }
+    
+    .mega-menu .grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .hamburger {
+        display: flex;
+    }
+    
+    .hamburger.active .bar:nth-child(2) {
+        opacity: 0;
+    }
+    
+    .hamburger.active .bar:nth-child(1) {
+        transform: translateY(9px) rotate(45deg);
+    }
+    
+    .hamburger.active .bar:nth-child(3) {
+        transform: translateY(-9px) rotate(-45deg);
+    }
+    
+    .nav-cta {
+        display: none;
+    }
+    
+    /* Hero Section */
+    .hero {
+        height: 90vh;
+        min-height: 600px;
+        margin-top: 70px;
+    }
+    
+    .slide-content {
+        margin-left: 5%;
+        max-width: 90%;
+    }
+    
+    .slide-content h1 {
+        font-size: 2.5rem;
+    }
+    
+    .event-details {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .hero-buttons {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .hero-stats-bar {
+        bottom: -30px;
+    }
+    
+    .stats-grid {
+        padding: 24px;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    
+    .stat-item {
+        flex: 1 1 calc(50% - 20px);
+    }
+    
+    /* Registration Tabs */
+    .tabs-container {
+        flex-wrap: wrap;
+    }
+    
+    .tab {
+        flex: 1 1 calc(50% - 10px);
+        padding: 20px 12px;
+    }
+    
+    .tab i {
+        font-size: 1.8rem;
+    }
+    
+    /* Grid Layouts */
+    .about-grid,
+    .exhibition-wrapper,
+    .footer-main {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    
+    .benefits-grid,
+    .pricing-grid,
+    .tour-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .thematic-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .expectation-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .sponsors-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .awards-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .partners-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* Cards */
+    .benefit-card {
+        padding: 30px 20px;
+    }
+    
+    .pricing-card {
+        padding: 30px 20px;
+    }
+    
+    .pricing-card.featured {
+        transform: scale(1);
+    }
+    
+    /* Exhibition */
+    .exhibition-content h2 {
+        font-size: 2rem;
+    }
+    
+    .big-number {
+        font-size: 3.5rem;
+    }
+    
+    /* Awards Header */
+    .awards-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+    
+    /* Brochure Card */
+    .brochure-card {
+        grid-template-columns: 1fr;
+        padding: 40px;
+        text-align: center;
+    }
+    
+    .brochure-formats {
+        justify-content: center;
+    }
+    
+    .brochure-image {
+        display: none;
+    }
+    
+    /* Footer */
+    .footer-links-group {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+    }
+    
+    .footer-bottom {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+    }
+    
+    .footer-bottom-links {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+/* ============================================
+   TABLETS PORTRAIT & LARGE PHONES (576px to 767px)
+   ============================================ */
+@media screen and (max-width: 767px) {
+    :root {
+        --container-padding: 16px;
+        --section-padding: 50px;
+    }
+    
+    .container {
+        max-width: 540px;
+    }
+    
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.75rem; }
+    h3 { font-size: 1.2rem; }
+    
+    .section-tag {
+        font-size: 0.75rem;
+        padding: 4px 12px;
+    }
+    
+    /* Hero */
+    .hero {
+        height: 80vh;
+        min-height: 500px;
+    }
+    
+    .slide-content h1 {
+        font-size: 2rem;
+    }
+    
+    .slide-subtitle {
+        font-size: 0.85rem;
+        padding: 6px 16px;
+    }
+    
+    .detail-item {
+        font-size: 0.95rem;
+    }
+    
+    .stats-grid {
+        padding: 20px;
+    }
+    
+    .stat-number {
+        font-size: 1.8rem;
+    }
+    
+    .stat-label {
+        font-size: 0.8rem;
+    }
+    
+    /* Slider Controls */
+    .slider-prev,
+    .slider-next {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    
+    /* Registration Tabs */
+    .tab {
+        flex: 1 1 100%;
+    }
+    
+    /* Grid Layouts - Switch to 1 column */
+    .benefits-grid,
+    .pricing-grid,
+    .tour-grid,
+    .thematic-grid,
+    .expectation-grid,
+    .sponsors-grid,
+    .awards-grid,
+    .partners-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    /* Cards */
+    .benefit-card,
+    .pricing-card,
+    .tour-card,
+    .thematic-card,
+    .expectation-card,
+    .partner-category,
+    .award-card {
+        padding: 25px 20px;
+    }
+    
+    .benefit-icon {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .benefit-icon i {
+        font-size: 2rem;
+    }
+    
+    /* Thematic Cards */
+    .thematic-card {
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .thematic-icon {
+        margin: 0 0 20px 0;
+    }
+    
+    /* Expectation Cards */
+    .card-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .card-header i {
+        margin-bottom: 10px;
+    }
+    
+    /* Tour Cards */
+    .tour-card {
+        display: grid;
+        grid-template-columns: 120px 1fr;
+        align-items: center;
+        padding: 0;
+        overflow: hidden;
+    }
+    
+    .tour-card img {
+        height: 100%;
+        width: 120px;
+        object-fit: cover;
+    }
+    
+    .tour-card .content {
+        padding: 15px;
+    }
+    
+    .tour-card h3 {
+        font-size: 1rem;
+        margin-bottom: 5px;
+    }
+    
+    .tour-card p {
+        font-size: 0.85rem;
+        margin-bottom: 10px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .tour-meta {
+        font-size: 0.8rem;
+    }
+    
+    /* Pricing Cards */
+    .price {
+        font-size: 2.5rem;
+    }
+    
+    .pricing-card li {
+        font-size: 0.9rem;
+    }
+    
+    /* Sponsors */
+    .sponsor-item {
+        min-height: 80px;
+        padding: 15px;
+    }
+    
+    .sponsor-name {
+        font-size: 0.9rem;
+    }
+    
+    /* Awards */
+    .award-card {
+        text-align: left;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+    
+    .award-card i {
+        margin-bottom: 0;
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .award-card h3 {
+        margin-bottom: 5px;
+    }
+    
+    /* Partners */
+    .partner-category h3 {
+        font-size: 1.1rem;
+    }
+    
+    .partner-category li {
+        font-size: 0.9rem;
+    }
+    
+    /* Exhibition */
+    .exhibition-content h2 {
+        font-size: 1.8rem;
+    }
+    
+    .exhibition-content p {
+        font-size: 1rem;
+    }
+    
+    .feature {
+        font-size: 0.95rem;
+    }
+    
+    .stat-circle-large .big-number {
+        font-size: 3rem;
+    }
+    
+    /* Brochure */
+    .brochure-card {
+        padding: 30px 20px;
+    }
+    
+    .brochure-content h2 {
+        font-size: 1.8rem;
+    }
+    
+    .brochure-formats {
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    /* Footer */
+    .footer-main {
+        gap: 30px;
+    }
+    
+    .footer-links-group {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+    
+    .footer-about p {
+        font-size: 0.95rem;
+    }
+    
+    .social-links {
+        justify-content: center;
+    }
+    
+    .footer-links h4,
+    .footer-contact h4 {
+        margin-bottom: 16px;
+    }
+    
+    .footer-links li,
+    .footer-contact li {
+        font-size: 0.9rem;
+    }
+}
+
+/* ============================================
+   SMALL PHONES (375px to 575px)
+   ============================================ */
+@media screen and (max-width: 575px) {
+    .container {
+        padding: 0 12px;
+    }
+    
+    h1 { font-size: 1.75rem; }
+    h2 { font-size: 1.5rem; }
+    
+    /* Hero */
+    .hero {
+        min-height: 450px;
+    }
+    
+    .slide-content {
+        margin-left: 0;
+        padding: 0 16px;
+        width: 100%;
+    }
+    
+    .slide-content h1 {
+        font-size: 1.75rem;
+    }
+    
+    .slide-subtitle {
+        font-size: 0.75rem;
+        letter-spacing: 2px;
+    }
+    
+    .event-details {
+        gap: 12px;
+    }
+    
+    .detail-item {
+        font-size: 0.85rem;
+    }
+    
+    .hero-stats-bar {
+        bottom: -20px;
+    }
+    
+    .stats-grid {
+        padding: 16px;
+    }
+    
+    .stat-item {
+        flex: 1 1 100%;
+    }
+    
+    .stat-number {
+        font-size: 1.5rem;
+    }
+    
+    /* Slider Controls */
+    .slider-controls {
+        bottom: 20px;
+        gap: 12px;
+    }
+    
+    .slider-prev,
+    .slider-next {
+        width: 35px;
+        height: 35px;
+        font-size: 0.9rem;
+    }
+    
+    .dot {
+        width: 8px;
+        height: 8px;
+    }
+    
+    /* Buttons */
+    .btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+        width: 100%;
+        text-align: center;
+    }
+    
+    .btn-large {
+        padding: 14px 24px;
+        font-size: 1rem;
+    }
+    
+    .hero-buttons {
+        gap: 12px;
+    }
+    
+    /* Tour Cards - Stack vertical for very small */
+    .tour-card {
+        grid-template-columns: 1fr;
+    }
+    
+    .tour-card img {
+        width: 100%;
+        height: 150px;
+    }
+    
+    /* Awards Cards */
+    .award-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+    
+    .award-card i {
+        margin: 0 auto;
+    }
+    
+    /* Stats Rows */
+    .stat-row {
+        font-size: 0.9rem;
+    }
+    
+    /* Footer */
+    .footer-bottom {
+        font-size: 0.85rem;
+    }
+    
+    .footer-bottom-links {
+        gap: 16px;
+    }
+}
+
+/* ============================================
+   VERY SMALL PHONES (320px and below)
+   ============================================ */
+@media screen and (max-width: 320px) {
+    .container {
+        padding: 0 10px;
+    }
+    
+    h1 { font-size: 1.5rem; }
+    h2 { font-size: 1.3rem; }
+    
+    .nav-brand a {
+        font-size: 1.2rem;
+    }
+    
+    .brand-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+    }
+    
+    .slide-content h1 {
+        font-size: 1.5rem;
+    }
+    
+    .slide-subtitle {
+        font-size: 0.7rem;
+        padding: 4px 12px;
+    }
+    
+    .detail-item {
+        font-size: 0.8rem;
+    }
+    
+    .tab {
+        padding: 15px 8px;
+    }
+    
+    .tab i {
+        font-size: 1.5rem;
+    }
+    
+    .tab h3 {
+        font-size: 0.9rem;
+    }
+    
+    .tab p {
+        font-size: 0.7rem;
+    }
+    
+    .benefit-card,
+    .pricing-card,
+    .expectation-card,
+    .partner-category {
+        padding: 20px 15px;
+    }
+    
+    .benefit-icon {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .benefit-icon i {
+        font-size: 1.5rem;
+    }
+    
+    .price {
+        font-size: 2rem;
+    }
+    
+    .pricing-card li {
+        font-size: 0.85rem;
+    }
+    
+    .footer-logo {
+        font-size: 1.2rem;
+    }
+    
+    .social-links a {
+        width: 38px;
+        height: 38px;
+    }
+}
+
+/* ============================================
+   LANDSCAPE MODE FIXES
+   ============================================ */
+@media screen and (max-height: 600px) and (orientation: landscape) {
+    .hero {
+        height: auto;
+        min-height: 400px;
+    }
+    
+    .slide-content {
+        padding: 40px 0;
+    }
+    
+    .hero-stats-bar {
+        position: relative;
+        bottom: auto;
+        margin-top: 20px;
+    }
+    
+    .stats-grid {
+        transform: none;
+        position: relative;
+        bottom: auto;
+    }
+    
+    .nav-menu.active {
+        height: 100vh;
+        overflow-y: auto;
+    }
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+@media print {
+    .navbar,
+    .hero-stats-bar,
+    .registration-tabs,
+    .slider-controls,
+    .btn,
+    .footer {
+        display: none;
+    }
+    
+    body {
+        background: white;
+        color: black;
+    }
+    
+    .container {
+        max-width: 100%;
+        padding: 20px;
+    }
+    
+    a {
+        text-decoration: none;
+        color: black;
+    }
+    
+    h1, h2, h3 {
+        page-break-after: avoid;
+    }
+    
+    img {
+        max-width: 100% !important;
+        page-break-inside: avoid;
+    }
+}
+
+/* ============================================
+   HIGH-RESOLUTION DISPLAYS (Retina)
+   ============================================ */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    /* Add retina-specific styles if needed */
+    .slide-image {
+        background-size: cover;
+    }
+}
+
+/* ============================================
+   DARK MODE SUPPORT (Optional)
+   ============================================ */
+@media (prefers-color-scheme: dark) {
+    /* Add dark mode styles if needed */
+}

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Uganda Avocado 2026 | 1st Uganda Avocado Farmers Conference</title>
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Main CSS -->
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
     <!-- ***** NAVIGATION (Glassmorphism Style) ***** -->
@@ -18,7 +19,7 @@
             <div class="nav-brand">
                 <a href="#home">
                     <span class="brand-icon"><i class="fas fa-leaf"></i></span>
-                    Uganda Avocado<span class="year">2026</span>
+                    Uganda Avocado<span class="year"></span>
                 </a>
             </div>
             <ul class="nav-menu" id="nav-menu">
@@ -26,7 +27,7 @@
                 
                 <!-- Sponsorship Dropdown -->
                 <li class="dropdown">
-                    <a href="#" class="dropdown-trigger">Sponsorship <i class="fas fa-chevron-down"></i></a>
+                    <a href="#" class="dropdown-trigger" onclick="toggleDropdown(this); return false;">Sponsorship <i class="fas fa-chevron-down"></i></a>
                     <ul class="dropdown-content" id="sponsor-dropdown"></ul>
                 </li>
                 
@@ -35,13 +36,13 @@
                 
                 <!-- Field Tour Dropdown -->
                 <li class="dropdown">
-                    <a href="#" class="dropdown-trigger">Field Tours <i class="fas fa-chevron-down"></i></a>
+                    <a href="#" class="dropdown-trigger" onclick="toggleDropdown(this); return false;">Field Tours <i class="fas fa-chevron-down"></i></a>
                     <ul class="dropdown-content" id="fieldtour-dropdown"></ul>
                 </li>
                 
                 <!-- Partners Mega Menu -->
                 <li class="dropdown">
-                    <a href="#" class="dropdown-trigger">Partners <i class="fas fa-chevron-down"></i></a>
+                    <a href="#" class="dropdown-trigger" onclick="toggleDropdown(this); return false;">Partners <i class="fas fa-chevron-down"></i></a>
                     <div class="dropdown-content mega-menu" id="partners-dropdown"></div>
                 </li>
                 
@@ -497,6 +498,21 @@
         </div>
     </section>
 
+    <!-- ***** NEW: AWARDS EXPECTATIONS SECTION ***** -->
+<section class="section awards-expectation-section bg-pattern">
+    <div class="container">
+        <div class="section-header center">
+            <span class="section-tag">Awards Impact</span>
+            <h2>What the Awards Aim to Achieve</h2>
+            <p class="section-description">Recognizing excellence and driving growth in Uganda's avocado sector</p>
+        </div>
+        
+        <div class="expectation-grid" id="awards-expectations-grid">
+            <!-- Will be populated by JS -->
+        </div>
+    </div>
+</section>
+
     <!-- ***** DOWNLOAD BROCHURE SECTION ***** -->
     <section id="download-brochure" class="section brochure-section">
         <div class="container">
@@ -604,5 +620,8 @@
     </footer>
 
     <script src="js/script.js"></script>
+    <!-- Add this before script.js -->
+<script src="js/data.js"></script>
+<script src="js/script.js"></script>
 </body>
 </html>
