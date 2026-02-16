@@ -1,3 +1,26 @@
+/* ----- Navigation Logo Responsive ----- */
+@media screen and (max-width: 768px) {
+    .nav-brand a {
+        gap: 6px;
+        font-size: 1.3rem;
+    }
+    
+    .nav-brand .year {
+        font-size: 0.8rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .nav-brand a {
+        gap: 4px;
+        font-size: 1.1rem;
+    }
+    
+    .nav-brand .year {
+        font-size: 0.7rem;
+    }
+}
+
 /* ----- Enhanced Hero Stats Bar Responsive ----- */
 @media screen and (max-width: 1200px) {
     .hero-stats-bar {
