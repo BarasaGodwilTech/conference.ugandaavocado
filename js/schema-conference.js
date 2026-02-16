@@ -22,7 +22,7 @@
             "name": "Uganda Industrial Research Institute",
             "address": {
                 "@type": "PostalAddress",
-                "streetAddress": "Plot 42A, Mukabya Road",
+                "streetAddress": "Plot 42A, Jinja Road",
                 "addressLocality": "Kampala",
                 "addressRegion": "Central Region",
                 "addressCountry": "UG"
