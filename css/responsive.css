@@ -261,7 +261,7 @@
     }
     
     .hero-stats-bar {
-        bottom: -30px;
+        display: none;
     }
     
     .stats-grid {
@@ -694,7 +694,7 @@
     }
     
     .hero-stats-bar {
-        bottom: -20px;
+        display: none;
     }
     
     .stats-grid {

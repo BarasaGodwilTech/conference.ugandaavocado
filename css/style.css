@@ -561,6 +561,14 @@ h3 {
     left: 0;
     right: 0;
     z-index: 30;
+    display: block;
+}
+
+/* Hide stats bar on screens smaller than desktop */
+@media screen and (max-width: 1200px) {
+    .hero-stats-bar {
+        display: none;
+    }
 }
 
 .stats-grid {
