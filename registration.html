@@ -81,27 +81,67 @@
     <section class="hero registration-hero">
         <div class="hero-content">
             <div class="container">
+                <div class="conference-dates">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>29th - 31st July 2026 • Kampala, Uganda</span>
+                </div>
                 <span class="slide-subtitle">Join the Largest Avocado Conference in Uganda</span>
                 <h1>Register for <span class="highlight">Uganda Avocado 2026</span></h1>
-                <p class="lead">Secure your spot at the 1st Uganda Avocado Farmers Conference</p>
-                <div class="event-details">
-                    <div class="detail-item">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span>29th - 31st July 2026</span>
+                <div class="conference-theme">
+                    <i class="fas fa-bullseye"></i>
+                    <span>Advancing Uganda's Avocado Sector for Sustainable Growth</span>
+                </div>
+                
+                <!-- Countdown Timer -->
+                <div class="countdown-container">
+                    <h3>Conference Starts In:</h3>
+                    <div class="countdown-timer" id="conferenceCountdown">
+                        <div class="countdown-item">
+                            <div class="countdown-value" id="countdownDays">00</div>
+                            <div class="countdown-label">Days</div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="countdown-value" id="countdownHours">00</div>
+                            <div class="countdown-label">Hours</div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="countdown-value" id="countdownMinutes">00</div>
+                            <div class="countdown-label">Minutes</div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="countdown-value" id="countdownSeconds">00</div>
+                            <div class="countdown-label">Seconds</div>
+                        </div>
                     </div>
-                    <div class="detail-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>Uganda Industrial Research Institute, Kampala</span>
-                    </div>
-                    <div class="detail-item">
-                        <i class="fas fa-users"></i>
-                        <span>5000+ Expected Attendees</span>
+                    <div class="countdown-expired" id="countdownExpired" style="display: none;">
+                        <i class="fas fa-flag-checkered"></i>
+                        <span>Conference is Now Live!</span>
                     </div>
                 </div>
+                
                 <div class="hero-buttons">
-                    <a href="#pricing" class="btn btn-primary btn-large">View Pricing <i class="fas fa-tag"></i></a>
-                    <a href="#registration-form" class="btn btn-outline btn-large">Register Now <i class="fas fa-ticket-alt"></i></a>
+                    <a href="#registration-form" class="btn btn-primary btn-large">
+                        <i class="fas fa-user-plus"></i> Click Here to Register
+                    </a>
+                    <a href="#pricing" class="btn btn-outline btn-large">
+                        <i class="fas fa-tag"></i> View Pricing
+                    </a>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ***** SCROLLING SPONSORS SECTION ***** -->
+    <section class="sponsors-section">
+        <div class="container">
+            <div class="section-header center">
+                <span class="section-tag">Our Partners</span>
+                <h2>In Partnership with <span class="text-gradient">Industry Leaders</span></h2>
+                <p class="section-description">Thank you to our sponsors who make this conference possible</p>
+            </div>
+            
+            <div class="sponsors-grid" id="sponsors-grid">
+                <!-- Will be populated by JS with scrolling logos -->
             </div>
         </div>
     </section>
@@ -111,12 +151,98 @@
         <div class="container">
             <div class="section-header center">
                 <span class="section-tag">Investment Opportunities</span>
-                <h2>Sponsorship <span class="text-gradient">Packages</span></h2>
-                <p class="section-description">Choose the perfect package to showcase your brand</p>
+                <h2>Choose Registration <span class="text-gradient">Package</span></h2>
+                <p class="section-description">Select the perfect package for your participation. All fees are in UGX for locals and USD for foreigners.</p>
             </div>
             
             <div class="pricing-grid" id="pricing-grid">
                 <!-- Will be populated by JS with Sponsor, Partner, Delegate cards -->
+            </div>
+            
+            <!-- Additional Options like reference site -->
+            <div class="additional-options-section">
+                <h3><i class="fas fa-plus-circle"></i> Add Optional Excursion</h3>
+                <div class="excursion-card">
+                    <div class="excursion-content">
+                        <h4>Field Tour Package</h4>
+                        <p>Include the trip to commercial farms and processing facilities in your registration. This separate fee will be added to your total amount.</p>
+                        <div class="excursion-pricing">
+                            <div class="price-period">
+                                <strong>Early:</strong> UGX 550,000 / $150
+                            </div>
+                            <div class="price-period">
+                                <strong>Regular:</strong> UGX 630,000 / $170
+                            </div>
+                            <div class="price-period">
+                                <strong>Late:</strong> UGX 700,000 / $190
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ***** VENUE & LOCATION SECTION ***** -->
+    <section id="venue" class="section venue-section">
+        <div class="container">
+            <div class="section-header center">
+                <span class="section-tag">Venue Information</span>
+                <h2>Event <span class="text-gradient">Location</span></h2>
+                <p class="section-description">Hosted in Kampala, the heart of Uganda. Uganda Industrial Research Institute, Kampala.</p>
+            </div>
+            
+            <div class="venue-content">
+                <div class="venue-info">
+                    <div class="venue-details">
+                        <h3><i class="fas fa-map-marker-alt"></i> Uganda Industrial Research Institute</h3>
+                        <p><strong>Address:</strong> Plot 42A, Mukabya Road, Kampala, Uganda</p>
+                        <p><strong>Distance from City Center:</strong> Approximately 8km</p>
+                        <p><strong>Accessibility:</strong> Easy access by public transport and taxi services</p>
+                        
+                        <div class="venue-features">
+                            <div class="feature-item">
+                                <i class="fas fa-parking"></i>
+                                <span>Ample Parking Space</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-wifi"></i>
+                                <span>Free WiFi Available</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-utensils"></i>
+                                <span>Catering Services</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-video"></i>
+                                <span>Modern AV Equipment</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="venue-map">
+                    <h3><i class="fas fa-map"></i> Interactive Map</h3>
+                    <div class="map-container">
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.498526113043!2d32.6167!3d0.3428!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x177dbb9c6c5d7b5b%3A0x8f5b5c5d5b5c5d5b!2sUganda%20Industrial%20Research%20Institute!5e0!3m2!1sen!2sug!4v1234567890"
+                            width="100%" 
+                            height="450" 
+                            style="border:0; border-radius: 12px;" 
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                    <div class="map-actions">
+                        <a href="https://maps.google.com/?q=Uganda+Industrial+Research+Institute+Kampala" target="_blank" class="btn btn-outline">
+                            <i class="fas fa-external-link-alt"></i> Open in Google Maps
+                        </a>
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=Uganda+Industrial+Research+Institute+Kampala" target="_blank" class="btn btn-primary">
+                            <i class="fas fa-directions"></i> Get Directions
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -172,36 +298,69 @@
 
                     <!-- Registration Type -->
                     <div class="form-section">
-                        <h3><i class="fas fa-ticket-alt"></i> Registration Type</h3>
-                        <div class="registration-types">
-                            <div class="type-option">
-                                <input type="radio" id="earlyBird" name="registrationType" value="earlyBird" checked>
-                                <label for="earlyBird" class="type-card">
-                                    <div class="type-header">
-                                        <h4>Early Bird</h4>
-                                        <span class="type-price">$299</span>
+                        <h3><i class="fas fa-ticket-alt"></i> Registration Package</h3>
+                        <div class="registration-packages">
+                            <div class="package-option">
+                                <input type="radio" id="delegate" name="registrationPackage" value="delegate" checked>
+                                <label for="delegate" class="package-card">
+                                    <div class="package-header">
+                                        <h4>Delegate</h4>
+                                        <div class="package-price">
+                                            <span class="price-early">Early: UGX 110,000 / $30</span>
+                                            <span class="price-regular">Regular: UGX 165,000 / $45</span>
+                                            <span class="price-late">Late: UGX 220,000 / $60</span>
+                                        </div>
                                     </div>
-                                    <p>Register before May 31, 2026</p>
+                                    <ul class="package-features">
+                                        <li><i class="fas fa-check"></i> Full access to sessions</li>
+                                        <li><i class="fas fa-check"></i> Lunch & refreshments</li>
+                                        <li><i class="fas fa-check"></i> Conference kit</li>
+                                        <li><i class="fas fa-check"></i> Networking access</li>
+                                        <li><i class="fas fa-check"></i> Certificate of participation</li>
+                                    </ul>
                                 </label>
                             </div>
-                            <div class="type-option">
-                                <input type="radio" id="standard" name="registrationType" value="standard">
-                                <label for="standard" class="type-card">
-                                    <div class="type-header">
-                                        <h4>Standard</h4>
-                                        <span class="type-price">$399</span>
+                            
+                            <div class="package-option">
+                                <input type="radio" id="partner" name="registrationPackage" value="partner">
+                                <label for="partner" class="package-card">
+                                    <div class="package-header">
+                                        <h4>Partner</h4>
+                                        <div class="package-price">
+                                            <span class="price-early">Early: UGX 1,100,000 / $300</span>
+                                            <span class="price-regular">Regular: UGX 1,320,000 / $360</span>
+                                            <span class="price-late">Late: UGX 1,540,000 / $420</span>
+                                        </div>
                                     </div>
-                                    <p>June 1 - July 15, 2026</p>
+                                    <ul class="package-features">
+                                        <li><i class="fas fa-check"></i> Standard 3x3 booth</li>
+                                        <li><i class="fas fa-check"></i> 3 delegate passes</li>
+                                        <li><i class="fas fa-check"></i> Logo in program</li>
+                                        <li><i class="fas fa-check"></i> Website listing</li>
+                                        <li><i class="fas fa-check"></i> Exhibition space</li>
+                                    </ul>
                                 </label>
                             </div>
-                            <div class="type-option">
-                                <input type="radio" id="premium" name="registrationType" value="premium">
-                                <label for="premium" class="type-card">
-                                    <div class="type-header">
-                                        <h4>Premium</h4>
-                                        <span class="type-price">$599</span>
+                            
+                            <div class="package-option">
+                                <input type="radio" id="sponsor" name="registrationPackage" value="sponsor">
+                                <label for="sponsor" class="package-card featured">
+                                    <div class="package-header">
+                                        <h4>Sponsor</h4>
+                                        <div class="package-price">
+                                            <span class="price-early">Early: UGX 11,000,000 / $3,000</span>
+                                            <span class="price-regular">Regular: UGX 13,200,000 / $3,600</span>
+                                            <span class="price-late">Late: UGX 15,400,000 / $4,200</span>
+                                        </div>
                                     </div>
-                                    <p>All-inclusive experience</p>
+                                    <ul class="package-features">
+                                        <li><i class="fas fa-check"></i> Keynote speaking slot</li>
+                                        <li><i class="fas fa-check"></i> Premium 6x3 booth</li>
+                                        <li><i class="fas fa-check"></i> 5 delegate passes</li>
+                                        <li><i class="fas fa-check"></i> Logo on all materials</li>
+                                        <li><i class="fas fa-check"></i> Social media promotion</li>
+                                        <li><i class="fas fa-check"></i> B2B matchmaking access</li>
+                                    </ul>
                                 </label>
                             </div>
                         </div>

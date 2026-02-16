@@ -659,7 +659,436 @@ h3 {
     color: var(--white);
 }
 
-/* QR Code Card in About Section */
+/* ----- Venue & Location Section ----- */
+.venue-section {
+    background: var(--light-gray);
+}
+
+.venue-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+}
+
+.venue-details h3 {
+    font-size: 1.5rem;
+    color: var(--avocado-green-dark);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.venue-details p {
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.venue-features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px;
+    background: var(--white);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--box-shadow-sm);
+    transition: var(--transition-normal);
+}
+
+.feature-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow-md);
+}
+
+.feature-item i {
+    font-size: 1.2rem;
+    color: var(--avocado-green);
+    width: 24px;
+    text-align: center;
+}
+
+.feature-item span {
+    font-weight: 500;
+    color: var(--dark-gray);
+}
+
+.venue-map h3 {
+    font-size: 1.5rem;
+    color: var(--avocado-green-dark);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.map-container {
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--box-shadow-md);
+    margin-bottom: 20px;
+}
+
+.map-actions {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.map-actions .btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ----- Additional Options Section ----- */
+.additional-options-section {
+    margin-top: 60px;
+    padding-top: 40px;
+    border-top: 2px solid var(--light-gray);
+}
+
+.additional-options-section h3 {
+    font-size: 1.3rem;
+    color: var(--avocado-green-dark);
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.excursion-card {
+    background: var(--white);
+    border-radius: var(--border-radius-lg);
+    padding: 30px;
+    box-shadow: var(--box-shadow-md);
+    border-left: 4px solid var(--avocado-green);
+}
+
+.excursion-content h4 {
+    font-size: 1.2rem;
+    color: var(--avocado-green-dark);
+    margin-bottom: 15px;
+}
+
+.excursion-content p {
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.excursion-pricing {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.price-period {
+    padding: 15px 20px;
+    background: var(--light-gray);
+    border-radius: var(--border-radius-md);
+    font-weight: 500;
+}
+
+.price-period strong {
+    color: var(--avocado-green-dark);
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* ----- Updated Registration Packages ----- */
+.registration-packages {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.package-option {
+    position: relative;
+}
+
+.package-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+}
+
+.package-card {
+    display: block;
+    background: var(--white);
+    border: 2px solid var(--light-gray);
+    border-radius: var(--border-radius-lg);
+    padding: 30px;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    height: 100%;
+}
+
+.package-card:hover {
+    border-color: var(--avocado-green);
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow-lg);
+}
+
+.package-option input[type="radio"]:checked + .package-card {
+    border-color: var(--avocado-green);
+    background: var(--avocado-green-lighter);
+    box-shadow: var(--box-shadow-lg);
+}
+
+.package-card.featured {
+    border-color: var(--avocado-yellow);
+    position: relative;
+}
+
+.package-card.featured::before {
+    content: "RECOMMENDED";
+    position: absolute;
+    top: -12px;
+    right: 20px;
+    background: var(--avocado-yellow);
+    color: var(--white);
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.package-header h4 {
+    font-size: 1.5rem;
+    color: var(--avocado-green-dark);
+    margin-bottom: 15px;
+}
+
+.package-price {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.price-early,
+.price-regular,
+.price-late {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.price-early {
+    color: var(--success-green);
+}
+
+.price-regular {
+    color: var(--dark-gray);
+}
+
+.price-late {
+    color: var(--danger-red);
+}
+
+.package-features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.package-features li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+    color: var(--dark-gray);
+}
+
+.package-features li i {
+    color: var(--success-green);
+    font-size: 0.8rem;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 992px) {
+    .venue-content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    
+    .venue-features {
+        grid-template-columns: 1fr;
+    }
+    
+    .registration-packages {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .excursion-pricing {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .map-actions {
+        flex-direction: column;
+    }
+    
+    .map-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ----- Enhanced Registration Hero ----- */
+.registration-hero {
+    background: linear-gradient(135deg, var(--avocado-green-dark) 0%, var(--avocado-green) 100%);
+    color: var(--white);
+    padding: 120px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.registration-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('https://worldbusinessjournal.com/wp-content/uploads/2025/11/MG_7849.jpg?w=1600') center/cover;
+    opacity: 0.1;
+    z-index: 0;
+}
+
+.registration-hero .hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+
+.conference-dates {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.conference-dates i {
+    color: var(--avocado-yellow);
+    font-size: 1.2rem;
+}
+
+.conference-theme {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 30px 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--avocado-yellow-light);
+}
+
+.conference-theme i {
+    font-size: 1.3rem;
+}
+
+/* ----- Countdown Timer ----- */
+.countdown-container {
+    margin: 40px 0;
+    text-align: center;
+}
+
+.countdown-container h3 {
+    font-size: 1.3rem;
+    margin-bottom: 25px;
+    color: var(--white);
+}
+
+.countdown-timer {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.countdown-item {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--border-radius-lg);
+    padding: 20px;
+    min-width: 100px;
+    backdrop-filter: blur(10px);
+    transition: all var(--transition-normal);
+}
+
+.countdown-item:hover {
+    transform: translateY(-5px);
+    border-color: var(--avocado-yellow);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.countdown-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--white);
+    display: block;
+    margin-bottom: 8px;
+    line-height: 1;
+}
+
+.countdown-label {
+    font-size: 0.9rem;
+    color: var(--avocado-yellow-light);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+}
+
+.countdown-expired {
+    text-align: center;
+    padding: 20px;
+    background: rgba(76, 175, 80, 0.2);
+    border-radius: var(--border-radius-lg);
+    border: 2px solid var(--success-green);
+}
+
+.countdown-expired i {
+    font-size: 2rem;
+    color: var(--success-green);
+    margin-bottom: 10px;
+}
+
+.countdown-expired span {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--white);
+}
+
+/* ----- Sponsors Section on Registration Page ----- */
+.sponsors-section {
+    background: var(--light-gray);
+    padding: 80px 0;
+}
+
+.sponsors-grid {
+    width: 100%;
+    overflow: hidden;
+    background: linear-gradient(90deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 40px 0;
+    border-radius: var(--border-radius-lg);
+}
+
+/* ----- Enhanced Registration Hero ----- */
 .qr-code-card {
     background: var(--gradient-green);
     color: var(--white);
@@ -721,6 +1150,16 @@ h3 {
     margin: 0;
     color: var(--white);
     font-weight: 500;
+}
+
+/* ----- Scrolling Logos Animation ----- */
+@keyframes scrollLogos {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
 }
 
 /* ----- About Section ----- */
