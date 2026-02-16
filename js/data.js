@@ -9,9 +9,9 @@ const conferenceData = {
         date: "29th - 31st July 2026",
         venue: "Uganda Industrial Research Institute, Kampala",
         edition: "1st Edition",
-        expectedAttendees: "5000+",
-        expectedExhibitors: "200+",
-        expectedCountries: "30+"
+        expectedAttendees: "500+",
+        expectedExhibitors: "50+",
+        expectedCountries: "17+"
     },
 
     // Thematic Areas from "Avocado conference thematic Areas.docx"

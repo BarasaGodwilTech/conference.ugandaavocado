@@ -12,9 +12,9 @@ const conferenceSEO = {
         venueFull: "Uganda Industrial Research Institute, Kampala, Uganda",
         city: "Kampala",
         country: "Uganda",
-        expectedAttendees: "5000+",
-        expectedExhibitors: "200+",
-        expectedCountries: "30+",
+        expectedAttendees: "500+",
+        expectedExhibitors: "50+",
+        expectedCountries: "17+",
         theme: "Advancing Uganda's Avocado Sector for Sustainable Growth"
     },
     
