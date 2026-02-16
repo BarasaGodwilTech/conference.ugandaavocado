@@ -159,15 +159,21 @@
     
     .registration-hero .countdown-container {
         margin: 30px 0;
+        padding: 20px 15px;
     }
     
     .countdown-timer {
         gap: 15px;
+        flex-wrap: nowrap;
+        justify-content: center;
+        width: 100%;
     }
     
     .countdown-item {
         min-width: 80px;
         padding: 15px 10px;
+        flex: 1;
+        max-width: 90px;
     }
     
     .countdown-value {
@@ -213,17 +219,21 @@
     
     .registration-hero .countdown-container {
         margin: 20px 0;
+        padding: 15px 10px;
     }
     
     .countdown-timer {
-        gap: 10px;
-        flex-wrap: wrap;
+        gap: 8px;
+        flex-wrap: nowrap;
         justify-content: center;
+        width: 100%;
     }
     
     .countdown-item {
-        min-width: 70px;
-        padding: 12px 8px;
+        min-width: 60px;
+        padding: 10px 6px;
+        flex: 1;
+        max-width: 70px;
     }
     
     .countdown-value {
