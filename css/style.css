@@ -251,6 +251,17 @@ h3 {
     color: var(--avocado-green-dark);
     text-decoration: none;
 }
+.logo-image {
+    height: 40px;  /* Adjust based on your needs */
+    width: auto;
+    display: block;
+}
+
+/* Or if you want it responsive */
+.logo-image {
+    max-height: 60px;
+    width: auto;
+}
 
 .brand-icon {
     display: flex;
