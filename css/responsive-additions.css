@@ -1,3 +1,91 @@
+/* ----- Enhanced Hero Stats Bar Responsive ----- */
+@media screen and (max-width: 1200px) {
+    .hero-stats-bar {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .stats-grid {
+        gap: 15px;
+        padding: 20px 15px;
+    }
+    
+    .stat-item {
+        min-width: 120px;
+        gap: 10px;
+    }
+    
+    .stat-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 0.9rem;
+    }
+    
+    .stat-number {
+        font-size: 1.5rem;
+    }
+    
+    .stat-label {
+        font-size: 0.75rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .stats-grid {
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 15px 10px;
+    }
+    
+    .stat-item {
+        min-width: 100px;
+        gap: 8px;
+        flex: 1 1 calc(50% - 20px);
+    }
+    
+    .stat-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 0.8rem;
+    }
+    
+    .stat-number {
+        font-size: 1.3rem;
+    }
+    
+    .stat-label {
+        font-size: 0.7rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .stats-grid {
+        gap: 10px;
+        padding: 12px 8px;
+    }
+    
+    .stat-item {
+        min-width: 80px;
+        gap: 6px;
+        flex: 1 1 calc(50% - 16px);
+    }
+    
+    .stat-icon {
+        width: 25px;
+        height: 25px;
+        font-size: 0.7rem;
+    }
+    
+    .stat-number {
+        font-size: 1.1rem;
+    }
+    
+    .stat-label {
+        font-size: 0.65rem;
+    }
+}
+
 /* ----- Organizer Section Responsive ----- */
 @media screen and (max-width: 992px) {
     .organizer-wrapper {
