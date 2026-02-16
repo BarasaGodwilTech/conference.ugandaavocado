@@ -659,6 +659,70 @@ h3 {
     color: var(--white);
 }
 
+/* QR Code Card in About Section */
+.qr-code-card {
+    background: var(--gradient-green);
+    color: var(--white);
+    text-align: center;
+    padding: 40px;
+    border-radius: var(--border-radius-xl);
+    box-shadow: var(--box-shadow-lg);
+    transition: transform var(--transition-normal);
+}
+
+.qr-code-card:hover {
+    transform: translateY(-5px);
+}
+
+.qr-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.qr-header h3 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 5px;
+    color: var(--white);
+}
+
+.qr-header p {
+    font-size: 1.1rem;
+    color: var(--avocado-yellow-light);
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.qr-code-placeholder {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+    border-radius: var(--border-radius-lg);
+    padding: 30px;
+    margin-top: 20px;
+    transition: all var(--transition-normal);
+}
+
+.qr-code-card:hover .qr-code-placeholder {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--avocado-yellow);
+}
+
+.qr-code-placeholder i {
+    font-size: 4rem;
+    color: var(--avocado-yellow);
+    margin-bottom: 15px;
+    display: block;
+}
+
+.qr-code-placeholder p {
+    font-size: 1rem;
+    margin: 0;
+    color: var(--white);
+    font-weight: 500;
+}
+
 /* ----- About Section ----- */
 .about-grid {
     display: grid;
@@ -812,9 +876,11 @@ h3 {
     background: var(--white);
     padding: 32px 24px;
     border-radius: var(--border-radius-lg);
-    text-align: center;
     box-shadow: var(--box-shadow-sm);
+    text-align: center;
     transition: all var(--transition-normal);
+    cursor: pointer;
+    position: relative;
     border-bottom: 4px solid transparent;
 }
 
@@ -824,11 +890,92 @@ h3 {
     box-shadow: var(--box-shadow-md);
 }
 
+/* Special edition card */
+.thematic-card.edition-card {
+    background: var(--gradient-green);
+    color: var(--white);
+}
+
+.thematic-card.edition-card:hover {
+    border-bottom-color: var(--avocado-yellow);
+}
+
+.qr-code-placeholder {
+    margin-top: 20px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius-md);
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+}
+
+.qr-code-placeholder i {
+    font-size: 3rem;
+    color: var(--avocado-yellow);
+    margin-bottom: 10px;
+}
+
+.qr-code-placeholder p {
+    font-size: 0.9rem;
+    margin: 0;
+    color: var(--white);
+}
+
+/* Clickable thematic cards */
+.thematic-content {
+    position: relative;
+    overflow: hidden;
+}
+
+.thematic-description {
+    font-size: 0.85rem;
+    color: var(--medium-gray);
+    margin-bottom: 10px;
+}
+
+.thematic-full {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height var(--transition-normal);
+    margin-top: 0;
+}
+
+.thematic-card.expanded .thematic-full {
+    max-height: 200px;
+    margin-top: 15px;
+}
+
+.thematic-title {
+    font-weight: 600;
+    color: var(--avocado-green-dark);
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.thematic-strategic {
+    font-size: 0.8rem;
+    color: var(--dark-gray);
+    line-height: 1.4;
+}
+
+.expand-indicator {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    color: var(--avocado-green);
+    font-size: 0.8rem;
+    transition: transform var(--transition-normal);
+}
+
+.thematic-card.expanded .expand-indicator {
+    bottom: auto;
+    top: 10px;
+}
+
 .thematic-icon {
     width: 70px;
     height: 70px;
     background: var(--avocado-green-lighter);
-    border-radius: 50%;
+    border-radius: var(--border-radius-circle);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -840,17 +987,33 @@ h3 {
     color: var(--avocado-green);
 }
 
+.thematic-card.edition-card .thematic-icon {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.thematic-card.edition-card .thematic-icon i {
+    color: var(--white);
+}
+
 .thematic-card h3 {
     font-size: 1.1rem;
     margin-bottom: 8px;
     color: var(--avocado-green-dark);
 }
 
+.thematic-card.edition-card h3 {
+    color: var(--white);
+}
+
 .thematic-card p {
     font-size: 0.85rem;
     color: var(--medium-gray);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    margin-bottom: 0;
+}
+
+.thematic-card.edition-card p {
+    color: var(--avocado-yellow-light);
 }
 
 /* ----- What To Expect ----- */

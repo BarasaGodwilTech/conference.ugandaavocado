@@ -153,11 +153,31 @@ if (thematicGrid && typeof conferenceData !== 'undefined') {
                 <i class="fas ${area.icon}"></i>
             </div>
             <h3>${area.shortTitle}</h3>
-            <p>${area.description}</p>
-            <small style="display: block; margin-top: 10px; color: var(--avocado-green);">
-                <i class="fas fa-bullseye"></i> ${area.strategicObjective.substring(0, 60)}...
-            </small>
+            <div class="thematic-content">
+                <p class="thematic-description">${area.description}</p>
+                <div class="thematic-full">
+                    <p class="thematic-title">${area.title}</p>
+                    <p class="thematic-strategic"><i class="fas fa-bullseye"></i> ${area.strategicObjective}</p>
+                </div>
+            </div>
+            <div class="expand-indicator">
+                <i class="fas fa-chevron-down"></i>
+            </div>
         `;
+        
+        // Add click functionality
+        card.addEventListener('click', function() {
+            this.classList.toggle('expanded');
+            const indicator = this.querySelector('.expand-indicator i');
+            if (this.classList.contains('expanded')) {
+                indicator.classList.remove('fa-chevron-down');
+                indicator.classList.add('fa-chevron-up');
+            } else {
+                indicator.classList.remove('fa-chevron-up');
+                indicator.classList.add('fa-chevron-down');
+            }
+        });
+        
         thematicGrid.appendChild(card);
     });
 }

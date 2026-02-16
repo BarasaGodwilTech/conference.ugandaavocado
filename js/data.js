@@ -198,7 +198,7 @@ const conferenceData = {
         },
         {
             title: "Partner",
-            price: "USD 300",
+            price: "USD 300 (UGX 1,100,000)",
             period: "package",
             features: [
                 "Standard 3x3 booth",
@@ -212,7 +212,7 @@ const conferenceData = {
         },
         {
             title: "Delegate",
-            price: "USD 30",
+            price: "USD 30 (UGX 110,000)",
             period: "person",
             features: [
                 "Full access to sessions",
