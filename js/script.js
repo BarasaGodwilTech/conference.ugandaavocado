@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Auto-advance slides
         function startAutoSlide() {
-            slideInterval = setInterval(nextSlide, 5000);
+            slideInterval = setInterval(nextSlide, 8000);
         }
 
         function stopAutoSlide() {
