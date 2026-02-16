@@ -11,7 +11,7 @@
         "@context": "https://schema.org",
         "@type": "Event",
         "@id": "https://conference.ugandaavocados.org/#event",
-        "name": "1st International Africa Avocado Congress 2026",
+        "name": "1st Uganda Avocado Farmers Conference 2026",
         "description": "The largest gathering of avocado stakeholders in Uganda, bringing together farmers, exporters, investors, and industry experts from around the world.",
         "startDate": "2026-07-29T09:00:00+03:00",
         "endDate": "2026-07-31T18:00:00+03:00",

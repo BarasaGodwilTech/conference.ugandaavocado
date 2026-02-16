@@ -1,11 +1,11 @@
-// seo-conference.js - AFRICA AVOCADO CONGRESS 2026
+// seo-conference.js - UGANDA AVOCADO FARMERS CONFERENCE 2026
 // Load this ONLY on conference site
 
 const conferenceSEO = {
     // Event Information
     event: {
-        name: "1st International Africa Avocado Congress 2026",
-        shortName: "Africa Avocado Congress 2026",
+        name: "1st Uganda Avocado Farmers Conference 2026",
+        shortName: "Uganda Avocado Farmers Conference 2026",
         startDate: "2026-07-29",
         endDate: "2026-07-31",
         venue: "Uganda Industrial Research Institute",
