@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  
+  <!-- HOMEPAGE -->
+  <url>
+    <loc>https://conference.ugandaavocados.org/</loc>
+    <lastmod>2026-02-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- REGISTRATION PAGE -->
+  <url>
+    <loc>https://conference.ugandaavocados.org/register</loc>
+    <lastmod>2026-02-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- PROGRAM PAGE -->
+  <url>
+    <loc>https://conference.ugandaavocados.org/program</loc>
+    <lastmod>2026-02-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- SPEAKERS PAGE -->
+  <url>
+    <loc>https://conference.ugandaavocados.org/speakers</loc>
+    <lastmod>2026-02-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- EXHIBITIONS PAGE -->
+  <url>
+    <loc>https://conference.ugandaavocados.org/exhibitions</loc>
+    <lastmod>2026-02-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- SPONSORS PAGE -->
+  <url>
+    <loc>https://conference.ugandaavocados.org/sponsors</loc>
+    <lastmod>2026-02-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- FIELD TOURS PAGE -->
+  <url>
+    <loc>https://conference.ugandaavocados.org/field-tours</loc>
+    <lastmod>2026-02-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- AWARDS PAGE -->
+  <url>
+    <loc>https://conference.ugandaavocados.org/awards</loc>
+    <lastmod>2026-02-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- VENUE PAGE -->
+  <url>
+    <loc>https://conference.ugandaavocados.org/venue</loc>
+    <lastmod>2026-02-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <!-- ACCOMMODATION PAGE -->
+  <url>
+    <loc>https://conference.ugandaavocados.org/accommodation</loc>
+    <lastmod>2026-02-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <!-- FAQ PAGE -->
+  <url>
+    <loc>https://conference.ugandaavocados.org/faq</loc>
+    <lastmod>2026-02-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- CONTACT PAGE -->
+  <url>
+    <loc>https://conference.ugandaavocados.org/contact</loc>
+    <lastmod>2026-02-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+</urlset>

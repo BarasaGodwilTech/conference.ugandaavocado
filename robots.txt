@@ -1,0 +1,26 @@
+# robots.txt - AFRICA AVOCADO CONGRESS 2026
+# https://conference.ugandaavocados.org
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /draft/
+Disallow: /temp/
+
+# Sitemap location
+Sitemap: https://conference.ugandaavocados.org/sitemap-conference.xml
+
+# Crawl settings
+Crawl-delay: 2
+
+# Host
+Host: https://conference.ugandaavocados.org
+
+# ============================================
+# EVENT & CREDIT INFORMATION
+# ============================================
+# Event: 1st International Africa Avocado Congress 2026
+# Date: July 29-31, 2026
+# Venue: Uganda Industrial Research Institute, Kampala
+# Organizer: Richard Welishe (richard@ugandaavocados.org)
+# Developer: barasa godwil Technologies (https://barasagodwil.tech)
