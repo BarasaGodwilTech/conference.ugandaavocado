@@ -386,6 +386,8 @@ h3 {
     flex-direction: column;
     cursor: pointer;
     gap: 6px;
+    z-index: 1001;
+    position: relative;
 }
 
 .bar {
@@ -2846,6 +2848,9 @@ footer {
         background: var(--white);
         padding: 20px;
         box-shadow: var(--box-shadow-md);
+        z-index: 1000;
+        max-height: 80vh;
+        overflow-y: auto;
     }
     
     .hamburger {
