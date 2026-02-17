@@ -158,7 +158,7 @@ const conferenceData = {
             icon: "fa-industry"
         },
         {
-            name: "Packaging House Visit",
+            name: "PackHouse Visit",
             description: "Modern grading, sorting, and packaging technologies for export-ready avocados.",
             image: "https://israelagri.com/wp-content/uploads/2022/07/granot3.jpg?w=600",
             duration: "3 Hours",
