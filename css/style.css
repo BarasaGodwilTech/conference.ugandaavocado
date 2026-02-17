@@ -438,9 +438,9 @@ h3 {
     left: 0;
     width: 100%;
     height: 100%;
-    opacity: 0.55rem;
+    opacity: 1.55rem;
     visibility: hidden;
-    transition: opacity 1.0s ease-in-out; /* Slower, smoother fade */
+    transition: opacity 1.4s ease-in-out; /* Slower, smoother fade */
 }
 
 .slide.active {
