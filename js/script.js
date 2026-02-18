@@ -257,10 +257,10 @@ if (tourGrid && typeof conferenceData !== 'undefined') {
 const sponsorsGrid = document.getElementById('sponsors-grid');
 if (sponsorsGrid) {
     const sponsors = [
-        { name: 'aevo', logo: 'WillsGuyLogo.png', url: 'https://willstech.store' },
-        { name: 'FELIX', logo: 'WillsGuyLogo.png', url: 'https://willstech.store' },
-        { name: 'Viveros BROKAW', logo: 'WillsGuyLogo.png', url: 'https://willstech.store' },
-        { name: 'dudutech', logo: 'WillsGuyLogo.png', url: 'https://willstech.store' },
+        { name: 'willstech', logo: 'WillsGuyLogo.png', url: 'https://willstech.store' },
+        { name: 'avolio', logo: 'avolio.png', url: 'https://willstech.store' },
+        { name: 'ugandaavocados', logo: 'logo.png', url: 'https://willstech.store' },
+        { name: 'UIRI', logo: 'uiri.png', url: 'https://willstech.store' },
         { name: 'GEERLOFS', logo: 'WillsGuyLogo.png', url: 'https://willstech.store' },
         { name: 'SGS', logo: 'WillsGuyLogo.png', url: 'https://willstech.store' }
     ];

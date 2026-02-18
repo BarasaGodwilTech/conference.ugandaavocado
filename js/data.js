@@ -160,14 +160,14 @@ const conferenceData = {
         {
             name: "PackHouse Visit",
             description: "Modern grading, sorting, and packaging technologies for export-ready avocados.",
-            image: "https://israelagri.com/wp-content/uploads/2022/07/granot3.jpg?w=600",
+            image: "images/factory.jpg",
             duration: "3 Hours",
             icon: "fa-box-open"
         },
         {
             name: "Avocado Nursery",
             description: "Learn about certified grafting, tissue culture, and high-quality seedling production.",
-            image: "https://www.awanursery.co.nz/wp-content/uploads/Avocado-Hass-Jan-2019.jpg?w=600",
+            image: "images/seedlings.jpeg",
             duration: "2 Hours",
             icon: "fa-seedling"
         },
