@@ -151,9 +151,9 @@ const conferenceData = {
     // Field tours
     fieldTours: [
         {
-            name: "Avocado Factory Tour",
+            name: "Avolio Factory Tour",
             description: "See processing, cold storage, and value addition in action at Uganda's largest avocado processing facility.",
-            image: "https://worldbusinessjournal.com/wp-content/uploads/2025/11/MG_7890-scaled.jpg?w=600",
+            image: "images/avolio.jpg",
             duration: "Half Day",
             icon: "fa-industry"
         },
