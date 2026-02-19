@@ -226,7 +226,7 @@ if (tourGrid && typeof conferenceData !== 'undefined') {
                 <div class="tour-meta">
                     <span><i class="fas fa-clock"></i> ${tour.duration}</span>
                 </div>
-                <a href="#" class="btn btn-primary btn-sm">Book Tour</a>
+                <a href="registration.html" class="btn btn-primary btn-sm">Registration</a>
             </div>
         `;
         tourGrid.appendChild(card);
