@@ -160,28 +160,6 @@
             <div class="pricing-grid" id="pricing-grid">
                 <!-- Will be populated by JS with Sponsor, Partner, Delegate cards -->
             </div>
-            
-            <!-- Additional Options like reference site -->
-            <div class="additional-options-section">
-                <h3><i class="fas fa-plus-circle"></i> Add Optional Excursion</h3>
-                <div class="excursion-card">
-                    <div class="excursion-content">
-                        <h4>Field Tour Package</h4>
-                        <p>Include the trip to commercial farms and processing facilities in your registration. This separate fee will be added to your total amount.</p>
-                        <div class="excursion-pricing">
-                            <div class="price-period">
-                                <strong>Early:</strong> UGX 550,000 / $150
-                            </div>
-                            <div class="price-period">
-                                <strong>Regular:</strong> UGX 630,000 / $170
-                            </div>
-                            <div class="price-period">
-                                <strong>Late:</strong> UGX 700,000 / $190
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </section>
 
@@ -389,37 +367,6 @@
                         </div>
                     </div>
 
-                    <!-- Additional Options -->
-                    <div class="form-section">
-                        <h3><i class="fas fa-plus-circle"></i> Additional Options</h3>
-                        <div class="checkbox-group">
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="fieldTour" value="yes">
-                                <span class="checkmark"></span>
-                                <div class="checkbox-content">
-                                    <strong>Field Tour Package</strong>
-                                    <span>Visit commercial farms and processing facilities (+$150)</span>
-                                </div>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="workshop" value="yes">
-                                <span class="checkmark"></span>
-                                <div class="checkbox-content">
-                                    <strong>Workshop Materials</strong>
-                                    <span>Complete workshop documentation (+$50)</span>
-                                </div>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="galaDinner" value="yes">
-                                <span class="checkmark"></span>
-                                <div class="checkbox-content">
-                                    <strong>Gala Dinner</strong>
-                                    <span>Awards ceremony and networking dinner (+$75)</span>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-
                     <!-- Dietary Requirements -->
                     <div class="form-section">
                         <h3><i class="fas fa-utensils"></i> Dietary Requirements</h3>
@@ -603,10 +550,24 @@
                         <h3>${pkg.title}</h3>
                         <div class="price">${pkg.price}<small>/${pkg.period}</small></div>
                         <ul>${featuresList}</ul>
-                        <a href="#registration-form" class="btn btn-primary">Select Plan</a>
+                        <a href="registration.html?package=${encodeURIComponent(String(pkg.title).toLowerCase())}#registration-form" class="btn btn-primary">Select Plan</a>
                     `;
                     pricingGrid.appendChild(card);
                 });
+            }
+
+            const params = new URLSearchParams(window.location.search);
+            const pkgParam = params.get('package');
+            if (pkgParam) {
+                const selected = pkgParam.toLowerCase();
+                const packageRadios = Array.from(document.querySelectorAll('input[name="registrationPackage"]'));
+                const match = packageRadios.find(r => String(r.value).toLowerCase() === selected);
+                if (match) {
+                    match.checked = true;
+                    packageRadios.forEach(r => {
+                        if (r !== match) r.disabled = true;
+                    });
+                }
             }
             
             // Update year display
@@ -627,11 +588,6 @@
             
             if (data.registrationType === 'standard') basePrice = 399;
             if (data.registrationType === 'premium') basePrice = 599;
-            
-            // Add additional options
-            if (data.fieldTour) basePrice += 150;
-            if (data.workshop) basePrice += 50;
-            if (data.galaDinner) basePrice += 75;
             
             // Show confirmation
             alert(`Registration not submitted ! database not yet created\n\nTotal Amount: $${basePrice}\n\nYou will receive a confirmation email shortly with payment instructions.`);

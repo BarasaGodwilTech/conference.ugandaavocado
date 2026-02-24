@@ -202,7 +202,7 @@ if (pricingGrid && typeof conferenceData !== 'undefined') {
             <h3>${pkg.title}</h3>
             <div class="price">${pkg.price}<small>/${pkg.period}</small></div>
             <ul>${featuresList}</ul>
-            <a href="#" class="btn btn-primary">Select Plan</a>
+            <a href="registration.html?package=${encodeURIComponent(String(pkg.title).toLowerCase())}#registration-form" class="btn btn-primary">Select Plan</a>
         `;
         pricingGrid.appendChild(card);
     });
@@ -229,78 +229,68 @@ if (tourGrid && typeof conferenceData !== 'undefined') {
                 <a href="registration.html" class="btn btn-primary btn-sm">Registration</a>
             </div>
         `;
+
         tourGrid.appendChild(card);
     });
 }
 
     // ============================================
-    // 8. POPULATE SPONSORS GRID (From your image)
-    // ============================================
-    /*const sponsorsGrid = document.getElementById('sponsors-grid');
-    if (sponsorsGrid) {
-        const sponsors = [
-            'aevo', 'FELIX', 'Viveros BROKAW', 'dudutech', 'GEERLOFS', 'SGS'
-        ];
-
-        sponsors.forEach(sponsor => {
-            const div = document.createElement('div');
-            div.className = 'sponsor-item';
-            div.innerHTML = `<span class="sponsor-name">${sponsor}</span>`;
-            sponsorsGrid.appendChild(div);
-        });
-    }*/
-
-        
-   // ============================================
-// 8. POPULATE SPONSORS GRID (Clean scrolling logos)
+// 8. POPULATE SPONSORS GRIDS (Clean scrolling logos)
 // ============================================
-const sponsorsGrid = document.getElementById('sponsors-grid');
-if (sponsorsGrid) {
-    const sponsors = [
-        { name: 'willstech', logo: 'WillsGuyLogo.png', url: 'https://willstech.store' },
-        { name: 'avolio', logo: 'avolio.png', url: 'https://avolio.co.ug/' },
-        { name: 'ugandaavocados', logo: 'logo.png', url: 'https://conference.ugandaavocados.org' },
-        { name: 'UIRI', logo: 'uiri.png', url: 'https://willstech.store' },
-        { name: 'amenduni', logo: 'logo_amenduni.png', url: 'https://www.amenduni.it/' },
-        { name: 'polatas', logo: 'Polat-Makina-logo.png', url: 'https://www.polatas.com.tr/en/' }
-    ];
+const sponsors = [
+    { name: 'willstech', logo: 'WillsGuyLogo.png', url: 'https://willstech.store' },
+    { name: 'avolio', logo: 'avolio.png', url: 'https://avolio.co.ug/' },
+    { name: 'ugandaavocados', logo: 'logo.png', url: 'https://conference.ugandaavocados.org' },
+    { name: 'UIRI', logo: 'uiri.png', url: 'https://uiri.go.ug/' },
+    { name: 'amenduni', logo: 'logo_amenduni.png', url: 'https://www.amenduni.it/' },
+    { name: 'polatas', logo: 'Polat-Makina-logo.png', url: 'https://www.polatas.com.tr/en/' }
+];
 
-    // Clear everything
-    sponsorsGrid.innerHTML = '';
-    sponsorsGrid.style.cssText = 'width: 100%; overflow: hidden; background: linear-gradient(90deg, #f8f9fa, #e9ecef); padding: 30px 0;';
-    
-    // Create container
-    const container = document.createElement('div');
-    container.style.cssText = 'display: flex; gap: 50px; width: fit-content; animation: scrollLogos 25s linear infinite;';
-    
-    // Add items twice for seamless loop
-    [...sponsors, ...sponsors].forEach(sponsor => {
-        const item = document.createElement('div');
-        item.style.cssText = 'flex: 0 0 auto; width: 140px; height: 80px; display: flex; align-items: center; justify-content: center;';
-        
-        const link = document.createElement('a');
-        link.href = sponsor.url;
-        link.target = '_blank';
-        link.style.cssText = 'display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;';
-        
-        const img = document.createElement('img');
-        img.src = `images/sponsors/${sponsor.logo}`;
-        img.alt = sponsor.name;
-        img.style.cssText = 'max-width: 100%; max-height: 100%; object-fit: contain; filter: brightness(1); transition: filter 0.3s;';
-        
-        img.onerror = function() {
-            this.outerHTML = `<span style="font-weight: 600; color: #495057;">${sponsor.name}</span>`;
-        };
-        
-        img.onmouseenter = function() { this.style.filter = 'brightness(1.2)'; };
-        img.onmouseleave = function() { this.style.filter = 'brightness(1)'; };
-        
-        link.appendChild(img);
-        item.appendChild(link);
-        container.appendChild(item);
+const sponsorGrids = [
+    document.getElementById('sponsors-grid'),
+    document.getElementById('sponsors-grid-about')
+].filter(Boolean);
+
+if (sponsorGrids.length) {
+    sponsorGrids.forEach(grid => {
+        grid.innerHTML = '';
+        grid.style.cssText = 'width: 100%; overflow: hidden; background: linear-gradient(90deg, #f8f9fa, #e9ecef); padding: 30px 0;';
+
+        const container = document.createElement('div');
+        container.style.cssText = 'display: flex; gap: 50px; width: fit-content; animation: scrollLogos 25s linear infinite;';
+
+        grid.addEventListener('mouseenter', () => { container.style.animationPlayState = 'paused'; });
+        grid.addEventListener('mouseleave', () => { container.style.animationPlayState = 'running'; });
+
+        [...sponsors, ...sponsors].forEach(sponsor => {
+            const item = document.createElement('div');
+            item.style.cssText = 'flex: 0 0 auto; width: 140px; height: 80px; display: flex; align-items: center; justify-content: center;';
+
+            const link = document.createElement('a');
+            link.href = sponsor.url;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            link.style.cssText = 'display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;';
+
+            const img = document.createElement('img');
+            img.src = `images/sponsors/${sponsor.logo}`;
+            img.alt = sponsor.name;
+            img.style.cssText = 'max-width: 100%; max-height: 100%; object-fit: contain; filter: brightness(1); transition: filter 0.3s;';
+
+            img.onerror = function() {
+                this.outerHTML = `<span style="font-weight: 600; color: #495057;">${sponsor.name}</span>`;
+            };
+
+            img.onmouseenter = function() { this.style.filter = 'brightness(1.2)'; };
+            img.onmouseleave = function() { this.style.filter = 'brightness(1)'; };
+
+            link.appendChild(img);
+            item.appendChild(link);
+            container.appendChild(item);
+        });
+
+        grid.appendChild(container);
     });
-    
-    sponsorsGrid.appendChild(container);
 }
 
     // ============================================
