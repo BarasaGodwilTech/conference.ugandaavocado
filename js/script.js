@@ -261,8 +261,8 @@ if (sponsorsGrid) {
         { name: 'avolio', logo: 'avolio.png', url: 'https://avolio.co.ug/' },
         { name: 'ugandaavocados', logo: 'logo.png', url: 'https://conference.ugandaavocados.org' },
         { name: 'UIRI', logo: 'uiri.png', url: 'https://willstech.store' },
-        { name: 'amenduni', logo: 'logo.am', url: 'https://www.amenduni.it/' },
-        { name: 'SGS', logo: 'WillsGuyLogo.png', url: 'https://willstech.store' }
+        { name: 'amenduni', logo: 'logo_amenduni.png', url: 'https://www.amenduni.it/' },
+        { name: 'polatas', logo: 'Polat-Makina-logo.png', url: 'https://www.polatas.com.tr/en/' }
     ];
 
     // Clear everything
