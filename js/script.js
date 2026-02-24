@@ -258,10 +258,10 @@ const sponsorsGrid = document.getElementById('sponsors-grid');
 if (sponsorsGrid) {
     const sponsors = [
         { name: 'willstech', logo: 'WillsGuyLogo.png', url: 'https://willstech.store' },
-        { name: 'avolio', logo: 'avolio.png', url: 'https://willstech.store' },
-        { name: 'ugandaavocados', logo: 'logo.png', url: 'https://willstech.store' },
+        { name: 'avolio', logo: 'avolio.png', url: 'https://avolio.co.ug/' },
+        { name: 'ugandaavocados', logo: 'logo.png', url: 'https://conference.ugandaavocados.org' },
         { name: 'UIRI', logo: 'uiri.png', url: 'https://willstech.store' },
-        { name: 'GEERLOFS', logo: 'WillsGuyLogo.png', url: 'https://willstech.store' },
+        { name: 'amenduni', logo: 'logo.am', url: 'https://www.amenduni.it/' },
         { name: 'SGS', logo: 'WillsGuyLogo.png', url: 'https://willstech.store' }
     ];
 
