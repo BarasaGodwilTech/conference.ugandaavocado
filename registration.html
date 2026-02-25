@@ -550,24 +550,10 @@
                         <h3>${pkg.title}</h3>
                         <div class="price">${pkg.price}<small>/${pkg.period}</small></div>
                         <ul>${featuresList}</ul>
-                        <a href="registration.html?package=${encodeURIComponent(String(pkg.title).toLowerCase())}#registration-form" class="btn btn-primary">Select Plan</a>
+                        <a href="registration.html?package=${encodeURIComponent(pkg.title.toLowerCase())}#registration-form" class="btn btn-primary">Select Plan</a>
                     `;
                     pricingGrid.appendChild(card);
                 });
-            }
-
-            const params = new URLSearchParams(window.location.search);
-            const pkgParam = params.get('package');
-            if (pkgParam) {
-                const selected = pkgParam.toLowerCase();
-                const packageRadios = Array.from(document.querySelectorAll('input[name="registrationPackage"]'));
-                const match = packageRadios.find(r => String(r.value).toLowerCase() === selected);
-                if (match) {
-                    match.checked = true;
-                    packageRadios.forEach(r => {
-                        if (r !== match) r.disabled = true;
-                    });
-                }
             }
             
             // Update year display
@@ -584,18 +570,63 @@
             const data = Object.fromEntries(formData);
             
             // Calculate total price based on selections
-            let basePrice = 299; // Early bird default
-            
-            if (data.registrationType === 'standard') basePrice = 399;
-            if (data.registrationType === 'premium') basePrice = 599;
+            const conferenceStartDateUtc = new Date(Date.UTC(2026, 6, 29, 8, 0, 0));
+            const earlyRegistrationEndsUtc = new Date(Date.UTC(2026, 4, 30, 23, 59, 59));
+            const regularRegistrationEndsUtc = new Date(Date.UTC(2026, 6, 14, 23, 59, 59));
+
+            function getRegistrationPhase(nowUtc) {
+                if (nowUtc <= earlyRegistrationEndsUtc) return 'early';
+                if (nowUtc <= regularRegistrationEndsUtc) return 'regular';
+                if (nowUtc <= conferenceStartDateUtc) return 'late';
+                return 'late';
+            }
+
+            const nowUtc = new Date();
+            const timing = getRegistrationPhase(nowUtc);
+
+            const priceMatrix = {
+                delegate: { early: 30, regular: 45, late: 60 },
+                partner: { early: 300, regular: 360, late: 420 },
+                sponsor: { early: 3000, regular: 3600, late: 4200 }
+            };
+
+            const pkg = data.registrationPackage || 'delegate';
+            const pkgPrices = priceMatrix[pkg] || priceMatrix.delegate;
+            const basePrice = pkgPrices[timing] ?? pkgPrices.early;
             
             // Show confirmation
-            alert(`Registration not submitted ! database not yet created\n\nTotal Amount: $${basePrice}\n\nYou will receive a confirmation email shortly with payment instructions.`);
+            alert(`Registration not submitted ! database not yet created\n\nRegistration Phase: ${timing.toUpperCase()}\nTotal Amount: $${basePrice}\n\nYou will receive a confirmation email shortly with payment instructions.`);
             
             // In a real implementation, you would send this data to your backend
             console.log('Registration Data:', data);
             console.log('Total Price:', basePrice);
         });
+
+        (function applyPackageFromQuery() {
+            const params = new URLSearchParams(window.location.search);
+            const pkg = (params.get('package') || '').toLowerCase();
+            if (!pkg) return;
+
+            const allowed = ['delegate', 'partner', 'sponsor'];
+            if (!allowed.includes(pkg)) return;
+
+            const selectedInput = document.querySelector(`input[name="registrationPackage"][value="${pkg}"]`);
+            if (selectedInput) selectedInput.checked = true;
+
+            const allInputs = document.querySelectorAll('input[name="registrationPackage"]');
+            allInputs.forEach(input => {
+                if (input.value !== pkg) input.disabled = true;
+            });
+
+            const packagesContainer = document.querySelector('.registration-packages');
+            if (packagesContainer && !document.getElementById('package-lock-note')) {
+                const note = document.createElement('div');
+                note.id = 'package-lock-note';
+                note.style.cssText = 'margin: 0 0 16px 0; padding: 12px 14px; border-radius: 12px; background: #fff7ed; border: 1px solid #fdba74; color: #9a3412; font-weight: 600;';
+                note.textContent = 'Package is preselected from your previous choice. Other packages are disabled to prevent mixing benefits and pricing.';
+                packagesContainer.parentElement.insertBefore(note, packagesContainer);
+            }
+        })();
         
         // ============================================
         // COUNTDOWN TIMER FUNCTIONALITY

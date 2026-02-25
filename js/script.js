@@ -202,7 +202,7 @@ if (pricingGrid && typeof conferenceData !== 'undefined') {
             <h3>${pkg.title}</h3>
             <div class="price">${pkg.price}<small>/${pkg.period}</small></div>
             <ul>${featuresList}</ul>
-            <a href="registration.html?package=${encodeURIComponent(String(pkg.title).toLowerCase())}#registration-form" class="btn btn-primary">Select Plan</a>
+            <a href="registration.html?package=${encodeURIComponent(pkg.title.toLowerCase())}#registration-form" class="btn btn-primary">Select Plan</a>
         `;
         pricingGrid.appendChild(card);
     });
