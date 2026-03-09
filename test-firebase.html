@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Connection Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-result { padding: 20px; margin: 20px 0; border-radius: 10px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>Firebase Connection Test</h1>
+    <button onclick="testFirebase()">Test Firebase Connection</button>
+    
+    <div id="results"></div>
+
+    <script type="module">
+        import { db, collection, addDoc, serverTimestamp, getDocs, query } from './js/firebase-config.js';
+
+        window.testFirebase = async function() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<div class="test-result info">Testing Firebase connection...</div>';
+
+            try {
+                console.log('Starting Firebase test...');
+                
+                // Test 1: Write a test document
+                const testDoc = {
+                    test: true,
+                    timestamp: serverTimestamp(),
+                    message: 'Firebase connection test'
+                };
+                
+                const docRef = await addDoc(collection(db, 'test'), testDoc);
+                console.log('Test document written with ID:', docRef.id);
+                
+                // Test 2: Read the test document
+                const testQuery = query(collection(db, 'test'));
+                const snapshot = await getDocs(testQuery);
+                console.log('Test query successful, found:', snapshot.size, 'documents');
+                
+                resultsDiv.innerHTML = `
+                    <div class="test-result success">
+                        <h3>✅ Firebase Connection Successful!</h3>
+                        <p><strong>Project ID:</strong> avocado-conference</p>
+                        <p><strong>Test Document ID:</strong> ${docRef.id}</p>
+                        <p><strong>Documents Found:</strong> ${snapshot.size}</p>
+                        <p>Your Firebase configuration is working correctly.</p>
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('Firebase test failed:', error);
+                
+                let errorDetails = '';
+                if (error.code === 'permission-denied') {
+                    errorDetails = 'Permission denied. You need to update Firebase Security Rules.';
+                } else if (error.code === 'unavailable') {
+                    errorDetails = 'Firebase service unavailable. Check internet connection.';
+                } else if (error.code === 'not-found') {
+                    errorDetails = 'Project not found. Check your project ID.';
+                } else {
+                    errorDetails = `Error code: ${error.code}<br>Message: ${error.message}`;
+                }
+                
+                resultsDiv.innerHTML = `
+                    <div class="test-result error">
+                        <h3>❌ Firebase Connection Failed</h3>
+                        <p><strong>Error:</strong> ${errorDetails}</p>
+                        <p><strong>Solution:</strong></p>
+                        <ul>
+                            <li>1. Check Firebase project ID: "avocado-conference"</li>
+                            <li>2. Update Security Rules in Firebase Console</li>
+                            <li>3. Ensure Firestore Database is created</li>
+                            <li>4. Check browser console for detailed errors</li>
+                        </ul>
+                    </div>
+                `;
+            }
+        };
+    </script>
+</body>
+</html>
