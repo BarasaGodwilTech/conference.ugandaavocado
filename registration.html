@@ -210,28 +210,6 @@
             <div class="pricing-grid" id="pricing-grid">
                 <!-- Will be populated by JS with Sponsor, Partner, Delegate cards -->
             </div>
-            
-            <!-- Additional Options like reference site -->
-            <div class="additional-options-section">
-                <h3><i class="fas fa-plus-circle"></i> Add Optional Excursion</h3>
-                <div class="excursion-card">
-                    <div class="excursion-content">
-                        <h4>Field Tour Package</h4>
-                        <p>Include the trip to commercial farms and processing facilities in your registration. This separate fee will be added to your total amount.</p>
-                        <div class="excursion-pricing">
-                            <div class="price-period">
-                                <strong>Early:</strong> UGX 550,000 / $150
-                            </div>
-                            <div class="price-period">
-                                <strong>Regular:</strong> UGX 630,000 / $170
-                            </div>
-                            <div class="price-period">
-                                <strong>Late:</strong> UGX 700,000 / $190
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </section>
 
@@ -436,37 +414,6 @@
                                 <option value="student">Student</option>
                                 <option value="other">Other</option>
                             </select>
-                        </div>
-                    </div>
-
-                    <!-- Additional Options -->
-                    <div class="form-section">
-                        <h3><i class="fas fa-plus-circle"></i> Additional Options</h3>
-                        <div class="checkbox-group">
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="fieldTour" value="yes">
-                                <span class="checkmark"></span>
-                                <div class="checkbox-content">
-                                    <strong>Field Tour Package</strong>
-                                    <span>Visit commercial farms and processing facilities (+$150)</span>
-                                </div>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="workshop" value="yes">
-                                <span class="checkmark"></span>
-                                <div class="checkbox-content">
-                                    <strong>Workshop Materials</strong>
-                                    <span>Complete workshop documentation (+$50)</span>
-                                </div>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="galaDinner" value="yes">
-                                <span class="checkmark"></span>
-                                <div class="checkbox-content">
-                                    <strong>Gala Dinner</strong>
-                                    <span>Awards ceremony and networking dinner (+$75)</span>
-                                </div>
-                            </label>
                         </div>
                     </div>
 
@@ -766,7 +713,7 @@
                         <h3>${pkg.title}</h3>
                         <div class="price">${pkg.price}<small>/${pkg.period}</small></div>
                         <ul>${featuresList}</ul>
-                        <a href="#registration-form" class="btn btn-primary">Select Plan</a>
+                        <a href="registration.html?package=${encodeURIComponent(pkg.title.toLowerCase())}#registration-form" class="btn btn-primary">Select Plan</a>
                     `;
                     pricingGrid.appendChild(card);
                 });
@@ -786,23 +733,63 @@
             const data = Object.fromEntries(formData);
             
             // Calculate total price based on selections
-            let basePrice = 299; // Early bird default
-            
-            if (data.registrationType === 'standard') basePrice = 399;
-            if (data.registrationType === 'premium') basePrice = 599;
-            
-            // Add additional options
-            if (data.fieldTour) basePrice += 150;
-            if (data.workshop) basePrice += 50;
-            if (data.galaDinner) basePrice += 75;
+            const conferenceStartDateUtc = new Date(Date.UTC(2026, 6, 29, 8, 0, 0));
+            const earlyRegistrationEndsUtc = new Date(Date.UTC(2026, 4, 30, 23, 59, 59));
+            const regularRegistrationEndsUtc = new Date(Date.UTC(2026, 6, 14, 23, 59, 59));
+
+            function getRegistrationPhase(nowUtc) {
+                if (nowUtc <= earlyRegistrationEndsUtc) return 'early';
+                if (nowUtc <= regularRegistrationEndsUtc) return 'regular';
+                if (nowUtc <= conferenceStartDateUtc) return 'late';
+                return 'late';
+            }
+
+            const nowUtc = new Date();
+            const timing = getRegistrationPhase(nowUtc);
+
+            const priceMatrix = {
+                delegate: { early: 30, regular: 45, late: 60 },
+                partner: { early: 300, regular: 360, late: 420 },
+                sponsor: { early: 3000, regular: 3600, late: 4200 }
+            };
+
+            const pkg = data.registrationPackage || 'delegate';
+            const pkgPrices = priceMatrix[pkg] || priceMatrix.delegate;
+            const basePrice = pkgPrices[timing] ?? pkgPrices.early;
             
             // Show confirmation
-            alert(`Registration not submitted ! database not yet created\n\nTotal Amount: $${basePrice}\n\nYou will receive a confirmation email shortly with payment instructions.`);
+            alert(`Registration not submitted ! database not yet created\n\nRegistration Phase: ${timing.toUpperCase()}\nTotal Amount: $${basePrice}\n\nYou will receive a confirmation email shortly with payment instructions.`);
             
             // In a real implementation, you would send this data to your backend
             console.log('Registration Data:', data);
             console.log('Total Price:', basePrice);
         });
+
+        (function applyPackageFromQuery() {
+            const params = new URLSearchParams(window.location.search);
+            const pkg = (params.get('package') || '').toLowerCase();
+            if (!pkg) return;
+
+            const allowed = ['delegate', 'partner', 'sponsor'];
+            if (!allowed.includes(pkg)) return;
+
+            const selectedInput = document.querySelector(`input[name="registrationPackage"][value="${pkg}"]`);
+            if (selectedInput) selectedInput.checked = true;
+
+            const allInputs = document.querySelectorAll('input[name="registrationPackage"]');
+            allInputs.forEach(input => {
+                if (input.value !== pkg) input.disabled = true;
+            });
+
+            const packagesContainer = document.querySelector('.registration-packages');
+            if (packagesContainer && !document.getElementById('package-lock-note')) {
+                const note = document.createElement('div');
+                note.id = 'package-lock-note';
+                note.style.cssText = 'margin: 0 0 16px 0; padding: 12px 14px; border-radius: 12px; background: #fff7ed; border: 1px solid #fdba74; color: #9a3412; font-weight: 600;';
+                note.textContent = 'Package is preselected from your previous choice. Other packages are disabled to prevent mixing benefits and pricing.';
+                packagesContainer.parentElement.insertBefore(note, packagesContainer);
+            }
+        })();
         
         // ============================================
         // COUNTDOWN TIMER FUNCTIONALITY
