@@ -1002,6 +1002,34 @@ document.getElementById('country').addEventListener('change', function() {
             const pricingGrid = document.getElementById('pricing-grid');
             if (pricingGrid && typeof conferenceData !== 'undefined') {
                 pricingGrid.innerHTML = ''; // Clear existing
+
+                function renderPriceMarkup(priceText, periodText) {
+                    const raw = String(priceText || '').trim();
+                    const match = raw.match(/^([^()]+?)(?:\s*\(([^)]+)\))?$/);
+                    const usd = (match?.[1] || raw).trim();
+                    const ugx = (match?.[2] || '').trim();
+
+                    if (!ugx) {
+                        return `
+                            <div class="price">
+                                <div class="price-usd">${usd}</div>
+                                <div class="price-ugx-line">
+                                    <small class="price-period">/${periodText}</small>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    return `
+                        <div class="price">
+                            <div class="price-usd">${usd}</div>
+                            <div class="price-ugx-line">
+                                <span class="price-ugx">${ugx}</span>
+                                <small class="price-period">/${periodText}</small>
+                            </div>
+                        </div>
+                    `;
+                }
                 
                 conferenceData.sponsorshipPackages.forEach(pkg => {
                     const card = document.createElement('div');
@@ -1014,7 +1042,7 @@ document.getElementById('country').addEventListener('change', function() {
 
                     card.innerHTML = `
                         <h3>${pkg.title}</h3>
-                        <div class="price">${pkg.price}<small>/${pkg.period}</small></div>
+                        ${renderPriceMarkup(pkg.price, pkg.period)}
                         <ul>${featuresList}</ul>
                         <a href="registration.html?package=${encodeURIComponent(pkg.title.toLowerCase())}#registration-form" class="btn btn-primary">Select Plan</a>
                     `;
