@@ -1,6 +1,26 @@
 // Wait for the DOM to load
 document.addEventListener('DOMContentLoaded', function() {
 
+    // Offline support (Service Worker + offline page)
+    try {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js');
+        }
+    } catch (e) {}
+
+    function redirectToOfflinePage() {
+        try {
+            const path = window.location.pathname || '';
+            if (path.endsWith('/offline.html') || path.endsWith('/offline')) return;
+            if (navigator.onLine) return;
+
+            const from = encodeURIComponent(path + window.location.search + window.location.hash);
+            window.location.replace('/offline.html?from=' + from);
+        } catch (e) {}
+    }
+
+    redirectToOfflinePage();
+    window.addEventListener('offline', redirectToOfflinePage);
 
     // Add this function for mobile dropdowns
     window.toggleDropdown = function(element) {

@@ -148,5 +148,28 @@
         const regId = urlParams.get('reg');
         document.getElementById('regIdDisplay').textContent = regId || 'Registration ID will be emailed';
     </script>
+
+    <script>
+        (function () {
+            try {
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.register('/sw.js');
+                }
+            } catch (e) {}
+
+            function redirectToOfflinePage() {
+                try {
+                    const path = window.location.pathname || '';
+                    if (path.endsWith('/offline.html') || path.endsWith('/offline')) return;
+                    if (navigator.onLine) return;
+                    const from = encodeURIComponent(path + window.location.search + window.location.hash);
+                    window.location.replace('/offline.html?from=' + from);
+                } catch (e) {}
+            }
+
+            redirectToOfflinePage();
+            window.addEventListener('offline', redirectToOfflinePage);
+        })();
+    </script>
 </body>
 </html>
