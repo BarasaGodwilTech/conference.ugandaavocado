@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="content">
                     <h3>${tour.name}</h3>
                     <p>${tour.desc}</p>
-                    <a href="#" class="btn btn-secondary btn-sm">Book Tour</a>
+                    <a href="#" class="btn btn-secondary btn-sm">Registration</a>
                 </div>
             `;
             tourGrid.appendChild(card);
