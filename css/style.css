@@ -665,6 +665,21 @@ h3 {
     box-shadow: var(--box-shadow-md);
 }
 
+.tab-link {
+    flex: 1;
+    display: block;
+}
+
+.tab-link,
+.tab-link:visited,
+.tab-link:hover,
+.tab-link:active,
+.tab-link:focus,
+.tab-link:focus-visible {
+    text-decoration: none;
+    color: inherit;
+}
+
 .tab {
     flex: 1;
     display: flex;
@@ -1336,6 +1351,15 @@ h3 {
     gap: 15px;
 }
 
+.social-icon,
+.social-icon:visited,
+.social-icon:hover,
+.social-icon:active,
+.social-icon:focus,
+.social-icon:focus-visible {
+    text-decoration: none;
+}
+
 .social-icon {
     width: 45px;
     height: 45px;
@@ -1354,6 +1378,15 @@ h3 {
     background: var(--gradient-green);
     color: var(--white);
     transform: translateY(-3px);
+}
+
+.social-links a,
+.social-links a:visited,
+.social-links a:hover,
+.social-links a:active,
+.social-links a:focus,
+.social-links a:focus-visible {
+    text-decoration: none;
 }
 
 /* Responsive */

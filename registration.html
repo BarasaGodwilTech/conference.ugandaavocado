@@ -282,8 +282,8 @@
         <div class="container">
             <div class="section-header center">
                 <span class="section-tag">Register Now</span>
-                <h2>Complete Your <span class="text-gradient">Conference Registration</span></h2>
-                <p class="section-description">Fill in the form below to secure your place at Uganda Avocado 2026</p>
+                <h2 id="registrationHeading">Complete Your <span class="text-gradient">Conference Registration</span></h2>
+                <p class="section-description" id="registrationSubheading">Fill in the form below to secure your place at Uganda Avocado 2026</p>
             </div>
             
             <div class="registration-form-wrapper">
@@ -1091,6 +1091,23 @@ document.getElementById('country').addEventListener('change', function() {
                 note.style.cssText = 'margin: 0 0 16px 0; padding: 12px 14px; border-radius: 12px; background: #fff7ed; border: 1px solid #fdba74; color: #9a3412; font-weight: 600;';
                 note.textContent = 'Package is preselected from your previous choice. Other packages are disabled to prevent mixing benefits and pricing.';
                 packagesContainer.parentElement.insertBefore(note, packagesContainer);
+            }
+
+            const labels = {
+                delegate: 'Delegate',
+                partner: 'Partner',
+                sponsor: 'Sponsor'
+            };
+
+            const headingEl = document.getElementById('registrationHeading');
+            const subheadingEl = document.getElementById('registrationSubheading');
+            const label = labels[pkg] || 'Conference';
+
+            if (headingEl) {
+                headingEl.innerHTML = `Complete Your <span class="text-gradient">${label} Registration</span>`;
+            }
+            if (subheadingEl) {
+                subheadingEl.textContent = `You are registering with the ${label} plan. Please complete the form below to continue.`;
             }
         })();
         

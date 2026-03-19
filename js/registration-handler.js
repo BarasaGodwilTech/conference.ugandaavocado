@@ -18,6 +18,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Get form data
                 const formData = new FormData(this);
                 const data = Object.fromEntries(formData);
+
+                const countrySelect = document.getElementById('country');
+                const selectedOption = countrySelect?.options?.[countrySelect.selectedIndex];
+                const phoneCountryCode = selectedOption?.getAttribute('data-code') || document.getElementById('countryCodeDisplay')?.textContent || '';
+                const phoneFull = `${phoneCountryCode}${data.phone || ''}`;
                 
                 // Calculate total price based on selections
                 let totalAmount = 0;
@@ -42,6 +47,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         lastName: data.lastName,
                         email: data.email,
                         phone: data.phone,
+                        phoneCountryCode: phoneCountryCode,
+                        phoneFull: phoneFull,
                         country: data.country,
                         organization: data.organization || ''
                     },
