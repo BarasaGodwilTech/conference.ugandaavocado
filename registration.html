@@ -195,6 +195,12 @@
             <div class="sponsors-grid" id="sponsors-grid">
                 <!-- Will be populated by JS with scrolling logos -->
             </div>
+
+            <div class="sponsors-cta">
+                <button data-modal="inquiry" class="btn btn-primary btn-large">
+                    <i class="fas fa-handshake"></i> Become a Sponsor/Exhibitor
+                </button>
+            </div>
         </div>
     </section>
 
@@ -741,7 +747,7 @@ document.getElementById('country').addEventListener('change', function() {
                                 </div>
                             </label>
                             <label class="checkbox-item">
-                                <input type="checkbox" name="newsletter">
+                                <input type="checkbox" name="newsletter" required>
                                 <span class="checkmark"></span>
                                 <div class="checkbox-content">
                                     <strong>Newsletter</strong>
@@ -946,21 +952,6 @@ document.getElementById('country').addEventListener('change', function() {
             const modal = document.getElementById('inquiryModal');
             const btns = document.querySelectorAll('[data-modal="inquiry"]');
             const span = document.querySelector('.close');
-            
-            // If no buttons exist, create one in the pricing section
-            if (btns.length === 0) {
-                const pricingSection = document.getElementById('pricing');
-                if (pricingSection) {
-                    const ctaDiv = document.createElement('div');
-                    ctaDiv.style.cssText = 'text-align: center; margin-top: 40px;';
-                    ctaDiv.innerHTML = `
-                        <button data-modal="inquiry" class="btn btn-primary btn-large">
-                            <i class="fas fa-handshake"></i> Become a Sponsor/Exhibitor
-                        </button>
-                    `;
-                    pricingSection.appendChild(ctaDiv);
-                }
-            }
             
             // Modal functionality
             function openModal() {
