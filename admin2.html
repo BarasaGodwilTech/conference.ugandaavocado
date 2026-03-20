@@ -41,10 +41,22 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--bg-light);
             min-height: 100vh;
             margin: 0;
             color: var(--text-dark);
+        }
+
+        .admin-logo-img {
+            height: 42px;
+            width: auto;
+            display: block;
+        }
+
+        .login-logo-img {
+            height: 72px;
+            width: auto;
+            display: inline-block;
         }
 
         /* Login Form */
@@ -178,10 +190,22 @@
             z-index: 100;
         }
 
+        .top-nav {
+            border-bottom: 1px solid #e2e8f0;
+        }
+
         .nav-brand {
             display: flex;
             align-items: center;
             gap: 15px;
+        }
+
+        .nav-brand h2 {
+            margin: 0;
+        }
+
+        .mobile-nav-toggle {
+            display: none;
         }
 
         .nav-brand h2 {
@@ -861,11 +885,15 @@
                 position: fixed;
                 bottom: 0;
                 left: 0;
-                z-index: 100;
+                height: 70vh;
                 transform: translateY(100%);
                 transition: transform 0.3s ease;
-                max-height: 80vh;
+                z-index: 1000;
                 overflow-y: auto;
+            }
+
+            .mobile-nav-toggle {
+                display: inline-flex;
             }
 
             .sidebar.mobile-open {
@@ -1028,7 +1056,7 @@
     <div class="login-container" id="loginContainer">
         <div class="login-card">
             <div class="login-logo">
-                <i class="fas fa-leaf"></i>
+                <img src="images/logo.png" alt="Uganda Avocados" class="login-logo-img">
             </div>
             <h2>Admin Login</h2>
             <p class="login-subtitle">Uganda Avocado Conference 2026</p>
@@ -1049,7 +1077,7 @@
         <!-- Top Navigation -->
         <nav class="top-nav">
             <div class="nav-brand">
-                <i class="fas fa-leaf" style="color: var(--avocado-green); font-size: 2rem;"></i>
+                <img src="images/logo.png" alt="Uganda Avocados" class="admin-logo-img">
                 <h2>Conference Admin</h2>
             </div>
             <div class="nav-user">
@@ -1224,10 +1252,10 @@
                             <h4>Send Campaign</h4>
                             <p>Email all registrants</p>
                         </div>
-                        <div class="action-card" onclick="exportData('csv')">
+                        <div class="action-card" onclick="exportData('registrations', 'xlsx')">
                             <i class="fas fa-download"></i>
                             <h4>Export Data</h4>
-                            <p>Download as CSV</p>
+                            <p>Download as Excel</p>
                         </div>
                         <div class="action-card" onclick="showSection('registrations')">
                             <i class="fas fa-search"></i>
@@ -1287,12 +1315,25 @@
                                     <input type="text" id="regSearch" placeholder="Search registrations...">
                                     <i class="fas fa-search"></i>
                                 </div>
-                                <button class="btn btn-outline btn-sm" onclick="exportData('registrations')">
+                                <button class="btn btn-outline btn-sm" onclick="exportData('registrations', 'xlsx')">
                                     <i class="fas fa-download"></i> Export
                                 </button>
                                 <button class="btn btn-primary btn-sm" onclick="showEmailComposer('registrations')">
                                     <i class="fas fa-envelope"></i> Email All
                                 </button>
+                            </div>
+                        </div>
+
+                        <div id="regBulkActions" style="display:none; padding: 12px 20px; border-top: 1px solid #e2e8f0; background: #f8fafc;">
+                            <div style="display:flex; align-items:center; justify-content:space-between; gap: 12px; flex-wrap: wrap;">
+                                <div style="font-weight: 600; color: var(--text-dark);">
+                                    <span id="regSelectedCount">0</span> selected
+                                </div>
+                                <div style="display:flex; gap: 10px; flex-wrap: wrap;">
+                                    <button class="btn btn-outline btn-sm" onclick="exportSelected('registrations','xlsx')"><i class="fas fa-file-excel"></i> Export Selected (Excel)</button>
+                                    <button class="btn btn-outline btn-sm" onclick="exportSelected('registrations','pdf')"><i class="fas fa-file-pdf"></i> Export Selected (PDF)</button>
+                                    <button class="btn btn-outline btn-sm" onclick="clearSelection('registrations')"><i class="fas fa-times"></i> Clear</button>
+                                </div>
                             </div>
                         </div>
                         <div class="filter-tabs">
@@ -1345,9 +1386,22 @@
                                     <input type="text" id="inquirySearch" placeholder="Search inquiries...">
                                     <i class="fas fa-search"></i>
                                 </div>
-                                <button class="btn btn-outline btn-sm" onclick="exportData('inquiries')">
+                                <button class="btn btn-outline btn-sm" onclick="exportData('inquiries', 'xlsx')">
                                     <i class="fas fa-download"></i> Export
                                 </button>
+                            </div>
+                        </div>
+
+                        <div id="inqBulkActions" style="display:none; padding: 12px 20px; border-top: 1px solid #e2e8f0; background: #f8fafc;">
+                            <div style="display:flex; align-items:center; justify-content:space-between; gap: 12px; flex-wrap: wrap;">
+                                <div style="font-weight: 600; color: var(--text-dark);">
+                                    <span id="inqSelectedCount">0</span> selected
+                                </div>
+                                <div style="display:flex; gap: 10px; flex-wrap: wrap;">
+                                    <button class="btn btn-outline btn-sm" onclick="exportSelected('inquiries','xlsx')"><i class="fas fa-file-excel"></i> Export Selected (Excel)</button>
+                                    <button class="btn btn-outline btn-sm" onclick="exportSelected('inquiries','pdf')"><i class="fas fa-file-pdf"></i> Export Selected (PDF)</button>
+                                    <button class="btn btn-outline btn-sm" onclick="clearSelection('inquiries')"><i class="fas fa-times"></i> Clear</button>
+                                </div>
                             </div>
                         </div>
                         <div class="filter-tabs">
@@ -1517,9 +1571,22 @@
                                 <button class="btn btn-primary btn-sm" onclick="showEmailComposer('subscribers')">
                                     <i class="fas fa-envelope"></i> Email All
                                 </button>
-                                <button class="btn btn-outline btn-sm" onclick="exportData('subscribers')">
+                                <button class="btn btn-outline btn-sm" onclick="exportData('subscribers', 'xlsx')">
                                     <i class="fas fa-download"></i> Export
                                 </button>
+                            </div>
+                        </div>
+
+                        <div id="subBulkActions" style="display:none; padding: 12px 20px; border-top: 1px solid #e2e8f0; background: #f8fafc;">
+                            <div style="display:flex; align-items:center; justify-content:space-between; gap: 12px; flex-wrap: wrap;">
+                                <div style="font-weight: 600; color: var(--text-dark);">
+                                    <span id="subSelectedCount">0</span> selected
+                                </div>
+                                <div style="display:flex; gap: 10px; flex-wrap: wrap;">
+                                    <button class="btn btn-outline btn-sm" onclick="exportSelected('subscribers','xlsx')"><i class="fas fa-file-excel"></i> Export Selected (Excel)</button>
+                                    <button class="btn btn-outline btn-sm" onclick="exportSelected('subscribers','pdf')"><i class="fas fa-file-pdf"></i> Export Selected (PDF)</button>
+                                    <button class="btn btn-outline btn-sm" onclick="clearSelection('subscribers')"><i class="fas fa-times"></i> Clear</button>
+                                </div>
                             </div>
                         </div>
                         <div class="table-responsive">
@@ -1752,24 +1819,14 @@
         </div>
     </div>
 
-    <!-- Firebase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.31/dist/jspdf.plugin.autotable.min.js"></script>
+    <script src="js/ui-popups.js"></script>
+
+    <!-- Firebase + Admin Logic -->
     <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
-        import { getFirestore, collection, getDocs, query, orderBy, addDoc, serverTimestamp, where } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
-
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "avocado-conference.firebaseapp.com",
-            projectId: "avocado-conference",
-            storageBucket: "avocado-conference.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        import { db, collection, getDocs, query, orderBy } from './js/firebase-config.js';
 
         // Global variables
         let allRegistrations = [];
@@ -1791,7 +1848,7 @@
                 loadTemplates();
                 loadCampaigns();
             } else {
-                alert('Incorrect password');
+                window.UACPopup?.alert('Incorrect password', { type: 'error', title: 'Login failed' });
             }
         });
 
@@ -1942,7 +1999,7 @@
             tbody.innerHTML = filtered.map(reg => {
                 const name = `${reg.personalInfo?.firstName || ''} ${reg.personalInfo?.lastName || ''}`;
                 const email = reg.personalInfo?.email || '';
-                const phone = reg.personalInfo?.phone || '';
+                const phone = reg.personalInfo?.phoneFull || `${reg.personalInfo?.phoneCountryCode || ''}${reg.personalInfo?.phone || ''}`;
                 const country = reg.personalInfo?.country || 'N/A';
                 const pkg = reg.package?.type || 'N/A';
                 const category = reg.professionalCategory || 'N/A';
@@ -1952,8 +2009,8 @@
                 const date = reg.timestamp ? reg.timestamp.toLocaleDateString() : 'N/A';
 
                 return `
-                    <tr>
-                        <td><input type="checkbox" class="reg-checkbox" value="${reg.id}"></td>
+                    <tr onclick="showDetails('registration', '${reg.id}')" style="cursor:pointer;">
+                        <td><input type="checkbox" class="reg-checkbox" value="${reg.id}" onclick="event.stopPropagation()"></td>
                         <td><code>${reg.id.substring(0, 8)}</code></td>
                         <td>${name}</td>
                         <td>${email}</td>
@@ -1965,10 +2022,10 @@
                         <td><span class="status-badge ${statusClass}">${status}</span></td>
                         <td>${date}</td>
                         <td>
-                            <button class="btn btn-sm btn-outline" onclick="showDetails('registration', '${reg.id}')">
+                            <button class="btn btn-sm btn-outline" onclick="event.stopPropagation(); showDetails('registration', '${reg.id}')">
                                 <i class="fas fa-eye"></i>
                             </button>
-                            <button class="btn btn-sm btn-outline" onclick="sendIndividualEmail('${reg.id}')">
+                            <button class="btn btn-sm btn-outline" onclick="event.stopPropagation(); sendIndividualEmail('${reg.id}')">
                                 <i class="fas fa-envelope"></i>
                             </button>
                         </td>
@@ -1979,7 +2036,16 @@
             // Add select all functionality
             document.getElementById('selectAllReg')?.addEventListener('change', function(e) {
                 document.querySelectorAll('.reg-checkbox').forEach(cb => cb.checked = e.target.checked);
+                updateBulkUI('registrations');
             });
+
+            document.querySelectorAll('.reg-checkbox').forEach(cb => {
+                cb.addEventListener('change', function() {
+                    updateBulkUI('registrations');
+                });
+            });
+
+            updateBulkUI('registrations');
         }
 
         function renderInquiriesTable(filter = 'all', search = '') {
@@ -2025,8 +2091,8 @@
                 const date = inq.timestamp ? inq.timestamp.toLocaleDateString() : 'N/A';
 
                 return `
-                    <tr>
-                        <td><input type="checkbox" class="inq-checkbox" value="${inq.id}"></td>
+                    <tr onclick="showDetails('inquiry', '${inq.id}')" style="cursor:pointer;">
+                        <td><input type="checkbox" class="inq-checkbox" value="${inq.id}" onclick="event.stopPropagation()"></td>
                         <td><code>${inq.id.substring(0, 8)}</code></td>
                         <td>${company}</td>
                         <td>${contact}</td>
@@ -2038,10 +2104,10 @@
                         <td><span class="status-badge status-new">${status}</span></td>
                         <td>${date}</td>
                         <td>
-                            <button class="btn btn-sm btn-outline" onclick="showDetails('inquiry', '${inq.id}')">
+                            <button class="btn btn-sm btn-outline" onclick="event.stopPropagation(); showDetails('inquiry', '${inq.id}')">
                                 <i class="fas fa-eye"></i>
                             </button>
-                            <button class="btn btn-sm btn-outline" onclick="sendIndividualEmail('${inq.id}', 'inquiry')">
+                            <button class="btn btn-sm btn-outline" onclick="event.stopPropagation(); sendIndividualEmail('${inq.id}', 'inquiry')">
                                 <i class="fas fa-envelope"></i>
                             </button>
                         </td>
@@ -2051,7 +2117,16 @@
 
             document.getElementById('selectAllInq')?.addEventListener('change', function(e) {
                 document.querySelectorAll('.inq-checkbox').forEach(cb => cb.checked = e.target.checked);
+                updateBulkUI('inquiries');
             });
+
+            document.querySelectorAll('.inq-checkbox').forEach(cb => {
+                cb.addEventListener('change', function() {
+                    updateBulkUI('inquiries');
+                });
+            });
+
+            updateBulkUI('inquiries');
         }
 
         function renderSubscribersTable(search = '') {
@@ -2075,15 +2150,15 @@
                 const date = sub.date ? sub.date.toLocaleDateString() : 'N/A';
 
                 return `
-                    <tr>
-                        <td><input type="checkbox" class="sub-checkbox" value="${sub.email}"></td>
+                    <tr style="cursor:pointer;" onclick="event.stopPropagation(); sendIndividualEmail('${sub.email}', 'subscriber')">
+                        <td><input type="checkbox" class="sub-checkbox" value="${sub.email}" onclick="event.stopPropagation()"></td>
                         <td>${sub.name}</td>
                         <td>${sub.email}</td>
                         <td>${date}</td>
                         <td>${sub.source || 'registration'}</td>
                         <td><span class="status-badge status-paid">Active</span></td>
                         <td>
-                            <button class="btn btn-sm btn-outline" onclick="sendIndividualEmail('${sub.email}', 'subscriber')">
+                            <button class="btn btn-sm btn-outline" onclick="event.stopPropagation(); sendIndividualEmail('${sub.email}', 'subscriber')">
                                 <i class="fas fa-envelope"></i>
                             </button>
                         </td>
@@ -2093,7 +2168,16 @@
 
             document.getElementById('selectAllSub')?.addEventListener('change', function(e) {
                 document.querySelectorAll('.sub-checkbox').forEach(cb => cb.checked = e.target.checked);
+                updateBulkUI('subscribers');
             });
+
+            document.querySelectorAll('.sub-checkbox').forEach(cb => {
+                cb.addEventListener('change', function() {
+                    updateBulkUI('subscribers');
+                });
+            });
+
+            updateBulkUI('subscribers');
         }
 
         // Load email templates
@@ -2311,7 +2395,7 @@ Conference Team`,
                         </div>
                         <div class="detail-item">
                             <div class="detail-label">Phone</div>
-                            <div class="detail-value">${reg.personalInfo?.phone || ''}</div>
+                            <div class="detail-value">${reg.personalInfo?.phoneFull || `${reg.personalInfo?.phoneCountryCode || ''}${reg.personalInfo?.phone || ''}`}</div>
                         </div>
                         <div class="detail-item">
                             <div class="detail-label">Country</div>
@@ -2435,7 +2519,7 @@ Conference Team`,
             const category = document.getElementById('templateCategory').value;
 
             if (!name || !subject || !content) {
-                alert('Please fill all fields');
+                window.UACPopup?.alert('Please fill all fields', { type: 'error', title: 'Missing information' });
                 return;
             }
 
@@ -2466,7 +2550,7 @@ Conference Team`,
             const content = document.getElementById('emailContent').value;
             
             if (!subject || !content) {
-                alert('Please enter subject and content');
+                window.UACPopup?.alert('Please enter subject and content', { type: 'error', title: 'Missing information' });
                 return;
             }
 
@@ -2486,13 +2570,13 @@ Conference Team`,
         };
 
         // Send email
-        window.sendEmail = function() {
+        window.sendEmail = async function() {
             const recipientType = document.querySelector('.recipient-chip.active')?.textContent.trim() || 'All Contacts';
             const subject = document.getElementById('emailSubject').value;
             const content = document.getElementById('emailContent').value;
 
             if (!subject || !content) {
-                alert('Please enter subject and content');
+                window.UACPopup?.alert('Please enter subject and content', { type: 'error', title: 'Missing information' });
                 return;
             }
 
@@ -2519,12 +2603,13 @@ Conference Team`,
             recipients = recipients.filter(r => r.email && r.email.includes('@'));
 
             if (recipients.length === 0) {
-                alert('No valid recipients found');
+                window.UACPopup?.alert('No valid recipients found', { type: 'error', title: 'No recipients' });
                 return;
             }
 
             // Show confirmation
-            if (confirm(`Send email to ${recipients.length} recipients?\nSubject: ${subject}`)) {
+            const confirmed = await window.UACPopup?.confirm(`Send email to ${recipients.length} recipients?\nSubject: ${subject}`, { title: 'Send email?' });
+            if (confirmed) {
                 // In production, you would send to Firebase/Firestore
                 const campaign = {
                     id: Date.now().toString(),
@@ -2552,11 +2637,11 @@ Conference Team`,
             const content = document.getElementById('emailContent').value;
 
             if (!subject || !content) {
-                alert('Please enter subject and content');
+                window.UACPopup?.alert('Please enter subject and content', { type: 'error', title: 'Missing information' });
                 return;
             }
 
-            alert('Test email sent to admin@ugandaavocados.org');
+            window.UACPopup?.alert('Test email sent to admin@ugandaavocados.org', { type: 'success', title: 'Test sent' });
         };
 
         // Save draft
@@ -2565,7 +2650,7 @@ Conference Team`,
             const content = document.getElementById('emailContent').value;
 
             if (!subject && !content) {
-                alert('Nothing to save');
+                window.UACPopup?.alert('Nothing to save', { type: 'info', title: 'Drafts' });
                 return;
             }
 
@@ -2634,47 +2719,268 @@ Conference Team`,
             renderSubscribersTable(e.target.value);
         });
 
-        // Export data
-        window.exportData = function(type) {
-            let data = [];
-            let filename = '';
+        function safeDate(value) {
+            if (!value) return '';
+            try {
+                if (value instanceof Date) return value.toLocaleString();
+                if (typeof value?.toDate === 'function') return value.toDate().toLocaleString();
+                return new Date(value).toLocaleString();
+            } catch {
+                return '';
+            }
+        }
+
+        function flattenRegistration(reg) {
+            return {
+                "Registration ID": reg.id || '',
+                "Date": safeDate(reg.timestamp),
+                "First Name": reg.personalInfo?.firstName || '',
+                "Last Name": reg.personalInfo?.lastName || '',
+                "Email": reg.personalInfo?.email || '',
+                "Phone": reg.personalInfo?.phone || '',
+                "Country": reg.personalInfo?.country || '',
+                "Organization": reg.personalInfo?.organization || '',
+                "Category": reg.professionalCategory || '',
+                "Package": reg.package?.type || '',
+                "Amount": reg.package?.totalAmount ?? '',
+                "Currency": reg.package?.currency || '',
+                "Payment Status": reg.paymentStatus || '',
+                "Status": reg.status || '',
+                "Newsletter": reg.newsletter ? 'Yes' : 'No',
+                "Source": reg.source || ''
+            };
+        }
+
+        function flattenInquiry(inq) {
+            return {
+                "Inquiry ID": inq.id || '',
+                "Date": safeDate(inq.timestamp),
+                "Inquiry Type": inq.inquiryType || inq.registrationType || '',
+                "Company": inq.companyInfo?.companyName || '',
+                "Contact Name": inq.companyInfo?.contactName || '',
+                "Email": inq.companyInfo?.email || '',
+                "Phone": inq.companyInfo?.phone || '',
+                "Country": inq.companyInfo?.country || '',
+                "Package Interest": inq.interests?.package || '',
+                "Booth Size": inq.interests?.boothSize || '',
+                "Status": inq.status || '',
+                "Additional Info": inq.interests?.additionalInfo || '',
+                "Source": inq.source || ''
+            };
+        }
+
+        function flattenSubscriber(sub) {
+            return {
+                "Name": sub.name || '',
+                "Email": sub.email || '',
+                "Date": safeDate(sub.date),
+                "Source": sub.source || ''
+            };
+        }
+
+        function getSelectedValues(selector) {
+            return Array.from(document.querySelectorAll(selector))
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+        }
+
+        function updateBulkUI(type) {
+            if (type === 'registrations') {
+                const selected = getSelectedValues('.reg-checkbox');
+                const bar = document.getElementById('regBulkActions');
+                const count = document.getElementById('regSelectedCount');
+                if (bar && count) {
+                    count.textContent = selected.length;
+                    bar.style.display = selected.length ? 'block' : 'none';
+                }
+            }
+            if (type === 'inquiries') {
+                const selected = getSelectedValues('.inq-checkbox');
+                const bar = document.getElementById('inqBulkActions');
+                const count = document.getElementById('inqSelectedCount');
+                if (bar && count) {
+                    count.textContent = selected.length;
+                    bar.style.display = selected.length ? 'block' : 'none';
+                }
+            }
+            if (type === 'subscribers') {
+                const selected = getSelectedValues('.sub-checkbox');
+                const bar = document.getElementById('subBulkActions');
+                const count = document.getElementById('subSelectedCount');
+                if (bar && count) {
+                    count.textContent = selected.length;
+                    bar.style.display = selected.length ? 'block' : 'none';
+                }
+            }
+        }
+
+        window.clearSelection = function(type) {
+            if (type === 'registrations') {
+                document.getElementById('selectAllReg').checked = false;
+                document.querySelectorAll('.reg-checkbox').forEach(cb => cb.checked = false);
+                updateBulkUI('registrations');
+            }
+            if (type === 'inquiries') {
+                document.getElementById('selectAllInq').checked = false;
+                document.querySelectorAll('.inq-checkbox').forEach(cb => cb.checked = false);
+                updateBulkUI('inquiries');
+            }
+            if (type === 'subscribers') {
+                document.getElementById('selectAllSub').checked = false;
+                document.querySelectorAll('.sub-checkbox').forEach(cb => cb.checked = false);
+                updateBulkUI('subscribers');
+            }
+        };
+
+        window.exportSelected = function(type, format = 'xlsx') {
+            const fmt = (format || 'xlsx').toLowerCase();
 
             if (type === 'registrations') {
-                data = allRegistrations;
-                filename = 'registrations.csv';
-            } else if (type === 'inquiries') {
-                data = allInquiries;
-                filename = 'inquiries.csv';
-            } else if (type === 'subscribers') {
-                data = allSubscribers;
-                filename = 'subscribers.csv';
-            } else if (type === 'csv') {
-                data = allRegistrations;
-                filename = 'all_data.csv';
+                const ids = new Set(getSelectedValues('.reg-checkbox'));
+                const rows = allRegistrations.filter(r => ids.has(r.id)).map(flattenRegistration);
+                if (!rows.length) return showNotification('No records selected', 'error');
+                const stamp = new Date().toISOString().slice(0, 10);
+                if (fmt === 'pdf') return exportToPdf(rows, `registrations-selected-${stamp}.pdf`, 'REGISTRATIONS (SELECTED) - Uganda Avocado Conference 2026');
+                if (fmt === 'csv') return exportToCsv(rows, `registrations-selected-${stamp}.csv`);
+                return exportToXlsx(rows, `registrations-selected-${stamp}.xlsx`);
             }
 
-            // Convert to CSV
-            const csv = convertToCSV(data);
-            
-            // Download
-            const blob = new Blob([csv], { type: 'text/csv' });
+            if (type === 'inquiries') {
+                const ids = new Set(getSelectedValues('.inq-checkbox'));
+                const rows = allInquiries.filter(i => ids.has(i.id)).map(flattenInquiry);
+                if (!rows.length) return showNotification('No records selected', 'error');
+                const stamp = new Date().toISOString().slice(0, 10);
+                if (fmt === 'pdf') return exportToPdf(rows, `inquiries-selected-${stamp}.pdf`, 'INQUIRIES (SELECTED) - Uganda Avocado Conference 2026');
+                if (fmt === 'csv') return exportToCsv(rows, `inquiries-selected-${stamp}.csv`);
+                return exportToXlsx(rows, `inquiries-selected-${stamp}.xlsx`);
+            }
+
+            if (type === 'subscribers') {
+                const emails = new Set(getSelectedValues('.sub-checkbox'));
+                const rows = allSubscribers.filter(s => emails.has(s.email)).map(flattenSubscriber);
+                if (!rows.length) return showNotification('No records selected', 'error');
+                const stamp = new Date().toISOString().slice(0, 10);
+                if (fmt === 'pdf') return exportToPdf(rows, `subscribers-selected-${stamp}.pdf`, 'SUBSCRIBERS (SELECTED) - Uganda Avocado Conference 2026');
+                if (fmt === 'csv') return exportToCsv(rows, `subscribers-selected-${stamp}.csv`);
+                return exportToXlsx(rows, `subscribers-selected-${stamp}.xlsx`);
+            }
+
+            showNotification('Unknown export type', 'error');
+        };
+
+        function getExportDataset(type) {
+            if (type === 'registrations') {
+                return {
+                    rows: allRegistrations.map(flattenRegistration),
+                    baseName: 'registrations'
+                };
+            }
+            if (type === 'inquiries') {
+                return {
+                    rows: allInquiries.map(flattenInquiry),
+                    baseName: 'inquiries'
+                };
+            }
+            if (type === 'subscribers') {
+                return {
+                    rows: allSubscribers.map(flattenSubscriber),
+                    baseName: 'subscribers'
+                };
+            }
+
+            return {
+                rows: allRegistrations.map(flattenRegistration),
+                baseName: 'data'
+            };
+        }
+
+        function exportToXlsx(rows, filename) {
+            if (!window.XLSX) throw new Error('Excel export library not loaded');
+            const wb = window.XLSX.utils.book_new();
+            const ws = window.XLSX.utils.json_to_sheet(rows);
+            window.XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+            window.XLSX.writeFile(wb, filename);
+        }
+
+        function exportToPdf(rows, filename, titleText) {
+            const jsPDF = window.jspdf?.jsPDF;
+            if (!jsPDF || typeof jsPDF !== 'function') throw new Error('PDF export library not loaded');
+
+            const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+            doc.setFontSize(14);
+            doc.text(titleText, 40, 40);
+
+            const head = [Object.keys(rows[0] || {})];
+            const body = rows.map(r => Object.values(r).map(v => (v ?? '').toString()));
+
+            doc.autoTable({
+                head,
+                body,
+                startY: 60,
+                styles: { fontSize: 8, cellPadding: 4 },
+                headStyles: { fillColor: [46, 125, 50] },
+                theme: 'striped',
+                margin: { left: 40, right: 40 }
+            });
+
+            doc.save(filename);
+        }
+
+        function exportToCsv(rows, filename) {
+            if (!rows.length) {
+                showNotification('No data to export', 'error');
+                return;
+            }
+            const headers = Object.keys(rows[0]);
+            const escape = (val) => {
+                const s = (val ?? '').toString();
+                return '"' + s.replaceAll('"', '""') + '"';
+            };
+            const lines = [headers.map(escape).join(',')];
+            rows.forEach(r => {
+                lines.push(headers.map(h => escape(r[h])).join(','));
+            });
+            const csv = lines.join('\n');
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
             a.download = filename;
             a.click();
-        };
-
-        function convertToCSV(data) {
-            if (data.length === 0) return '';
-            
-            const headers = Object.keys(data[0]).filter(key => key !== 'timestamp');
-            const rows = data.map(item => 
-                headers.map(header => JSON.stringify(item[header] || '')).join(',')
-            );
-            
-            return [headers.join(','), ...rows].join('\n');
+            window.URL.revokeObjectURL(url);
         }
+
+        // Export data (default XLSX). Supported formats: xlsx, pdf, csv
+        window.exportData = function(type, format = 'xlsx') {
+            const { rows, baseName } = getExportDataset(type);
+
+            if (!rows.length) {
+                showNotification('No data to export', 'error');
+                return;
+            }
+
+            const stamp = new Date().toISOString().slice(0, 10);
+            const cleanFormat = (format || 'xlsx').toLowerCase();
+
+            try {
+                if (cleanFormat === 'pdf') {
+                    exportToPdf(rows, `${baseName}-${stamp}.pdf`, `${baseName.toUpperCase()} - Uganda Avocado Conference 2026`);
+                    return;
+                }
+
+                if (cleanFormat === 'csv') {
+                    exportToCsv(rows, `${baseName}-${stamp}.csv`);
+                    return;
+                }
+
+                exportToXlsx(rows, `${baseName}-${stamp}.xlsx`);
+            } catch (err) {
+                console.error('Export failed:', err);
+                showNotification('Export failed. Trying CSV instead...', 'error');
+                exportToCsv(rows, `${baseName}-${stamp}.csv`);
+            }
+        };
 
         // Generate report
         window.generateReport = function(format) {
@@ -2682,7 +2988,48 @@ Conference Team`,
             const start = document.getElementById('reportStart').value;
             const end = document.getElementById('reportEnd').value;
 
-            alert(`Generating ${type} report in ${format} format from ${start} to ${end}`);
+            const { rows, baseName } = getExportDataset(type);
+            if (!rows.length) {
+                showNotification('No data to export', 'error');
+                return;
+            }
+
+            const startDate = start ? new Date(start + 'T00:00:00') : null;
+            const endDate = end ? new Date(end + 'T23:59:59') : null;
+
+            const filteredRows = rows.filter(r => {
+                const d = r['Date'] ? new Date(r['Date']) : null;
+                if (!d || Number.isNaN(d.getTime())) return true;
+                if (startDate && d < startDate) return false;
+                if (endDate && d > endDate) return false;
+                return true;
+            });
+
+            if (!filteredRows.length) {
+                showNotification('No records found in the selected date range', 'error');
+                return;
+            }
+
+            const stamp = new Date().toISOString().slice(0, 10);
+            const fmt = (format || 'pdf').toLowerCase();
+
+            try {
+                if (fmt === 'pdf') {
+                    exportToPdf(filteredRows, `${baseName}-report-${stamp}.pdf`, `${baseName.toUpperCase()} REPORT - Uganda Avocado Conference 2026`);
+                    return;
+                }
+
+                if (fmt === 'excel' || fmt === 'xlsx') {
+                    exportToXlsx(filteredRows, `${baseName}-report-${stamp}.xlsx`);
+                    return;
+                }
+
+                exportToCsv(filteredRows, `${baseName}-report-${stamp}.csv`);
+            } catch (err) {
+                console.error('Report export failed:', err);
+                showNotification('Report export failed. Trying CSV instead...', 'error');
+                exportToCsv(filteredRows, `${baseName}-report-${stamp}.csv`);
+            }
         };
 
         // Save settings
@@ -2808,7 +3155,7 @@ Conference Team`,
         };
 
         window.viewCampaign = function(id) {
-            alert(`Viewing campaign ${id} analytics`);
+            window.UACPopup?.alert(`Viewing campaign ${id} analytics`, { type: 'info', title: 'Campaign' });
         };
     </script>
 </body>

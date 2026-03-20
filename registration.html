@@ -941,6 +941,7 @@ document.getElementById('country').addEventListener('change', function() {
     </footer>
 
     <script src="js/data.js"></script>
+    <script src="js/ui-popups.js"></script>
     <script src="js/script.js"></script>
     <!-- Add Firebase SDK and handlers -->
     <script type="module" src="js/firebase-config.js"></script>
@@ -1080,7 +1081,10 @@ document.getElementById('country').addEventListener('change', function() {
             const basePrice = pkgPrices[timing] ?? pkgPrices.early;
             
             // Show confirmation
-            alert(`Registration Successful!\n\nRegistration Phase: ${timing.toUpperCase()}\nTotal Amount: $${basePrice}\n\nYou will receive a confirmation email shortly with payment instructions.`);
+            window.UACPopup?.alert(
+                `Registration Successful!\n\nRegistration Phase: ${timing.toUpperCase()}\nTotal Amount: $${basePrice}\n\nYou will receive a confirmation email shortly with payment instructions.`,
+                { type: 'success', title: 'Registration complete' }
+            );
             
             // In a real implementation, you would send this data to your backend
             console.log('Registration Data:', data);

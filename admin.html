@@ -18,6 +18,10 @@
     <link rel="icon" type="image/png" sizes="96x96" href="/favicons/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="192x192" href="/favicons/favicon-192x192.png">
     <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#5bbad5">
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.31/dist/jspdf.plugin.autotable.min.js"></script>
+    <script src="js/ui-popups.js"></script>
     <style>
         body { 
             font-family: 'Inter', sans-serif; 
@@ -541,7 +545,7 @@
                 document.getElementById('adminDashboard').style.display = 'block';
                 loadData();
             } else {
-                alert('Incorrect password');
+                window.UACPopup?.alert('Incorrect password', { type: 'error', title: 'Login failed' });
             }
         });
 
