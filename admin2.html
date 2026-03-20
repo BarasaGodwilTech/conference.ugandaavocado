@@ -3395,7 +3395,7 @@ Conference Team`,
                     displayName,
                     roleLabel,
                     permissions: perms,
-                    continueUrl: window.location.origin + '/admin.html'
+                    continueUrl: window.location.origin + window.location.pathname
                 });
 
                 const link = res?.data?.passwordResetLink || '';
