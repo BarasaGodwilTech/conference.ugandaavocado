@@ -17,7 +17,13 @@ function requireSuperAdmin(request) {
   }
 }
 
-exports.bootstrapSuperAdmin = onCall(async (request) => {
+const allowedOrigins = [
+  'https://conference.ugandaavocados.org',
+  'http://localhost',
+  'http://127.0.0.1'
+];
+
+exports.bootstrapSuperAdmin = onCall({ cors: allowedOrigins }, async (request) => {
   requireAuth(request);
 
   const email = (request.auth.token && request.auth.token.email) || '';
@@ -67,7 +73,7 @@ exports.bootstrapSuperAdmin = onCall(async (request) => {
   return { ok: true };
 });
 
-exports.createAdminUser = onCall(async (request) => {
+exports.createAdminUser = onCall({ cors: allowedOrigins }, async (request) => {
   requireSuperAdmin(request);
 
   const data = request.data || {};
