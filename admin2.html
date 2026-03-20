@@ -1062,13 +1062,26 @@
             <p class="login-subtitle">Uganda Avocado Conference 2026</p>
             <form id="loginForm">
                 <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="Enter admin password" required>
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" placeholder="Enter your email" autocomplete="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password" autocomplete="current-password" required>
                 </div>
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-sign-in-alt"></i> Login to Dashboard
                 </button>
             </form>
+
+            <div style="margin-top: 18px; display: grid; gap: 10px;">
+                <button type="button" class="btn btn-outline" id="googleSignInBtn">
+                    <i class="fab fa-google"></i> Continue with Google
+                </button>
+                <button type="button" class="btn btn-outline" id="forgotPasswordBtn" style="border-color: #e2e8f0; color: var(--text-dark);">
+                    <i class="fas fa-unlock"></i> Forgot password
+                </button>
+            </div>
         </div>
     </div>
 
@@ -1746,6 +1759,54 @@
                             <input type="password" id="confirmPassword" placeholder="Confirm new password">
                         </div>
 
+                        <div style="height: 20px;"></div>
+
+                        <h3 style="margin-bottom: 12px;">Super Admin</h3>
+                        <div style="display: grid; gap: 12px; margin-bottom: 18px;">
+                            <button class="btn btn-outline" type="button" id="bootstrapSuperAdminBtn">
+                                <i class="fas fa-shield-alt"></i> Bootstrap Super Admin (one-time)
+                            </button>
+                            <div id="bootstrapHint" style="color: var(--text-light); font-size: 0.9rem;">
+                                If this is your first time, login as <strong>barasagodwil@gmail.com</strong> then click the button to unlock super admin features.
+                            </div>
+                        </div>
+
+                        <h3 style="margin-bottom: 12px;">Create Admin Account</h3>
+                        <div id="createAdminBox" style="display: grid; gap: 12px;">
+                            <div class="form-group">
+                                <label>Admin Email</label>
+                                <input type="email" id="newAdminEmail" placeholder="e.g. richard@company.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Display Name</label>
+                                <input type="text" id="newAdminName" placeholder="e.g. Richard Welishe">
+                            </div>
+                            <div class="form-group">
+                                <label>Role Label (optional)</label>
+                                <input type="text" id="newAdminRole" placeholder="e.g. Senior Official">
+                            </div>
+                            <div class="form-group">
+                                <label>Permissions</label>
+                                <div style="display: grid; gap: 8px;">
+                                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="perm-checkbox" value="view_registrations"> <span>View registrations</span></label>
+                                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="perm-checkbox" value="export_registrations"> <span>Export registrations</span></label>
+                                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="perm-checkbox" value="view_inquiries"> <span>View inquiries</span></label>
+                                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="perm-checkbox" value="manage_email_campaigns"> <span>Manage email campaigns</span></label>
+                                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="perm-checkbox" value="manage_templates"> <span>Manage templates</span></label>
+                                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="perm-checkbox" value="view_subscribers"> <span>View subscribers</span></label>
+                                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="perm-checkbox" value="export_subscribers"> <span>Export subscribers</span></label>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-primary" type="button" id="createAdminBtn">
+                                <i class="fas fa-user-plus"></i> Create Admin + Generate Reset Link
+                            </button>
+                            <div class="form-group">
+                                <label>Password Reset Link (send this to the admin)</label>
+                                <textarea id="newAdminResetLink" rows="3" readonly placeholder="Reset link will appear here..."></textarea>
+                            </div>
+                        </div>
+
                         <button class="btn btn-primary" onclick="saveSettings()">
                             <i class="fas fa-save"></i> Save Settings
                         </button>
@@ -1826,7 +1887,22 @@
 
     <!-- Firebase + Admin Logic -->
     <script type="module">
-        import { db, collection, getDocs, query, orderBy } from './js/firebase-config.js';
+        import {
+            db,
+            auth,
+            functions,
+            httpsCallable,
+            onAuthStateChanged,
+            signInWithEmailAndPassword,
+            sendPasswordResetEmail,
+            GoogleAuthProvider,
+            signInWithPopup,
+            signOut,
+            collection,
+            getDocs,
+            query,
+            orderBy
+        } from './js/firebase-config.js';
 
         // Global variables
         let allRegistrations = [];
@@ -1835,20 +1911,128 @@
         let emailTemplates = [];
         let sentCampaigns = [];
 
-        // Login functionality
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const password = document.getElementById('password').value;
-            
-            if (password === 'avocado2026') {
-                document.getElementById('loginContainer').style.display = 'none';
-                document.getElementById('dashboard').classList.add('active');
-                loadAllData();
-                initCharts();
-                loadTemplates();
-                loadCampaigns();
+        let currentClaims = null;
+
+        function getPermissionsFromClaims(claims) {
+            const perms = claims?.permissions;
+            if (perms && typeof perms === 'object') return perms;
+            return {};
+        }
+
+        function hasPermission(key) {
+            if (currentClaims?.super_admin === true) return true;
+            const perms = getPermissionsFromClaims(currentClaims);
+            return perms[key] === true;
+        }
+
+        function updateUserUI(user) {
+            const nameEl = document.querySelector('.user-name');
+            const roleEl = document.querySelector('.user-role');
+            const avatarEl = document.querySelector('.user-avatar');
+
+            const displayName = user?.displayName || user?.email || 'Admin';
+            if (nameEl) nameEl.textContent = displayName;
+
+            const roleLabel = currentClaims?.super_admin ? 'Super Admin' : 'Admin';
+            if (roleEl) roleEl.textContent = roleLabel;
+
+            const initials = (displayName || 'A')
+                .split(' ')
+                .filter(Boolean)
+                .slice(0, 2)
+                .map(w => w[0]?.toUpperCase())
+                .join('') || 'A';
+            if (avatarEl) avatarEl.textContent = initials;
+        }
+
+        function setDashboardVisible(visible) {
+            const loginContainer = document.getElementById('loginContainer');
+            const dashboard = document.getElementById('dashboard');
+            if (!loginContainer || !dashboard) return;
+
+            if (visible) {
+                loginContainer.style.display = 'none';
+                dashboard.classList.add('active');
             } else {
-                window.UACPopup?.alert('Incorrect password', { type: 'error', title: 'Login failed' });
+                loginContainer.style.display = 'flex';
+                dashboard.classList.remove('active');
+            }
+        }
+
+        let adminInitialized = false;
+        async function initializeAdmin() {
+            if (adminInitialized) return;
+            adminInitialized = true;
+
+            await loadAllData();
+            initCharts();
+            loadTemplates();
+            loadCampaigns();
+        }
+
+        // Auth state
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                currentClaims = null;
+                setDashboardVisible(false);
+                setSuperAdminUIState();
+                return;
+            }
+
+            try {
+                const tokenResult = await user.getIdTokenResult(true);
+                currentClaims = tokenResult?.claims || null;
+            } catch (e) {
+                currentClaims = null;
+            }
+
+            updateUserUI(user);
+            setDashboardVisible(true);
+            setSuperAdminUIState();
+            await initializeAdmin();
+        });
+
+        // Login functionality
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail')?.value?.trim();
+            const password = document.getElementById('loginPassword')?.value;
+
+            if (!email || !password) {
+                window.UACPopup?.alert('Please enter email and password', { type: 'error', title: 'Missing information' });
+                return;
+            }
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+            } catch (err) {
+                console.error('Login failed:', err);
+                window.UACPopup?.alert('Login failed. Please check your credentials.', { type: 'error', title: 'Login failed' });
+            }
+        });
+
+        document.getElementById('googleSignInBtn')?.addEventListener('click', async function() {
+            try {
+                const provider = new GoogleAuthProvider();
+                await signInWithPopup(auth, provider);
+            } catch (err) {
+                console.error('Google sign-in failed:', err);
+                window.UACPopup?.alert('Google sign-in failed. Please try again.', { type: 'error', title: 'Sign-in failed' });
+            }
+        });
+
+        document.getElementById('forgotPasswordBtn')?.addEventListener('click', async function() {
+            const email = document.getElementById('loginEmail')?.value?.trim();
+            if (!email) {
+                window.UACPopup?.alert('Enter your email first, then click Forgot password.', { type: 'info', title: 'Password reset' });
+                return;
+            }
+            try {
+                await sendPasswordResetEmail(auth, email);
+                window.UACPopup?.alert('Password reset link sent. Check your email inbox.', { type: 'success', title: 'Email sent' });
+            } catch (err) {
+                console.error('Password reset failed:', err);
+                window.UACPopup?.alert('Could not send password reset email. Please try again.', { type: 'error', title: 'Password reset failed' });
             }
         });
 
@@ -3149,14 +3333,81 @@ Conference Team`,
 
         // Make functions global
         window.logout = function() {
-            document.getElementById('loginContainer').style.display = 'flex';
-            document.getElementById('dashboard').classList.remove('active');
-            document.getElementById('password').value = '';
+            signOut(auth);
         };
 
         window.viewCampaign = function(id) {
             window.UACPopup?.alert(`Viewing campaign ${id} analytics`, { type: 'info', title: 'Campaign' });
         };
+
+        function setSuperAdminUIState() {
+            const createBox = document.getElementById('createAdminBox');
+            const bootstrapBtn = document.getElementById('bootstrapSuperAdminBtn');
+            const hint = document.getElementById('bootstrapHint');
+            if (!createBox || !bootstrapBtn) return;
+
+            const isSuper = currentClaims?.super_admin === true;
+            createBox.style.opacity = isSuper ? '1' : '0.55';
+            createBox.style.pointerEvents = isSuper ? 'auto' : 'none';
+
+            if (hint) {
+                hint.style.display = isSuper ? 'none' : 'block';
+            }
+
+            bootstrapBtn.style.opacity = isSuper ? '0.6' : '1';
+        }
+
+        document.getElementById('bootstrapSuperAdminBtn')?.addEventListener('click', async function() {
+            try {
+                const fn = httpsCallable(functions, 'bootstrapSuperAdmin');
+                await fn({});
+                window.UACPopup?.alert('Super admin enabled. Please refresh the page.', { type: 'success', title: 'Bootstrapped' });
+            } catch (err) {
+                console.error('bootstrapSuperAdmin failed:', err);
+                window.UACPopup?.alert('Bootstrap failed. Ensure you are logged in as barasagodwil@gmail.com and the Cloud Function is deployed.', { type: 'error', title: 'Bootstrap failed' });
+            }
+        });
+
+        document.getElementById('createAdminBtn')?.addEventListener('click', async function() {
+            if (currentClaims?.super_admin !== true) {
+                window.UACPopup?.alert('Super admin permission required.', { type: 'error', title: 'Access denied' });
+                return;
+            }
+
+            const email = document.getElementById('newAdminEmail')?.value?.trim();
+            const displayName = document.getElementById('newAdminName')?.value?.trim();
+            const roleLabel = document.getElementById('newAdminRole')?.value?.trim();
+
+            if (!email) {
+                window.UACPopup?.alert('Admin email is required.', { type: 'error', title: 'Missing information' });
+                return;
+            }
+
+            const perms = {};
+            document.querySelectorAll('.perm-checkbox').forEach(cb => {
+                if (cb.checked) perms[cb.value] = true;
+            });
+
+            try {
+                const fn = httpsCallable(functions, 'createAdminUser');
+                const res = await fn({
+                    email,
+                    displayName,
+                    roleLabel,
+                    permissions: perms,
+                    continueUrl: window.location.origin + '/admin.html'
+                });
+
+                const link = res?.data?.passwordResetLink || '';
+                const out = document.getElementById('newAdminResetLink');
+                if (out) out.value = link;
+
+                window.UACPopup?.alert('Admin account created. Copy and send the reset link to the admin.', { type: 'success', title: 'Admin created' });
+            } catch (err) {
+                console.error('createAdminUser failed:', err);
+                window.UACPopup?.alert('Failed to create admin. Ensure the Cloud Function is deployed and you are super admin.', { type: 'error', title: 'Create failed' });
+            }
+        });
     </script>
 </body>
 </html>
