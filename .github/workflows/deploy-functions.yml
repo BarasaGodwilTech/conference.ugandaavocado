@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - master
     paths:
       - 'functions/**'
       - 'firebase.json'
@@ -36,5 +37,5 @@ jobs:
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/gcp-key.json
         run: |
-          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}' > "$GOOGLE_APPLICATION_CREDENTIALS"
+          printf '%s' "${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}" > "$GOOGLE_APPLICATION_CREDENTIALS"
           firebase deploy --only functions --project avocado-conference
