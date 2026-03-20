@@ -9,6 +9,7 @@ on:
       - 'functions/**'
       - 'firebase.json'
       - '.firebaserc'
+  workflow_dispatch:
 
 jobs:
   deploy:
