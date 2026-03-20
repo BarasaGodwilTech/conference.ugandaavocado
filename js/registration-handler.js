@@ -5,6 +5,36 @@ document.addEventListener('DOMContentLoaded', function() {
     const registrationForm = document.getElementById('confRegistrationForm');
     
     if (registrationForm) {
+        const submitBtnForValidation = registrationForm.querySelector('button[type="submit"]');
+        if (submitBtnForValidation) {
+            submitBtnForValidation.addEventListener('click', function(e) {
+                const termsInput = registrationForm.querySelector('input[name="terms"]');
+                const newsletterInput = registrationForm.querySelector('input[name="newsletter"]');
+
+                const missing = [];
+                if (termsInput && !termsInput.checked) missing.push('Terms & Conditions');
+                if (newsletterInput && !newsletterInput.checked) missing.push('Newsletter');
+
+                if (missing.length > 0) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const msg = `Please accept: ${missing.join(' and ')} to complete registration.`;
+                    if (window.UACPopup?.alert) {
+                        window.UACPopup.alert(msg, { type: 'error', title: 'Action required' });
+                    } else {
+                        alert(msg);
+                    }
+
+                    const firstMissing = (termsInput && !termsInput.checked) ? termsInput : newsletterInput;
+                    try {
+                        firstMissing?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        firstMissing?.focus();
+                    } catch (err) {}
+                }
+            }, true);
+        }
+
         registrationForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
