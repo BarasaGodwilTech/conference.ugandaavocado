@@ -38,4 +38,6 @@ jobs:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/gcp-key.json
         run: |
           printf '%s' "${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}" > "$GOOGLE_APPLICATION_CREDENTIALS"
-          firebase deploy --only functions --project avocado-conference
+          export GOOGLE_APPLICATION_CREDENTIALS="$GOOGLE_APPLICATION_CREDENTIALS"
+          node -e "const fs=require('fs'); JSON.parse(fs.readFileSync(process.env.GOOGLE_APPLICATION_CREDENTIALS,'utf8')); console.log('Service account JSON: OK');"
+          firebase deploy --only functions --project avocado-conference --non-interactive
