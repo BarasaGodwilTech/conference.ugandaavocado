@@ -1078,6 +1078,9 @@
                 <button type="button" class="btn btn-outline" id="googleSignInBtn">
                     <i class="fab fa-google"></i> Continue with Google
                 </button>
+                <button type="button" class="btn btn-outline" id="createAccountBtn" style="border-color: #e2e8f0; color: var(--text-dark);">
+                    <i class="fas fa-user-plus"></i> Create account
+                </button>
                 <button type="button" class="btn btn-outline" id="forgotPasswordBtn" style="border-color: #e2e8f0; color: var(--text-dark);">
                     <i class="fas fa-unlock"></i> Forgot password
                 </button>
@@ -1763,11 +1766,8 @@
 
                         <h3 style="margin-bottom: 12px;">Super Admin</h3>
                         <div style="display: grid; gap: 12px; margin-bottom: 18px;">
-                            <button class="btn btn-outline" type="button" id="bootstrapSuperAdminBtn">
-                                <i class="fas fa-shield-alt"></i> Bootstrap Super Admin (one-time)
-                            </button>
                             <div id="bootstrapHint" style="color: var(--text-light); font-size: 0.9rem;">
-                                If this is your first time, login as <strong>barasagodwil@gmail.com</strong> then click the button to unlock super admin features.
+                                Super admin is enforced by UID. Only invited users can access this dashboard.
                             </div>
                         </div>
 
@@ -1799,11 +1799,11 @@
                             </div>
 
                             <button class="btn btn-primary" type="button" id="createAdminBtn">
-                                <i class="fas fa-user-plus"></i> Create Admin + Generate Reset Link
+                                <i class="fas fa-user-plus"></i> Create Admin Invite
                             </button>
                             <div class="form-group">
-                                <label>Password Reset Link (send this to the admin)</label>
-                                <textarea id="newAdminResetLink" rows="3" readonly placeholder="Reset link will appear here..."></textarea>
+                                <label>Invite Notes</label>
+                                <textarea id="newAdminResetLink" rows="3" readonly placeholder="Invite details will appear here..."></textarea>
                             </div>
                         </div>
 
@@ -1890,19 +1890,27 @@
         import {
             db,
             auth,
-            functions,
-            httpsCallable,
             onAuthStateChanged,
             signInWithEmailAndPassword,
+            createUserWithEmailAndPassword,
+            deleteUser,
             sendPasswordResetEmail,
             GoogleAuthProvider,
             signInWithPopup,
             signOut,
             collection,
+            serverTimestamp,
             getDocs,
+            getDoc,
+            setDoc,
             query,
-            orderBy
+            orderBy,
+            doc,
+            updateDoc,
+            limit
         } from './js/firebase-config.js';
+
+        const SUPER_ADMIN_UID = '3mkgredw2lMvsmylcGsvx4rl77B3';
 
         // Global variables
         let allRegistrations = [];
@@ -1912,17 +1920,117 @@
         let sentCampaigns = [];
 
         let currentClaims = null;
+        let currentAdminProfile = null;
 
-        function getPermissionsFromClaims(claims) {
-            const perms = claims?.permissions;
+        function normalizeEmail(email) {
+            return (email || '').toString().trim().toLowerCase();
+        }
+
+        function getPermissionsFromProfile(profile) {
+            const perms = profile?.permissions;
             if (perms && typeof perms === 'object') return perms;
             return {};
         }
 
+        function isSuperAdminUser(user, profile) {
+            return user?.uid === SUPER_ADMIN_UID || profile?.super_admin === true;
+        }
+
         function hasPermission(key) {
-            if (currentClaims?.super_admin === true) return true;
-            const perms = getPermissionsFromClaims(currentClaims);
+            if (isSuperAdminUser(auth.currentUser, currentAdminProfile)) return true;
+            const perms = getPermissionsFromProfile(currentAdminProfile);
             return perms[key] === true;
+        }
+
+        async function getAdminProfile(uid) {
+            if (!uid) return null;
+            try {
+                const snap = await getDoc(doc(db, 'adminUsers', uid));
+                return snap.exists() ? (snap.data() || null) : null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        async function getInviteByEmail(email) {
+            const normalized = normalizeEmail(email);
+            if (!normalized) return null;
+            const snap = await getDoc(doc(db, 'adminInvites', normalized));
+            if (!snap.exists()) return null;
+            const data = snap.data() || {};
+            if (data.usedAt) return null;
+            return { id: snap.id, ...data };
+        }
+
+        async function ensureAdminProfileForUser(user) {
+            if (!user) return { ok: false, reason: 'no-user' };
+
+            if (user.uid === SUPER_ADMIN_UID) {
+                const superRef = doc(db, 'adminUsers', user.uid);
+                const superSnap = await getDoc(superRef);
+                if (!superSnap.exists()) {
+                    await setDoc(
+                        superRef,
+                        {
+                            email: normalizeEmail(user.email),
+                            displayName: user.displayName || '',
+                            roleLabel: 'Super Admin',
+                            super_admin: true,
+                            permissions: {
+                                manage_admins: true,
+                                view_registrations: true,
+                                export_registrations: true,
+                                view_inquiries: true,
+                                manage_email_campaigns: true,
+                                manage_templates: true,
+                                view_subscribers: true,
+                                export_subscribers: true,
+                                manage_settings: true
+                            },
+                            updatedAt: serverTimestamp()
+                        },
+                        { merge: true }
+                    );
+                }
+
+                const profile = await getAdminProfile(user.uid);
+                return { ok: true, profile };
+            }
+
+            const profile = await getAdminProfile(user.uid);
+            if (profile) return { ok: true, profile };
+
+            const invite = await getInviteByEmail(user.email);
+            if (!invite) return { ok: false, reason: 'not-invited' };
+
+            const profileRef = doc(db, 'adminUsers', user.uid);
+            await setDoc(
+                profileRef,
+                {
+                    email: normalizeEmail(user.email),
+                    displayName: invite.displayName || user.displayName || '',
+                    roleLabel: invite.roleLabel || 'Admin',
+                    super_admin: false,
+                    permissions: invite.permissions || {},
+                    invitedBy: invite.createdBy || '',
+                    invitedAt: invite.createdAt || null,
+                    createdAt: serverTimestamp(),
+                    updatedAt: serverTimestamp()
+                },
+                { merge: true }
+            );
+
+            try {
+                await updateDoc(doc(db, 'adminInvites', invite.id), {
+                    usedAt: serverTimestamp(),
+                    usedByUid: user.uid
+                });
+            } catch (e) {
+                // ignore
+            }
+
+            const newProfile = await getAdminProfile(user.uid);
+            return { ok: true, profile: newProfile };
         }
 
         function updateUserUI(user) {
@@ -1933,7 +2041,7 @@
             const displayName = user?.displayName || user?.email || 'Admin';
             if (nameEl) nameEl.textContent = displayName;
 
-            const roleLabel = currentClaims?.super_admin ? 'Super Admin' : 'Admin';
+            const roleLabel = currentAdminProfile?.roleLabel || (isSuperAdminUser(user, currentAdminProfile) ? 'Super Admin' : 'Admin');
             if (roleEl) roleEl.textContent = roleLabel;
 
             const initials = (displayName || 'A')
@@ -1974,6 +2082,7 @@
         onAuthStateChanged(auth, async (user) => {
             if (!user) {
                 currentClaims = null;
+                currentAdminProfile = null;
                 setDashboardVisible(false);
                 setSuperAdminUIState();
                 return;
@@ -1984,6 +2093,22 @@
                 currentClaims = tokenResult?.claims || null;
             } catch (e) {
                 currentClaims = null;
+            }
+
+            try {
+                const res = await ensureAdminProfileForUser(user);
+                if (!res.ok) {
+                    currentAdminProfile = null;
+                    await signOut(auth);
+                    window.UACPopup?.alert('Access denied. Your account is not invited as an admin.', { type: 'error', title: 'Not authorized' });
+                    return;
+                }
+                currentAdminProfile = res.profile;
+            } catch (e) {
+                currentAdminProfile = null;
+                await signOut(auth);
+                window.UACPopup?.alert('Access denied. Could not verify admin access.', { type: 'error', title: 'Not authorized' });
+                return;
             }
 
             updateUserUI(user);
@@ -2018,6 +2143,37 @@
             } catch (err) {
                 console.error('Google sign-in failed:', err);
                 window.UACPopup?.alert('Google sign-in failed. Please try again.', { type: 'error', title: 'Sign-in failed' });
+            }
+        });
+
+        document.getElementById('createAccountBtn')?.addEventListener('click', async function() {
+            const email = document.getElementById('loginEmail')?.value?.trim();
+            const password = document.getElementById('loginPassword')?.value;
+            if (!email || !password) {
+                window.UACPopup?.alert('Enter email and password, then click Create account.', { type: 'info', title: 'Create account' });
+                return;
+            }
+
+            try {
+                const cred = await createUserWithEmailAndPassword(auth, normalizeEmail(email), password);
+                const user = cred.user;
+
+                const res = await ensureAdminProfileForUser(user);
+                if (!res.ok) {
+                    try {
+                        await deleteUser(user);
+                    } catch (e) {
+                        // ignore
+                    }
+                    await signOut(auth);
+                    window.UACPopup?.alert('This email is not invited as an admin. Ask the Super Admin to invite you first.', { type: 'error', title: 'Not invited' });
+                    return;
+                }
+
+                window.UACPopup?.alert('Account created. You can now log in to the dashboard.', { type: 'success', title: 'Account created' });
+            } catch (err) {
+                console.error('Create account failed:', err);
+                window.UACPopup?.alert('Could not create account. If you already have an account, use Login instead.', { type: 'error', title: 'Create failed' });
             }
         });
 
@@ -3342,34 +3498,20 @@ Conference Team`,
 
         function setSuperAdminUIState() {
             const createBox = document.getElementById('createAdminBox');
-            const bootstrapBtn = document.getElementById('bootstrapSuperAdminBtn');
             const hint = document.getElementById('bootstrapHint');
-            if (!createBox || !bootstrapBtn) return;
+            if (!createBox) return;
 
-            const isSuper = currentClaims?.super_admin === true;
+            const isSuper = isSuperAdminUser(auth.currentUser, currentAdminProfile);
             createBox.style.opacity = isSuper ? '1' : '0.55';
             createBox.style.pointerEvents = isSuper ? 'auto' : 'none';
 
             if (hint) {
                 hint.style.display = isSuper ? 'none' : 'block';
             }
-
-            bootstrapBtn.style.opacity = isSuper ? '0.6' : '1';
         }
 
-        document.getElementById('bootstrapSuperAdminBtn')?.addEventListener('click', async function() {
-            try {
-                const fn = httpsCallable(functions, 'bootstrapSuperAdmin');
-                await fn({});
-                window.UACPopup?.alert('Super admin enabled. Please refresh the page.', { type: 'success', title: 'Bootstrapped' });
-            } catch (err) {
-                console.error('bootstrapSuperAdmin failed:', err);
-                window.UACPopup?.alert('Bootstrap failed. Ensure you are logged in as barasagodwil@gmail.com and the Cloud Function is deployed.', { type: 'error', title: 'Bootstrap failed' });
-            }
-        });
-
         document.getElementById('createAdminBtn')?.addEventListener('click', async function() {
-            if (currentClaims?.super_admin !== true) {
+            if (!isSuperAdminUser(auth.currentUser, currentAdminProfile)) {
                 window.UACPopup?.alert('Super admin permission required.', { type: 'error', title: 'Access denied' });
                 return;
             }
@@ -3389,23 +3531,26 @@ Conference Team`,
             });
 
             try {
-                const fn = httpsCallable(functions, 'createAdminUser');
-                const res = await fn({
-                    email,
-                    displayName,
-                    roleLabel,
+                const normalized = normalizeEmail(email);
+                await setDoc(doc(db, 'adminInvites', normalized), {
+                    email: normalized,
+                    displayName: displayName || '',
+                    roleLabel: roleLabel || 'Admin',
                     permissions: perms,
-                    continueUrl: window.location.origin + window.location.pathname
-                });
+                    createdBy: auth.currentUser?.uid || '',
+                    createdAt: serverTimestamp(),
+                    usedAt: null
+                }, { merge: true });
 
-                const link = res?.data?.passwordResetLink || '';
                 const out = document.getElementById('newAdminResetLink');
-                if (out) out.value = link;
+                if (out) {
+                    out.value = `Invite created for ${normalized}.\n\nInstructions to admin:\n1) Go to ${window.location.origin + window.location.pathname}\n2) Use Continue with Google OR enter email+password and click Create account\n\nInvite ID: ${normalized}`;
+                }
 
-                window.UACPopup?.alert('Admin account created. Copy and send the reset link to the admin.', { type: 'success', title: 'Admin created' });
+                window.UACPopup?.alert('Invite created. Send instructions to the admin.', { type: 'success', title: 'Invite created' });
             } catch (err) {
-                console.error('createAdminUser failed:', err);
-                window.UACPopup?.alert('Failed to create admin. Ensure the Cloud Function is deployed and you are super admin.', { type: 'error', title: 'Create failed' });
+                console.error('createAdminInvite failed:', err);
+                window.UACPopup?.alert('Failed to create invite. Check Firestore permissions/rules.', { type: 'error', title: 'Create failed' });
             }
         });
     </script>
