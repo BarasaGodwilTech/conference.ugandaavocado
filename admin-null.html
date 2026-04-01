@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Uganda Avocado Conference</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicons/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicons/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/favicons/android-chrome-512x512.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicons/favicon-192x192.png">
+    <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#5bbad5">
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .login-form {
+            max-width: 450px;
+            margin: 100px auto;
+            padding: 50px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.15);
+            backdrop-filter: blur(10px);
+        }
+        .admin-dashboard {
+            display: none;
+        }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .section-header h2 {
+            margin: 0;
+            color: var(--avocado-green-dark);
+            flex: 1;
+        }
+        .section-header .btn {
+            z-index: 100;
+            position: relative;
+            min-width: 120px;
+            justify-content: center;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        .stat-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            border-color: var(--avocado-green);
+        }
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--avocado-green);
+            margin-bottom: 10px;
+            line-height: 1;
+        }
+        .stat-card div:last-child {
+            font-size: 1.1rem;
+            color: #6c757d;
+            font-weight: 600;
+        }
+        .search-container {
+            margin-bottom: 30px;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .search-wrapper {
+            position: relative;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .search-input {
+            width: 100%;
+            padding: 15px 25px 15px 50px;
+            border: 2px solid var(--avocado-green);
+            border-radius: 30px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+        .search-input:focus {
+            border-color: var(--avocado-green-dark);
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+            background: white;
+        }
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--avocado-green);
+            font-size: 18px;
+            pointer-events: none;
+        }
+        .filter-tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .filter-tab {
+            padding: 12px 25px;
+            border: 2px solid var(--avocado-green);
+            background: white;
+            color: var(--avocado-green);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .filter-tab:hover {
+            background: var(--avocado-green);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+        .filter-tab.active {
+            background: var(--avocado-green);
+            color: white;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+        .data-table {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+        .table-container {
+            overflow-x: auto;
+            border-radius: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        th, td {
+            padding: 18px 15px;
+            text-align: left;
+            border-bottom: 1px solid #f1f3f4;
+        }
+        th {
+            background: linear-gradient(135deg, var(--avocado-green), var(--avocado-green-dark));
+            color: white;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 13px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        .status-badge {
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .status-pending {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        .status-paid {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+            border: 1px solid #badbcc;
+        }
+        .modal {
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            overflow-y: auto;
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 30px auto;
+            padding: 0;
+            border-radius: 25px;
+            max-width: 900px;
+            position: relative;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+        .modal-header {
+            background: linear-gradient(135deg, var(--avocado-green), var(--avocado-green-dark));
+            color: white;
+            padding: 25px 30px;
+            border-radius: 25px 25px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        .modal-body {
+            padding: 30px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        .close {
+            position: absolute;
+            right: 25px;
+            top: 25px;
+            font-size: 28px;
+            cursor: pointer;
+            color: white;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        .close:hover {
+            background: rgba(255,255,255,0.2);
+            transform: rotate(90deg);
+        }
+        .btn {
+            padding: 12px 25px;
+            border: 2px solid var(--avocado-green);
+            border-radius: 8px;
+            background: white;
+            color: var(--avocado-green);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn:hover {
+            background: var(--avocado-green);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--avocado-green);
+            border: 2px solid var(--avocado-green);
+        }
+        .btn-outline:hover {
+            background: var(--avocado-green);
+            color: white;
+        }
+        /* Force logout button visibility */
+        .section-header .btn.btn-outline {
+            display: inline-flex !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            background: white !important;
+            color: var(--avocado-green) !important;
+            border: 2px solid var(--avocado-green) !important;
+            padding: 12px 25px !important;
+            border-radius: 8px !important;
+            cursor: pointer !important;
+            font-weight: 600 !important;
+            transition: all 0.3s ease !important;
+            text-decoration: none !important;
+            align-items: center !important;
+            gap: 8px !important;
+        }
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+        .detail-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border-left: 4px solid var(--avocado-green);
+        }
+        .detail-section h3 {
+            margin: 0 0 20px 0;
+            color: var(--avocado-green-dark);
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .detail-section p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        .detail-section strong {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        .system-info {
+            background: linear-gradient(135deg, #e9ecef, #d1ecf1);
+            border-left-color: var(--avocado-green-dark);
+        }
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @media (max-width: 1200px) {
+            .admin-container {
+                padding: 15px;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+            }
+        }
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: 10px;
+            }
+            .login-form {
+                margin: 50px 20px;
+                padding: 30px 20px;
+            }
+            .section-header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            .search-wrapper {
+                max-width: 100%;
+            }
+            .filter-tabs {
+                justify-content: center;
+            }
+            .detail-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .modal-content {
+                margin: 20px;
+                max-width: 95%;
+            }
+            .modal-body {
+                padding: 20px;
+                max-height: 60vh;
+            }
+            th, td {
+                padding: 12px 8px;
+                font-size: 13px;
+            }
+            .detail-section {
+                padding: 20px;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Login Form -->
+        <div id="loginForm" class="login-form">
+            <h2><i class="fas fa-lock"></i> Admin Login</h2>
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="adminPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-large">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </form>
+        </div>
+
+        <!-- Admin Dashboard -->
+        <div id="adminDashboard" class="admin-dashboard">
+            <div class="section-header">
+                <h2>Admin Dashboard</h2>
+                <button onclick="logout()" class="btn btn-outline">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+
+            <!-- Statistics -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalRegistrations">0</div>
+                    <div>Total Registrations</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalInquiries">0</div>
+                    <div>Total Inquiries</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="paidRegistrations">0</div>
+                    <div>Paid Registrations</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalRevenue">$0</div>
+                    <div>Total Revenue</div>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="search-container">
+                <div class="search-wrapper">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search by name, email, or ID...">
+                    <i class="fas fa-search search-icon"></i>
+                </div>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="filter-tabs">
+                <button class="filter-tab active" onclick="filterData('all')">All Data</button>
+                <button class="filter-tab" onclick="filterData('registrations')">Registrations</button>
+                <button class="filter-tab" onclick="filterData('inquiries')">Inquiries</button>
+                <button class="filter-tab" onclick="filterData('pending')">Pending</button>
+                <button class="filter-tab" onclick="filterData('paid')">Paid</button>
+            </div>
+
+            <!-- Data Table -->
+            <div class="data-table">
+                <div class="table-container">
+                    <table id="dataTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Type</th>
+                                <th>Package</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dataTableBody">
+                            <tr>
+                                <td colspan="8" style="text-align: center; padding: 40px;">
+                                    <i class="fas fa-spinner fa-spin"></i> Loading data...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detail View Modal -->
+    <div id="detailModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Registration Details</h2>
+                <span class="close" onclick="closeDetailModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="modalContent">
+                <!-- Content will be dynamically populated -->
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { db, collection, getDocs, query, orderBy } from './js/firebase-config.js';
+
+        let allData = [];
+        let currentFilter = 'all';
+
+        // Login functionality
+        document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const password = document.getElementById('adminPassword').value;
+            
+            // Simple password check (in production, use proper authentication)
+            if (password === 'avocado2026') {
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('adminDashboard').style.display = 'block';
+                loadData();
+            } else {
+                alert('Incorrect password');
+            }
+        });
+
+        // Load data from Firebase
+        async function loadData() {
+            try {
+                console.log('Testing Firebase connection...');
+                console.log('Project ID:', 'avocado-conference');
+                
+                allData = [];
+                
+                // Test connection with a simple query
+                const testQuery = query(collection(db, 'registrations'), orderBy('timestamp', 'desc'));
+                console.log('Query created, fetching documents...');
+                
+                const registrationsSnapshot = await getDocs(testQuery);
+                console.log('Registrations snapshot received:', registrationsSnapshot.size, 'documents');
+                
+                registrationsSnapshot.forEach(doc => {
+                    console.log('Registration document:', doc.id, doc.data());
+                    allData.push({
+                        id: doc.id,
+                        type: 'registration',
+                        ...doc.data()
+                    });
+                });
+
+                // Load inquiries
+                const inquiriesQuery = query(collection(db, 'inquiries'), orderBy('timestamp', 'desc'));
+                const inquiriesSnapshot = await getDocs(inquiriesQuery);
+                console.log('Inquiries snapshot received:', inquiriesSnapshot.size, 'documents');
+                
+                inquiriesSnapshot.forEach(doc => {
+                    console.log('Inquiry document:', doc.id, doc.data());
+                    allData.push({
+                        id: doc.id,
+                        type: 'inquiry',
+                        ...doc.data()
+                    });
+                });
+
+                console.log('Total data loaded:', allData.length);
+                updateStats();
+                renderTable();
+            } catch (error) {
+                console.error('Detailed error:', error);
+                console.error('Error code:', error.code);
+                console.error('Error message:', error.message);
+                
+                let errorMessage = 'Error loading data. Please check Firebase configuration.';
+                if (error.code === 'permission-denied') {
+                    errorMessage = 'Permission denied. Please update Firebase Security Rules in console.';
+                } else if (error.code === 'unavailable') {
+                    errorMessage = 'Firebase service unavailable. Please check internet connection.';
+                } else if (error.code === 'not-found') {
+                    errorMessage = 'Firebase project not found. Please check project ID.';
+                }
+                
+                document.getElementById('dataTableBody').innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 40px; color: red;">
+                            <strong>${errorMessage}</strong><br>
+                            <small>Check browser console for detailed error information.</small>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Update statistics
+        function updateStats() {
+            const registrations = allData.filter(item => item.type === 'registration');
+            const inquiries = allData.filter(item => item.type === 'inquiry');
+            const paid = registrations.filter(item => item.paymentStatus === 'paid');
+            const revenue = paid.reduce((sum, item) => sum + (item.package?.totalAmount || 0), 0);
+
+            document.getElementById('totalRegistrations').textContent = registrations.length;
+            document.getElementById('totalInquiries').textContent = inquiries.length;
+            document.getElementById('paidRegistrations').textContent = paid.length;
+            document.getElementById('totalRevenue').textContent = `$${revenue.toLocaleString()}`;
+        }
+
+        // Render table
+        function renderTable() {
+            const tbody = document.getElementById('dataTableBody');
+            let filteredData = allData;
+
+            // Apply filter
+            if (currentFilter === 'registrations') {
+                filteredData = allData.filter(item => item.type === 'registration');
+            } else if (currentFilter === 'inquiries') {
+                filteredData = allData.filter(item => item.type === 'inquiry');
+            } else if (currentFilter === 'pending') {
+                filteredData = allData.filter(item => item.paymentStatus === 'unpaid');
+            } else if (currentFilter === 'paid') {
+                filteredData = allData.filter(item => item.paymentStatus === 'paid');
+            }
+
+            // Apply search
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            if (searchTerm) {
+                filteredData = filteredData.filter(item => {
+                    const name = item.type === 'registration' 
+                        ? `${item.personalInfo?.firstName || ''} ${item.personalInfo?.lastName || ''}`.toLowerCase()
+                        : item.companyInfo?.contactName?.toLowerCase() || '';
+                    const email = item.type === 'registration' 
+                        ? item.personalInfo?.email?.toLowerCase() || ''
+                        : item.companyInfo?.email?.toLowerCase() || '';
+                    const id = item.id?.toLowerCase() || '';
+                    
+                    return name.includes(searchTerm) || 
+                           email.includes(searchTerm) || 
+                           id.includes(searchTerm);
+                });
+            }
+
+            if (filteredData.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 40px;">
+                            No data found for this filter.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = filteredData.map(item => {
+                const date = item.timestamp ? new Date(item.timestamp.toDate()).toLocaleDateString() : 'N/A';
+                const name = item.type === 'registration' 
+                    ? `${item.personalInfo?.firstName || ''} ${item.personalInfo?.lastName || ''}`
+                    : item.companyInfo?.contactName || 'N/A';
+                const email = item.type === 'registration' 
+                    ? item.personalInfo?.email 
+                    : item.companyInfo?.email;
+                const packageInfo = item.type === 'registration' 
+                    ? item.package?.type || 'N/A'
+                    : item.interests?.package || 'N/A';
+                const amount = item.type === 'registration' 
+                    ? `$${item.package?.totalAmount || 0}`
+                    : 'N/A';
+                const status = item.paymentStatus || 'new';
+                const statusClass = status === 'paid' ? 'status-paid' : 'status-pending';
+
+                return `
+                    <tr onclick="showDetails('${item.id}')" style="cursor: pointer; transition: background-color 0.2s;">
+                        <td><code>${item.id.substring(0, 8)}</code></td>
+                        <td>${name}</td>
+                        <td>${email}</td>
+                        <td>${item.type}</td>
+                        <td>${packageInfo}</td>
+                        <td>${amount}</td>
+                        <td><span class="status-badge ${statusClass}">${status}</span></td>
+                        <td>${date}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            // Add hover effect
+            tbody.querySelectorAll('tr').forEach(row => {
+                row.addEventListener('mouseenter', function() {
+                    this.style.backgroundColor = '#f8f9fa';
+                });
+                row.addEventListener('mouseleave', function() {
+                    this.style.backgroundColor = '';
+                });
+            });
+        }
+
+        // Filter data
+        window.filterData = function(filter) {
+            currentFilter = filter;
+            
+            // Update active tab
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            renderTable();
+        };
+
+        // Logout
+        window.logout = function() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('adminDashboard').style.display = 'none';
+            document.getElementById('adminPassword').value = '';
+        };
+
+        // Show details modal
+        window.showDetails = function(id) {
+            const item = allData.find(d => d.id === id);
+            if (!item) return;
+
+            const modal = document.getElementById('detailModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
+
+            if (item.type === 'registration') {
+                modalTitle.textContent = 'Registration Details';
+                modalContent.innerHTML = `
+                    <div class="detail-grid">
+                        <div class="detail-section">
+                            <h3><i class="fas fa-user"></i> Personal Information</h3>
+                            <p><strong>Name:</strong> ${item.personalInfo?.firstName || ''} ${item.personalInfo?.lastName || ''}</p>
+                            <p><strong>Email:</strong> ${item.personalInfo?.email || ''}</p>
+                            <p><strong>Phone:</strong> ${item.personalInfo?.phone || ''}</p>
+                            <p><strong>Country:</strong> ${item.personalInfo?.country || ''}</p>
+                            <p><strong>Organization:</strong> ${item.personalInfo?.organization || 'N/A'}</p>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h3><i class="fas fa-briefcase"></i> Professional Category</h3>
+                            <p><strong>Category:</strong> ${item.professionalCategory || 'N/A'}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-grid">
+                        <div class="detail-section">
+                            <h3><i class="fas fa-ticket-alt"></i> Package Information</h3>
+                            <p><strong>Package Type:</strong> ${item.package?.type || 'N/A'}</p>
+                            <p><strong>Total Amount:</strong> ${item.package?.currency || 'USD'} ${item.package?.totalAmount || 0}</p>
+                            <p><strong>Status:</strong> <span class="status-badge ${item.paymentStatus === 'paid' ? 'status-paid' : 'status-pending'}">${item.paymentStatus || 'pending'}</span></p>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h3><i class="fas fa-plus-circle"></i> Additional Options</h3>
+                            <p><strong>Field Tour:</strong> ${item.additionalOptions?.fieldTour ? '✅ Yes' : '❌ No'}</p>
+                            <p><strong>Workshop Materials:</strong> ${item.additionalOptions?.workshop ? '✅ Yes' : '❌ No'}</p>
+                            <p><strong>Gala Dinner:</strong> ${item.additionalOptions?.galaDinner ? '✅ Yes' : '❌ No'}</p>
+                            <p><strong>Dietary Requirements:</strong> ${item.additionalOptions?.dietary || 'None'}</p>
+                            <p><strong>Newsletter:</strong> ${item.newsletter ? '✅ Subscribed' : '❌ Not subscribed'}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section system-info">
+                        <h3><i class="fas fa-info-circle"></i> System Information</h3>
+                        <p><strong>Registration ID:</strong> <code>${item.id}</code></p>
+                        <p><strong>Registration Date:</strong> ${item.timestamp ? new Date(item.timestamp.toDate()).toLocaleString() : 'N/A'}</p>
+                        <p><strong>Source:</strong> ${item.source || 'N/A'}</p>
+                    </div>
+                `;
+            } else if (item.type === 'inquiry') {
+                modalTitle.textContent = 'Inquiry Details';
+                modalContent.innerHTML = `
+                    <div class="detail-grid">
+                        <div class="detail-section">
+                            <h3><i class="fas fa-building"></i> Company Information</h3>
+                            <p><strong>Company Name:</strong> ${item.companyInfo?.companyName || ''}</p>
+                            <p><strong>Contact Person:</strong> ${item.companyInfo?.contactName || ''}</p>
+                            <p><strong>Email:</strong> ${item.companyInfo?.email || ''}</p>
+                            <p><strong>Phone:</strong> ${item.companyInfo?.phone || ''}</p>
+                            <p><strong>Country:</strong> ${item.companyInfo?.country || 'N/A'}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-grid">
+                        <div class="detail-section">
+                            <h3><i class="fas fa-handshake"></i> Inquiry Details</h3>
+                            <p><strong>Inquiry Type:</strong> ${item.registrationType || 'N/A'}</p>
+                            <p><strong>Interested Package:</strong> ${item.interests?.package || 'N/A'}</p>
+                            <p><strong>Booth Size:</strong> ${item.interests?.boothSize || 'N/A'}</p>
+                            <p><strong>Status:</strong> <span class="status-badge status-pending">${item.status || 'new'}</span></p>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h3><i class="fas fa-comment"></i> Additional Information</h3>
+                            <p>${item.interests?.additionalInfo || 'No additional information provided'}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section system-info">
+                        <h3><i class="fas fa-info-circle"></i> System Information</h3>
+                        <p><strong>Inquiry ID:</strong> <code>${item.id}</code></p>
+                        <p><strong>Submission Date:</strong> ${item.timestamp ? new Date(item.timestamp.toDate()).toLocaleString() : 'N/A'}</p>
+                        <p><strong>Source:</strong> ${item.source || 'N/A'}</p>
+                    </div>
+                `;
+            }
+
+            modal.style.display = 'block';
+        };
+
+        // Close detail modal
+        window.closeDetailModal = function() {
+            document.getElementById('detailModal').style.display = 'none';
+        };
+
+        // Search functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    renderTable();
+                });
+            }
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const detailModal = document.getElementById('detailModal');
+            if (event.target == detailModal) {
+                detailModal.style.display = 'none';
+            }
+        };
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.getElementById('detailModal').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
