@@ -942,7 +942,12 @@
             }
 
             .nav-brand h2 {
-                max-width: 50vw;
+                max-width: none;
+                white-space: normal;
+                overflow: visible;
+                text-overflow: clip;
+                line-height: 1.05;
+                font-size: 1.15rem;
             }
 
             .user-info {
@@ -1925,32 +1930,35 @@
 
                         <div class="form-group">
                             <label>Payment Methods</label>
-                            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                                <label>
-                                    <input type="checkbox" checked> Bank Transfer
-                                </label>
-                                <label>
-                                    <input type="checkbox" checked> Mobile Money
-                                </label>
-                                <label>
-                                    <input type="checkbox" checked> Credit Card
-                                </label>
+                            <div id="paymentMethodsSection" style="display: none;">
+                                <div style="display:flex; gap: 10px; flex-wrap: wrap; align-items:center; margin-bottom: 12px;">
+                                    <input type="password" id="settingsPinInput" placeholder="Enter PIN to unlock" style="max-width: 220px;">
+                                    <button type="button" class="btn btn-outline btn-sm" id="unlockPaymentsBtn"><i class="fas fa-lock-open"></i> Unlock</button>
+                                    <span id="pinStatus" style="color: var(--text-light); font-size: 0.9rem;"></span>
+                                </div>
+                                <div id="paymentMethodsBox" style="display: flex; gap: 20px; flex-wrap: wrap; opacity: 0.55; pointer-events: none;">
+                                    <label style="display:flex; gap:10px; align-items:center;">
+                                        <input type="checkbox" id="payBankTransfer"> <span>Bank Transfer</span>
+                                    </label>
+                                    <label style="display:flex; gap:10px; align-items:center;">
+                                        <input type="checkbox" id="payMobileMoney"> <span>Mobile Money</span>
+                                    </label>
+                                    <label style="display:flex; gap:10px; align-items:center;">
+                                        <input type="checkbox" id="payCreditCard"> <span>Credit Card</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div id="paymentMethodsReadonlyHint" style="color: var(--text-light); font-size: 0.9rem;">
+                                Payment methods can only be managed by the Super Admin.
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label>Notification Email</label>
-                            <input type="email" id="notificationEmail" value="admin@ugandaavocados.org">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Change Password</label>
-                            <input type="password" id="newPassword" placeholder="New password">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Confirm Password</label>
-                            <input type="password" id="confirmPassword" placeholder="Confirm new password">
+                            <label>Account Security</label>
+                            <div style="display:flex; gap: 12px; flex-wrap: wrap; align-items:center;">
+                                <button type="button" class="btn btn-outline" id="sendResetEmailBtn"><i class="fas fa-envelope"></i> Send Password Reset Email</button>
+                                <span style="color: var(--text-light); font-size: 0.9rem;">A reset link will be sent to your login email.</span>
+                            </div>
                         </div>
 
                         <div style="height: 20px;"></div>
@@ -2059,6 +2067,8 @@
         } from './js/firebase-config.js';
 
         const SUPER_ADMIN_UID = '3mkgredw2lMvsmylcGsvx4rl77B3';
+        const SUPER_ADMIN_SETTINGS_PIN = '4826';
+        const SITE_CONFIG_DOC = { collection: 'siteConfig', doc: 'conference' };
 
         // Global variables
         let allRegistrations = [];
@@ -2224,7 +2234,8 @@
             const roleEl = document.querySelector('.user-role');
             const avatarEl = document.querySelector('.user-avatar');
 
-            const displayName = currentAdminProfile?.displayName || user?.displayName || user?.email || 'Admin';
+            const rawName = currentAdminProfile?.displayName || user?.displayName || user?.email || 'Admin';
+            const displayName = formatNameForViewport(rawName);
             if (nameEl) nameEl.textContent = displayName;
 
             const roleLabel = currentAdminProfile?.roleLabel || (isSuperAdminUser(user, currentAdminProfile) ? 'Super Admin' : 'Admin');
@@ -2237,6 +2248,16 @@
                 .map(w => w[0]?.toUpperCase())
                 .join('') || 'A';
             if (avatarEl) avatarEl.textContent = initials;
+        }
+
+        function formatNameForViewport(name) {
+            const s = (name || '').toString().trim();
+            if (!s) return 'Admin';
+            if (window.innerWidth <= 480) {
+                const first = s.split(' ').filter(Boolean)[0];
+                return first || s;
+            }
+            return s;
         }
 
         function setDashboardVisible(visible) {
@@ -2259,9 +2280,74 @@
             adminInitialized = true;
 
             await loadAllData();
+            await loadSiteConfigIntoSettingsUI();
+            applySettingsUIAccess();
             initCharts();
             loadTemplates();
             loadCampaigns();
+        }
+
+        async function loadSiteConfigIntoSettingsUI() {
+            const startEl = document.getElementById('confStart');
+            const endEl = document.getElementById('confEnd');
+            const earlyEl = document.getElementById('earlyDeadline');
+            const regularEl = document.getElementById('regularDeadline');
+
+            try {
+                const cfgRef = doc(db, SITE_CONFIG_DOC.collection, SITE_CONFIG_DOC.doc);
+                const snap = await getDoc(cfgRef);
+                const data = snap.exists() ? (snap.data() || {}) : {};
+
+                if (startEl) startEl.value = data.confStart || '';
+                if (endEl) endEl.value = data.confEnd || '';
+                if (earlyEl) earlyEl.value = data.earlyDeadline || '';
+                if (regularEl) regularEl.value = data.regularDeadline || '';
+
+                const pay = data.paymentMethods || {};
+                const bank = document.getElementById('payBankTransfer');
+                const momo = document.getElementById('payMobileMoney');
+                const card = document.getElementById('payCreditCard');
+                if (bank) bank.checked = pay.bankTransfer === true;
+                if (momo) momo.checked = pay.mobileMoney === true;
+                if (card) card.checked = pay.creditCard === true;
+            } catch (e) {
+                // ignore
+            }
+        }
+
+        function applySettingsUIAccess() {
+            const isSuper = isSuperAdminUser(auth.currentUser, currentAdminProfile);
+            const canManage = hasPermission('manage_settings');
+
+            const disable = (el, disabled) => {
+                if (!el) return;
+                el.disabled = disabled;
+            };
+
+            disable(document.getElementById('confStart'), !canManage);
+            disable(document.getElementById('confEnd'), !canManage);
+            disable(document.getElementById('earlyDeadline'), !canManage);
+            disable(document.getElementById('regularDeadline'), !canManage);
+
+            const paymentSection = document.getElementById('paymentMethodsSection');
+            const paymentHint = document.getElementById('paymentMethodsReadonlyHint');
+            if (paymentSection) paymentSection.style.display = isSuper ? '' : 'none';
+            if (paymentHint) paymentHint.style.display = isSuper ? 'none' : '';
+
+            const pinStatus = document.getElementById('pinStatus');
+            if (pinStatus) pinStatus.textContent = isSuper ? 'Locked' : '';
+        }
+
+        let paymentsUnlocked = false;
+        function setPaymentsUnlocked(unlocked) {
+            paymentsUnlocked = unlocked;
+            const box = document.getElementById('paymentMethodsBox');
+            const status = document.getElementById('pinStatus');
+            if (box) {
+                box.style.opacity = unlocked ? '1' : '0.55';
+                box.style.pointerEvents = unlocked ? 'auto' : 'none';
+            }
+            if (status) status.textContent = unlocked ? 'Unlocked' : 'Locked';
         }
 
         // Auth state
@@ -2317,6 +2403,7 @@
             setDashboardVisible(true);
             setSuperAdminUIState();
             applyPermissionsToNavigation();
+            applySettingsUIAccess();
             await initializeAdmin();
         });
 
@@ -3576,9 +3663,75 @@ Conference Team`,
         };
 
         // Save settings
-        window.saveSettings = function() {
-            showNotification('Settings saved successfully', 'success');
+        window.saveSettings = async function() {
+            if (!hasPermission('manage_settings')) {
+                window.UACPopup?.alert('You do not have rights to edit settings.', { type: 'error', title: 'Access denied' });
+                return;
+            }
+
+            const isSuper = isSuperAdminUser(auth.currentUser, currentAdminProfile);
+            const confStart = document.getElementById('confStart')?.value || '';
+            const confEnd = document.getElementById('confEnd')?.value || '';
+            const earlyDeadline = document.getElementById('earlyDeadline')?.value || '';
+            const regularDeadline = document.getElementById('regularDeadline')?.value || '';
+
+            const payload = {
+                confStart,
+                confEnd,
+                earlyDeadline,
+                regularDeadline,
+                updatedAt: serverTimestamp(),
+                updatedBy: auth.currentUser?.uid || ''
+            };
+
+            if (isSuper) {
+                const paymentMethods = {
+                    bankTransfer: document.getElementById('payBankTransfer')?.checked === true,
+                    mobileMoney: document.getElementById('payMobileMoney')?.checked === true,
+                    creditCard: document.getElementById('payCreditCard')?.checked === true
+                };
+
+                if (paymentsUnlocked) {
+                    payload.paymentMethods = paymentMethods;
+                }
+            }
+
+            try {
+                await setDoc(doc(db, SITE_CONFIG_DOC.collection, SITE_CONFIG_DOC.doc), payload, { merge: true });
+                window.UACPopup?.alert('Settings saved successfully.', { type: 'success', title: 'Saved' });
+            } catch (e) {
+                console.error('saveSettings failed:', e);
+                window.UACPopup?.alert('Failed to save settings. Check Firestore rules.', { type: 'error', title: 'Save failed' });
+            }
         };
+
+        document.getElementById('unlockPaymentsBtn')?.addEventListener('click', function() {
+            if (!isSuperAdminUser(auth.currentUser, currentAdminProfile)) return;
+            const pin = document.getElementById('settingsPinInput')?.value || '';
+            if (pin === SUPER_ADMIN_SETTINGS_PIN) {
+                setPaymentsUnlocked(true);
+                const input = document.getElementById('settingsPinInput');
+                if (input) input.value = '';
+            } else {
+                setPaymentsUnlocked(false);
+                window.UACPopup?.alert('Incorrect PIN.', { type: 'error', title: 'Locked' });
+            }
+        });
+
+        document.getElementById('sendResetEmailBtn')?.addEventListener('click', async function() {
+            const email = auth.currentUser?.email;
+            if (!email) {
+                window.UACPopup?.alert('Could not determine your login email.', { type: 'error', title: 'Reset failed' });
+                return;
+            }
+            try {
+                await sendPasswordResetEmail(auth, email);
+                window.UACPopup?.alert('Password reset email sent. Check your inbox.', { type: 'success', title: 'Email sent' });
+            } catch (e) {
+                console.error('sendResetEmail failed:', e);
+                window.UACPopup?.alert('Failed to send reset email. Try again later.', { type: 'error', title: 'Reset failed' });
+            }
+        });
 
         // Show notification
         function showNotification(message, type = 'success') {

@@ -1,4 +1,44 @@
-import { db, collection, addDoc, serverTimestamp } from './firebase-config.js';
+import { db, collection, addDoc, serverTimestamp, doc, getDoc } from './firebase-config.js';
+
+const SITE_CONFIG_DOC = { collection: 'siteConfig', doc: 'conference' };
+
+function toUtcDateFromIsoDay(isoDay, endOfDay = false) {
+    if (!isoDay) return null;
+    const m = /^\d{4}-\d{2}-\d{2}$/.test(isoDay) ? isoDay : null;
+    if (!m) return null;
+    const [y, mm, d] = isoDay.split('-').map(n => parseInt(n, 10));
+    if (!y || !mm || !d) return null;
+    if (endOfDay) return new Date(Date.UTC(y, mm - 1, d, 23, 59, 59));
+    return new Date(Date.UTC(y, mm - 1, d, 8, 0, 0));
+}
+
+async function loadSiteConfig() {
+    try {
+        const snap = await getDoc(doc(db, SITE_CONFIG_DOC.collection, SITE_CONFIG_DOC.doc));
+        return snap.exists() ? (snap.data() || {}) : {};
+    } catch (e) {
+        return {};
+    }
+}
+
+function getRegistrationPhase(nowUtc, cfg) {
+    const earlyEnd = toUtcDateFromIsoDay(cfg?.earlyDeadline, true);
+    const regularEnd = toUtcDateFromIsoDay(cfg?.regularDeadline, true);
+    const confStart = toUtcDateFromIsoDay(cfg?.confStart, false);
+
+    if (earlyEnd && nowUtc <= earlyEnd) return 'early';
+    if (regularEnd && nowUtc <= regularEnd) return 'regular';
+    if (confStart && nowUtc <= confStart) return 'late';
+    return 'late';
+}
+
+function getPriceMatrix() {
+    return {
+        delegate: { early: 30, regular: 45, late: 60 },
+        partner: { early: 300, regular: 360, late: 420 },
+        sponsor: { early: 3000, regular: 3600, late: 4200 }
+    };
+}
 
 // Registration Form Handler
 document.addEventListener('DOMContentLoaded', function() {
@@ -45,6 +85,8 @@ document.addEventListener('DOMContentLoaded', function() {
             submitBtn.disabled = true;
             
             try {
+                const siteCfg = await loadSiteConfig();
+
                 // Get form data
                 const formData = new FormData(this);
                 const data = Object.fromEntries(formData);
@@ -54,15 +96,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 const phoneCountryCode = selectedOption?.getAttribute('data-code') || document.getElementById('countryCodeDisplay')?.textContent || '';
                 const phoneFull = `${phoneCountryCode}${data.phone || ''}`;
                 
-                // Calculate total price based on selections
-                let totalAmount = 0;
-                if (data.registrationPackage === 'delegate') {
-                    totalAmount = 30; // USD base
-                } else if (data.registrationPackage === 'partner') {
-                    totalAmount = 300;
-                } else if (data.registrationPackage === 'sponsor') {
-                    totalAmount = 3000;
-                }
+                const nowUtc = new Date();
+                const timing = getRegistrationPhase(nowUtc, siteCfg);
+
+                const priceMatrix = getPriceMatrix();
+                const pkg = data.registrationPackage || 'delegate';
+                const pkgPrices = priceMatrix[pkg] || priceMatrix.delegate;
+                let totalAmount = pkgPrices[timing] ?? pkgPrices.early;
                 
                 // Add optional extras
                 if (data.fieldTour === 'yes') totalAmount += 150;
@@ -87,6 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         totalAmount: totalAmount,
                         currency: data.country === 'UG' ? 'UGX' : 'USD'
                     },
+                    pricingPhase: timing,
                     professionalCategory: data.category,
                     additionalOptions: {
                         fieldTour: data.fieldTour === 'yes',
@@ -98,6 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     timestamp: serverTimestamp(),
                     status: 'pending',
                     paymentStatus: 'unpaid',
+                    siteConfigRef: `${SITE_CONFIG_DOC.collection}/${SITE_CONFIG_DOC.doc}`,
                     source: window.location.href
                 };
                 
