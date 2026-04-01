@@ -2372,15 +2372,27 @@
         // Auth state
         let authResolvedOnce = false;
         onAuthStateChanged(auth, async (user) => {
-            if (!authResolvedOnce) {
-                authResolvedOnce = true;
+            function finalizeAuthUI(showDashboard) {
+                try {
+                    setDashboardVisible(!!showDashboard);
+                } catch (e) {}
+                if (!authResolvedOnce) authResolvedOnce = true;
                 document.body.classList.remove('auth-loading');
             }
 
             if (!user) {
                 currentClaims = null;
                 currentAdminProfile = null;
-                setDashboardVisible(false);
+                adminInitialized = false;
+                try {
+                    if (packageChartInstance) packageChartInstance.destroy();
+                } catch (e) {}
+                try {
+                    if (trendChartInstance) trendChartInstance.destroy();
+                } catch (e) {}
+                packageChartInstance = null;
+                trendChartInstance = null;
+                finalizeAuthUI(false);
                 setSuperAdminUIState();
                 stopInactivityWatch();
                 return;
@@ -2399,6 +2411,7 @@
                     currentAdminProfile = null;
                     await signOut(auth);
                     window.UACPopup?.alert('Access denied. Your account is not invited as an admin.', { type: 'error', title: 'Not authorized' });
+                    finalizeAuthUI(false);
                     return;
                 }
                 currentAdminProfile = res.profile;
@@ -2406,6 +2419,7 @@
                 currentAdminProfile = null;
                 await signOut(auth);
                 window.UACPopup?.alert('Access denied. Could not verify admin access.', { type: 'error', title: 'Not authorized' });
+                finalizeAuthUI(false);
                 return;
             }
 
@@ -2413,6 +2427,7 @@
                 currentAdminProfile = null;
                 await signOut(auth);
                 window.UACPopup?.alert('Access denied. Your admin account has been disabled.', { type: 'error', title: 'Account disabled' });
+                finalizeAuthUI(false);
                 return;
             }
 
@@ -2426,7 +2441,7 @@
             }
 
             updateUserUI(user);
-            setDashboardVisible(true);
+            finalizeAuthUI(true);
             setSuperAdminUIState();
             applyPermissionsToNavigation();
             applySettingsUIAccess();
@@ -3138,12 +3153,15 @@ Conference Team`,
 
             const counts = { delegate: 0, partner: 0, sponsor: 0 };
             allRegistrations.forEach(r => {
-                const key = normalizePackageLabel(r.package?.type);
+                const rawPkg = r.package?.type || r.registrationPackage || r.packageType || r.package || r.type;
+                const key = normalizePackageLabel(rawPkg);
                 counts[key] = (counts[key] || 0) + 1;
             });
 
-            packageChartInstance.data.datasets[0].data = [counts.delegate, counts.partner, counts.sponsor];
-            packageChartInstance.update();
+            try {
+                packageChartInstance.data.datasets[0].data = [counts.delegate, counts.partner, counts.sponsor];
+                packageChartInstance.update();
+            } catch (e) {}
 
             const byDay = new Map();
             allRegistrations.forEach(r => {
@@ -3156,9 +3174,11 @@ Conference Team`,
             const labels = Array.from(byDay.keys()).sort();
             const data = labels.map(l => byDay.get(l) || 0);
 
-            trendChartInstance.data.labels = labels;
-            trendChartInstance.data.datasets[0].data = data;
-            trendChartInstance.update();
+            try {
+                trendChartInstance.data.labels = labels;
+                trendChartInstance.data.datasets[0].data = data;
+                trendChartInstance.update();
+            } catch (e) {}
         }
 
         // Show details modal
