@@ -199,6 +199,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
+            min-width: 0;
         }
 
         .nav-brand h2 {
@@ -215,26 +216,79 @@
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 45vw;
         }
 
         .nav-user {
             display: flex;
             align-items: center;
             gap: 20px;
+            min-width: 0;
         }
 
         .user-info {
             text-align: right;
+            min-width: 0;
+            max-width: 45vw;
         }
 
         .user-name {
             font-weight: 600;
             color: var(--text-dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .user-role {
             font-size: 0.8rem;
             color: var(--text-light);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .admin-invite-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 15px;
+        }
+
+        .admin-invite-grid .form-group {
+            margin-bottom: 0;
+        }
+
+        .admin-permissions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .admin-permissions-grid label {
+            margin: 0;
+        }
+
+        .text-ellipsis {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-responsive table {
+            min-width: 720px;
+        }
+
+        .table-responsive td .text-ellipsis {
+            display: block;
+            max-width: 260px;
         }
 
         .user-avatar {
@@ -880,6 +934,27 @@
         @media (max-width: 768px) {
             .dashboard-container {
                 flex-direction: column;
+            }
+
+            .top-nav {
+                padding: 12px 16px;
+                gap: 12px;
+            }
+
+            .nav-brand h2 {
+                max-width: 50vw;
+            }
+
+            .user-info {
+                max-width: 45vw;
+            }
+
+            .admin-invite-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-permissions-grid {
+                grid-template-columns: 1fr;
             }
 
             .sidebar {
@@ -1734,21 +1809,23 @@
                     <div class="table-container" style="padding: 30px; margin-bottom: 25px;">
                         <h3 style="margin-bottom: 12px;">Create Admin Invite</h3>
                         <div id="createAdminBox" style="display: grid; gap: 12px;">
-                            <div class="form-group">
-                                <label>Admin Email</label>
-                                <input type="email" id="newAdminEmail" placeholder="e.g. richard@company.com">
-                            </div>
-                            <div class="form-group">
-                                <label>Display Name</label>
-                                <input type="text" id="newAdminName" placeholder="e.g. Richard Welishe">
-                            </div>
-                            <div class="form-group">
-                                <label>Role Label (optional)</label>
-                                <input type="text" id="newAdminRole" placeholder="e.g. Senior Official">
+                            <div class="admin-invite-grid">
+                                <div class="form-group">
+                                    <label>Admin Email</label>
+                                    <input type="email" id="newAdminEmail" placeholder="e.g. richard@company.com">
+                                </div>
+                                <div class="form-group">
+                                    <label>Display Name</label>
+                                    <input type="text" id="newAdminName" placeholder="e.g. Richard Welishe">
+                                </div>
+                                <div class="form-group" style="grid-column: 1 / -1;">
+                                    <label>Role Label (optional)</label>
+                                    <input type="text" id="newAdminRole" placeholder="e.g. Senior Official">
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label>Permissions</label>
-                                <div style="display: grid; gap: 8px;">
+                                <div class="admin-permissions-grid">
                                     <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="perm-checkbox" value="view_registrations"> <span>View registrations</span></label>
                                     <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="perm-checkbox" value="export_registrations"> <span>Export registrations</span></label>
                                     <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="perm-checkbox" value="view_inquiries"> <span>View inquiries</span></label>
@@ -2147,7 +2224,7 @@
             const roleEl = document.querySelector('.user-role');
             const avatarEl = document.querySelector('.user-avatar');
 
-            const displayName = user?.displayName || user?.email || 'Admin';
+            const displayName = currentAdminProfile?.displayName || user?.displayName || user?.email || 'Admin';
             if (nameEl) nameEl.textContent = displayName;
 
             const roleLabel = currentAdminProfile?.roleLabel || (isSuperAdminUser(user, currentAdminProfile) ? 'Super Admin' : 'Admin');
@@ -3696,7 +3773,7 @@ Conference Team`,
                         return `
                             <tr>
                                 <td>${name}</td>
-                                <td>${email}</td>
+                                <td><span class="text-ellipsis" title="${email}">${email}</span></td>
                                 <td>${role}</td>
                                 <td><span class="status-badge ${statusClass}">${status}</span></td>
                                 <td>${lastLoginText}</td>
@@ -3714,9 +3791,10 @@ Conference Team`,
                 } else {
                     invitesBody.innerHTML = pendingInvites.map(inv => {
                         const created = inv.createdAt?.toDate ? inv.createdAt.toDate().toLocaleString() : '—';
+                        const email = inv.email || inv.id;
                         return `
                             <tr>
-                                <td>${inv.email || inv.id}</td>
+                                <td><span class="text-ellipsis" title="${email}">${email}</span></td>
                                 <td>${inv.displayName || '—'}</td>
                                 <td>${inv.roleLabel || 'Admin'}</td>
                                 <td>${created}</td>
