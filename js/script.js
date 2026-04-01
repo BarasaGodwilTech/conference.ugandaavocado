@@ -1,6 +1,47 @@
 // Wait for the DOM to load
 document.addEventListener('DOMContentLoaded', function() {
 
+    try {
+        const params = new URLSearchParams(window.location.search);
+        const fromQuery = (params.get('package') || '').toLowerCase();
+        const allowed = ['delegate', 'partner', 'sponsor'];
+        if (fromQuery && allowed.includes(fromQuery)) {
+            localStorage.setItem('uac_selected_package', fromQuery);
+            localStorage.setItem('uac_selected_package_at', new Date().toISOString());
+        }
+    } catch (e) {}
+
+    function addPackageToHref(href, pkg) {
+        try {
+            if (!href) return href;
+            if (/^mailto:/i.test(href) || /^tel:/i.test(href) || /^javascript:/i.test(href)) return href;
+            if (!/registration\.html/i.test(href)) return href;
+            if (/package=/i.test(href)) return href;
+
+            const base = window.location.origin + window.location.pathname;
+            const url = new URL(href, base);
+            if (!/registration\.html$/i.test(url.pathname)) return href;
+            url.searchParams.set('package', pkg);
+            const composed = url.pathname + (url.search ? url.search : '') + (url.hash || '');
+            if (/^https?:/i.test(href)) return url.toString();
+            return composed;
+        } catch (e) {
+            return href;
+        }
+    }
+
+    try {
+        const pkg = (localStorage.getItem('uac_selected_package') || '').toLowerCase();
+        const allowed = ['delegate', 'partner', 'sponsor'];
+        if (pkg && allowed.includes(pkg)) {
+            document.querySelectorAll('a[href]').forEach(a => {
+                const href = a.getAttribute('href');
+                const updated = addPackageToHref(href, pkg);
+                if (updated && updated !== href) a.setAttribute('href', updated);
+            });
+        }
+    } catch (e) {}
+
     // Offline support (Service Worker + offline page)
     try {
         if ('serviceWorker' in navigator) {

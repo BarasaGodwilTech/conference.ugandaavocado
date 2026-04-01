@@ -40,84 +40,157 @@ function getPriceMatrix() {
     };
 }
 
-function getNationalNumberLengthByCountry(countryCode) {
-    // Keep this strict only where you are confident.
-    // Example request: Uganda = 9 digits after +256.
-    const map = {
-        UG: 9
+function getUgxPriceMatrix() {
+    return {
+        delegate: { early: 110000, regular: 165000, late: 220000 },
+        partner: { early: 1100000, regular: 1320000, late: 1540000 },
+        sponsor: { early: 11000000, regular: 13200000, late: 15400000 }
     };
-    return map[countryCode] || null;
 }
 
-function digitsOnly(value) {
-    return (value || '').toString().replace(/\D/g, '');
+function formatUsd(n) {
+    const v = Number(n) || 0;
+    return `USD ${v.toLocaleString('en-US')}`;
 }
 
-function applyPhoneRules() {
+function formatUgx(n) {
+    const v = Number(n) || 0;
+    return `UGX ${v.toLocaleString('en-UG')}`;
+}
+
+function phaseLabel(phase) {
+    if (phase === 'early') return 'Early Bird';
+    if (phase === 'regular') return 'Regular';
+    return 'Late';
+}
+
+function setText(el, text) {
+    if (!el) return;
+    el.textContent = text;
+}
+
+function updatePackageCardsUI(phase) {
+    const usd = getPriceMatrix();
+    const ugx = getUgxPriceMatrix();
+    const cards = document.querySelectorAll('.package-price[data-package]');
+    cards.forEach(card => {
+        const pkg = (card.getAttribute('data-package') || '').toLowerCase();
+        if (!pkg) return;
+
+        const usdAmount = usd[pkg]?.[phase];
+        const ugxAmount = ugx[pkg]?.[phase];
+        setText(card.querySelector('[data-price-usd]'), formatUsd(usdAmount));
+        setText(card.querySelector('[data-price-ugx]'), formatUgx(ugxAmount));
+        setText(card.querySelector('[data-price-phase]'), phaseLabel(phase));
+    });
+}
+
+function updateSelectedPackageBanner(pkg) {
+    const el = document.getElementById('selectedPackageBanner');
+    if (!el) return;
+    const p = (pkg || '').toString().toLowerCase();
+    if (!p) {
+        el.style.display = 'none';
+        el.textContent = '';
+        return;
+    }
+    const label = p.charAt(0).toUpperCase() + p.slice(1);
+    el.textContent = `Selected package: ${label}`;
+    el.style.display = 'block';
+}
+
+function safeDigitsOnly(value) {
+    return (value || '').toString().replace(/\D+/g, '');
+}
+
+function applyPhoneDigitLimits() {
     const phoneEl = document.getElementById('phone');
     const countryEl = document.getElementById('country');
-    const hintEl = document.querySelector('.phone-hint');
+    const codeEl = document.getElementById('countryCodeDisplay');
     if (!phoneEl || !countryEl) return;
 
-    const country = countryEl.value;
-    const len = getNationalNumberLengthByCountry(country);
+    const digitLimits = {
+        UG: 9,
+        KE: 9,
+        TZ: 9,
+        RW: 9,
+        SS: 9
+    };
 
-    phoneEl.value = digitsOnly(phoneEl.value);
-
-    if (len) {
-        phoneEl.setAttribute('maxlength', String(len));
-        phoneEl.setAttribute('inputmode', 'numeric');
-        phoneEl.setAttribute('pattern', `\\d{${len}}`);
-        if (hintEl) hintEl.textContent = `Enter ${len} digits without country code`;
-    } else {
-        phoneEl.removeAttribute('maxlength');
-        phoneEl.setAttribute('inputmode', 'numeric');
-        phoneEl.setAttribute('pattern', `\\d{6,15}`);
-        if (hintEl) hintEl.textContent = 'Enter number without country code';
+    function currentLimit() {
+        const iso = (countryEl.value || 'UG').toUpperCase();
+        return digitLimits[iso] || 15;
     }
 
-    phoneEl.setCustomValidity('');
-}
+    function updateConstraints() {
+        const limit = currentLimit();
+        phoneEl.maxLength = limit;
+        phoneEl.setAttribute('pattern', `\\d{${limit}}`);
+        phoneEl.setAttribute('title', `Enter exactly ${limit} digits (without the country code).`);
 
-function validatePhoneOrThrow() {
-    const phoneEl = document.getElementById('phone');
-    const countryEl = document.getElementById('country');
-    if (!phoneEl || !countryEl) return true;
-
-    const raw = digitsOnly(phoneEl.value);
-    const country = countryEl.value;
-    const len = getNationalNumberLengthByCountry(country);
-
-    if (len && raw.length !== len) {
-        phoneEl.setCustomValidity(`Phone number must be exactly ${len} digits for the selected country.`);
-        return false;
+        try {
+            const opt = countryEl.options[countryEl.selectedIndex];
+            const code = opt?.getAttribute?.('data-code') || '';
+            if (codeEl && code) codeEl.textContent = code;
+            if (codeEl && !code) codeEl.textContent = '+256';
+        } catch (e) {}
     }
 
-    if (!len && (raw.length < 6 || raw.length > 15)) {
-        phoneEl.setCustomValidity('Phone number must be between 6 and 15 digits.');
-        return false;
+    function sanitizeAndTrim() {
+        const limit = currentLimit();
+        const digits = safeDigitsOnly(phoneEl.value).slice(0, limit);
+        if (phoneEl.value !== digits) phoneEl.value = digits;
     }
 
-    phoneEl.setCustomValidity('');
-    return true;
+    updateConstraints();
+    countryEl.addEventListener('change', () => {
+        updateConstraints();
+        sanitizeAndTrim();
+    });
+    phoneEl.addEventListener('input', sanitizeAndTrim);
+    phoneEl.addEventListener('paste', () => setTimeout(sanitizeAndTrim, 0));
 }
 
 // Registration Form Handler
 document.addEventListener('DOMContentLoaded', function() {
     const registrationForm = document.getElementById('confRegistrationForm');
+
+    // Package selection persistence + dynamic price phase (from Firestore config)
+    (async function initPackagePricingUi() {
+        try {
+            const siteCfg = await loadSiteConfig();
+            const timing = getRegistrationPhase(new Date(), siteCfg);
+            updatePackageCardsUI(timing);
+        } catch (e) {}
+
+        try {
+            const inputs = document.querySelectorAll('input[name="registrationPackage"]');
+            inputs.forEach(i => {
+                i.addEventListener('change', () => {
+                    if (i.checked) {
+                        localStorage.setItem('uac_selected_package', i.value);
+                        localStorage.setItem('uac_selected_package_at', new Date().toISOString());
+                        updateSelectedPackageBanner(i.value);
+                    }
+                });
+            });
+
+            const params = new URLSearchParams(window.location.search);
+            const fromQuery = (params.get('package') || '').toLowerCase();
+            const fromStorage = (localStorage.getItem('uac_selected_package') || '').toLowerCase();
+            const preferred = fromQuery || fromStorage;
+            const allowed = ['delegate', 'partner', 'sponsor'];
+            if (preferred && allowed.includes(preferred)) {
+                const selectedInput = document.querySelector(`input[name="registrationPackage"][value="${preferred}"]`);
+                if (selectedInput) selectedInput.checked = true;
+                updateSelectedPackageBanner(preferred);
+            }
+        } catch (e) {}
+    })();
+
+    applyPhoneDigitLimits();
     
     if (registrationForm) {
-        document.getElementById('country')?.addEventListener('change', () => {
-            try { window.updateCountryCodeDisplay?.(); } catch (e) {}
-            applyPhoneRules();
-        });
-
-        document.getElementById('phone')?.addEventListener('input', () => {
-            applyPhoneRules();
-        });
-
-        applyPhoneRules();
-
         const submitBtnForValidation = registrationForm.querySelector('button[type="submit"]');
         if (submitBtnForValidation) {
             submitBtnForValidation.addEventListener('click', function(e) {
@@ -150,20 +223,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         registrationForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-
-            if (!validatePhoneOrThrow()) {
-                const phoneEl = document.getElementById('phone');
-                const msg = phoneEl?.validationMessage || 'Please enter a valid phone number.';
-                if (window.UACPopup?.alert) {
-                    window.UACPopup.alert(msg, { type: 'error', title: 'Invalid phone number' });
-                } else {
-                    alert(msg);
-                }
-                try {
-                    phoneEl?.focus();
-                } catch (err) {}
-                return;
-            }
             
             // Show loading state
             const submitBtn = this.querySelector('button[type="submit"]');
@@ -181,8 +240,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const countrySelect = document.getElementById('country');
                 const selectedOption = countrySelect?.options?.[countrySelect.selectedIndex];
                 const phoneCountryCode = selectedOption?.getAttribute('data-code') || document.getElementById('countryCodeDisplay')?.textContent || '';
-                const phoneNational = digitsOnly(data.phone || '');
-                const phoneFull = `${phoneCountryCode}${phoneNational}`;
+                const phoneFull = `${phoneCountryCode}${data.phone || ''}`;
                 
                 const nowUtc = new Date();
                 const timing = getRegistrationPhase(nowUtc, siteCfg);
@@ -204,7 +262,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         firstName: data.firstName,
                         lastName: data.lastName,
                         email: data.email,
-                        phone: phoneNational,
+                        phone: data.phone,
                         phoneCountryCode: phoneCountryCode,
                         phoneFull: phoneFull,
                         country: data.country,

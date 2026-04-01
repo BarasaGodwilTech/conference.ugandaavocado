@@ -570,6 +570,8 @@
 
                 <p class="section-description">Fill in the form below to secure your place at Uganda Avocado 2026</p>
 
+                <div id="selectedPackageBanner" style="display:none; margin-top: 10px; font-weight: 700; color: var(--avocado-green-dark);"></div>
+
             </div>
 
             
@@ -618,7 +620,7 @@
 
                 <span class="country-code" id="countryCodeDisplay">+256</span>
 
-                <input type="tel" id="phone" name="phone" placeholder="712345678" required>
+                <input type="tel" id="phone" name="phone" placeholder="712345678" inputmode="numeric" autocomplete="tel-national" required>
 
             </div>
 
@@ -1238,21 +1240,6 @@
 
 
 
-<script>
-window.updateCountryCodeDisplay = function() {
-    const countryEl = document.getElementById('country');
-    const codeEl = document.getElementById('countryCodeDisplay');
-    if (!countryEl || !codeEl) return;
-    const selectedOption = countryEl.options[countryEl.selectedIndex];
-    const countryCode = selectedOption?.getAttribute('data-code');
-    codeEl.textContent = countryCode || '+256';
-};
-document.getElementById('country')?.addEventListener('change', window.updateCountryCodeDisplay);
-document.addEventListener('DOMContentLoaded', () => window.updateCountryCodeDisplay?.());
-</script>
-
-
-
                     <!-- Registration Type -->
 
                     <div class="form-section">
@@ -1271,26 +1258,20 @@ document.addEventListener('DOMContentLoaded', () => window.updateCountryCodeDisp
 
                                         <h4>Delegate</h4>
 
-                                        <div class="package-price">
-
-                                            <div class="price-phase-row price-early">
-                                                <span class="phase">Early</span>
-                                                <span class="price-major">USD 30</span>
-                                                <span class="price-minor">UGX 110,000</span>
+                                        <div class="package-price" data-package="delegate">
+                                            <div class="package-price-main">
+                                                <div class="price-usd" data-price-usd>USD 30</div>
+                                                <div class="price-ugx-line">
+                                                    <span class="price-ugx" data-price-ugx>UGX 110,000</span>
+                                                    <span class="price-period" data-price-period>/person</span>
+                                                </div>
+                                                <div class="price-phase" data-price-phase>Early Bird</div>
                                             </div>
-
-                                            <div class="price-phase-row price-regular">
-                                                <span class="phase">Regular</span>
-                                                <span class="price-major">USD 45</span>
-                                                <span class="price-minor">UGX 165,000</span>
+                                            <div class="package-price-breakdown" aria-hidden="true">
+                                                <span class="price-early" data-price-early>Early: UGX 110,000 / $30</span>
+                                                <span class="price-regular" data-price-regular>Regular: UGX 165,000 / $45</span>
+                                                <span class="price-late" data-price-late>Late: UGX 220,000 / $60</span>
                                             </div>
-
-                                            <div class="price-phase-row price-late">
-                                                <span class="phase">Late</span>
-                                                <span class="price-major">USD 60</span>
-                                                <span class="price-minor">UGX 220,000</span>
-                                            </div>
-
                                         </div>
 
                                     </div>
@@ -1325,26 +1306,20 @@ document.addEventListener('DOMContentLoaded', () => window.updateCountryCodeDisp
 
                                         <h4>Partner</h4>
 
-                                        <div class="package-price">
-
-                                            <div class="price-phase-row price-early">
-                                                <span class="phase">Early</span>
-                                                <span class="price-major">USD 300</span>
-                                                <span class="price-minor">UGX 1,100,000</span>
+                                        <div class="package-price" data-package="partner">
+                                            <div class="package-price-main">
+                                                <div class="price-usd" data-price-usd>USD 300</div>
+                                                <div class="price-ugx-line">
+                                                    <span class="price-ugx" data-price-ugx>UGX 1,100,000</span>
+                                                    <span class="price-period" data-price-period>/package</span>
+                                                </div>
+                                                <div class="price-phase" data-price-phase>Early Bird</div>
                                             </div>
-
-                                            <div class="price-phase-row price-regular">
-                                                <span class="phase">Regular</span>
-                                                <span class="price-major">USD 360</span>
-                                                <span class="price-minor">UGX 1,320,000</span>
+                                            <div class="package-price-breakdown" aria-hidden="true">
+                                                <span class="price-early" data-price-early>Early: UGX 1,100,000 / $300</span>
+                                                <span class="price-regular" data-price-regular>Regular: UGX 1,320,000 / $360</span>
+                                                <span class="price-late" data-price-late>Late: UGX 1,540,000 / $420</span>
                                             </div>
-
-                                            <div class="price-phase-row price-late">
-                                                <span class="phase">Late</span>
-                                                <span class="price-major">USD 420</span>
-                                                <span class="price-minor">UGX 1,540,000</span>
-                                            </div>
-
                                         </div>
 
                                     </div>
@@ -1379,26 +1354,20 @@ document.addEventListener('DOMContentLoaded', () => window.updateCountryCodeDisp
 
                                         <h4>Sponsor</h4>
 
-                                        <div class="package-price">
-
-                                            <div class="price-phase-row price-early">
-                                                <span class="phase">Early</span>
-                                                <span class="price-major">USD 3,000</span>
-                                                <span class="price-minor">UGX 11,000,000</span>
+                                        <div class="package-price" data-package="sponsor">
+                                            <div class="package-price-main">
+                                                <div class="price-usd" data-price-usd>USD 3000</div>
+                                                <div class="price-ugx-line">
+                                                    <span class="price-ugx" data-price-ugx>UGX 11,000,000</span>
+                                                    <span class="price-period" data-price-period>/package</span>
+                                                </div>
+                                                <div class="price-phase" data-price-phase>Early Bird</div>
                                             </div>
-
-                                            <div class="price-phase-row price-regular">
-                                                <span class="phase">Regular</span>
-                                                <span class="price-major">USD 3,600</span>
-                                                <span class="price-minor">UGX 13,200,000</span>
+                                            <div class="package-price-breakdown" aria-hidden="true">
+                                                <span class="price-early" data-price-early>Early: UGX 11,000,000 / $3,000</span>
+                                                <span class="price-regular" data-price-regular>Regular: UGX 13,200,000 / $3,600</span>
+                                                <span class="price-late" data-price-late>Late: UGX 15,400,000 / $4,200</span>
                                             </div>
-
-                                            <div class="price-phase-row price-late">
-                                                <span class="phase">Late</span>
-                                                <span class="price-major">USD 4,200</span>
-                                                <span class="price-minor">UGX 15,400,000</span>
-                                            </div>
-
                                         </div>
 
                                     </div>
@@ -2080,58 +2049,6 @@ document.addEventListener('DOMContentLoaded', () => window.updateCountryCodeDisp
             yearElements.forEach(el => el.textContent = '2026');
 
         });
-
-        
-
-        (function applyPackageFromQuery() {
-
-            const params = new URLSearchParams(window.location.search);
-
-            const pkg = (params.get('package') || '').toLowerCase();
-
-            if (!pkg) return;
-
-
-
-            const allowed = ['delegate', 'partner', 'sponsor'];
-
-            if (!allowed.includes(pkg)) return;
-
-
-
-            const selectedInput = document.querySelector(`input[name="registrationPackage"][value="${pkg}"]`);
-
-            if (selectedInput) selectedInput.checked = true;
-
-
-
-            const allInputs = document.querySelectorAll('input[name="registrationPackage"]');
-
-            allInputs.forEach(input => {
-
-                if (input.value !== pkg) input.disabled = true;
-
-            });
-
-
-
-            const packagesContainer = document.querySelector('.registration-packages');
-
-            if (packagesContainer && !document.getElementById('package-lock-note')) {
-
-                const note = document.createElement('div');
-
-                note.id = 'package-lock-note';
-
-                note.style.cssText = 'margin: 0 0 16px 0; padding: 12px 14px; border-radius: 12px; background: #fff7ed; border: 1px solid #fdba74; color: #9a3412; font-weight: 600;';
-
-                note.textContent = 'Package is preselected from your previous choice. Other packages are disabled to prevent mixing benefits and pricing.';
-
-                packagesContainer.parentElement.insertBefore(note, packagesContainer);
-
-            }
-
-        })();
 
         
 
