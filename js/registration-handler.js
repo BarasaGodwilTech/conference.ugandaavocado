@@ -5,6 +5,36 @@ document.addEventListener('DOMContentLoaded', function() {
     const registrationForm = document.getElementById('confRegistrationForm');
     
     if (registrationForm) {
+        const submitBtnForValidation = registrationForm.querySelector('button[type="submit"]');
+        if (submitBtnForValidation) {
+            submitBtnForValidation.addEventListener('click', function(e) {
+                const termsInput = registrationForm.querySelector('input[name="terms"]');
+                const newsletterInput = registrationForm.querySelector('input[name="newsletter"]');
+
+                const missing = [];
+                if (termsInput && !termsInput.checked) missing.push('Terms & Conditions');
+                if (newsletterInput && !newsletterInput.checked) missing.push('Newsletter');
+
+                if (missing.length > 0) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const msg = `Please accept: ${missing.join(' and ')} to complete registration.`;
+                    if (window.UACPopup?.alert) {
+                        window.UACPopup.alert(msg, { type: 'error', title: 'Action required' });
+                    } else {
+                        alert(msg);
+                    }
+
+                    const firstMissing = (termsInput && !termsInput.checked) ? termsInput : newsletterInput;
+                    try {
+                        firstMissing?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        firstMissing?.focus();
+                    } catch (err) {}
+                }
+            }, true);
+        }
+
         registrationForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -18,6 +48,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Get form data
                 const formData = new FormData(this);
                 const data = Object.fromEntries(formData);
+
+                const countrySelect = document.getElementById('country');
+                const selectedOption = countrySelect?.options?.[countrySelect.selectedIndex];
+                const phoneCountryCode = selectedOption?.getAttribute('data-code') || document.getElementById('countryCodeDisplay')?.textContent || '';
+                const phoneFull = `${phoneCountryCode}${data.phone || ''}`;
                 
                 // Calculate total price based on selections
                 let totalAmount = 0;
@@ -42,6 +77,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         lastName: data.lastName,
                         email: data.email,
                         phone: data.phone,
+                        phoneCountryCode: phoneCountryCode,
+                        phoneFull: phoneFull,
                         country: data.country,
                         organization: data.organization || ''
                     },

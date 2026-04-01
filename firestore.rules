@@ -1,0 +1,94 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function superAdminUid() {
+      return '3mkgredw2lMvsmylcGsvx4rl77B3';
+    }
+
+    function isSuperAdmin() {
+      return signedIn() && request.auth.uid == superAdminUid();
+    }
+
+    function adminDoc() {
+      return get(/databases/$(database)/documents/adminUsers/$(request.auth.uid));
+    }
+
+    function isAdminUser() {
+      return signedIn() && exists(/databases/$(database)/documents/adminUsers/$(request.auth.uid));
+    }
+
+    function hasPerm(key) {
+      return isSuperAdmin()
+        || (isAdminUser() && adminDoc().data.super_admin == true)
+        || (isAdminUser() && adminDoc().data.permissions[key] == true);
+    }
+
+    match /adminInvites/{email} {
+      allow create, delete: if isSuperAdmin();
+
+      allow read: if isSuperAdmin()
+        || (signedIn() && request.auth.token.email != null && request.auth.token.email == email);
+
+      allow update: if isSuperAdmin()
+        || (
+          signedIn()
+          && request.auth.token.email != null
+          && request.auth.token.email == email
+          && resource.data.usedAt == null
+          && request.resource.data.usedAt is timestamp
+          && request.resource.data.usedByUid == request.auth.uid
+        );
+    }
+
+    match /adminUsers/{uid} {
+      allow read: if isSuperAdmin() || (signedIn() && request.auth.uid == uid);
+
+      allow create: if isSuperAdmin()
+        || (
+          signedIn()
+          && request.auth.uid == uid
+          && request.resource.data.email == request.auth.token.email
+          && exists(/databases/$(database)/documents/adminInvites/$(request.auth.token.email))
+          && get(/databases/$(database)/documents/adminInvites/$(request.auth.token.email)).data.usedAt == null
+        );
+
+      allow update, delete: if isSuperAdmin();
+    }
+
+    match /registrations/{docId} {
+      allow read: if hasPerm('view_registrations');
+      allow create: if true;
+      allow update, delete: if false;
+    }
+
+    match /inquiries/{docId} {
+      allow read: if hasPerm('view_inquiries');
+      allow create: if true;
+      allow update, delete: if false;
+    }
+
+    match /subscribers/{docId} {
+      allow read: if hasPerm('view_subscribers');
+      allow create: if true;
+      allow update, delete: if false;
+    }
+
+    match /emailTemplates/{docId} {
+      allow read: if hasPerm('manage_templates');
+      allow write: if hasPerm('manage_templates');
+    }
+
+    match /emailCampaigns/{docId} {
+      allow read: if hasPerm('manage_email_campaigns');
+      allow write: if hasPerm('manage_email_campaigns');
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

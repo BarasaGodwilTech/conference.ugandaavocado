@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found - Uganda Avocado Conference 2026</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+
+    <link rel="icon" type="image/x-icon" href="/favicons/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicons/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/favicons/android-chrome-512x512.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicons/favicon-192x192.png">
+    <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#5bbad5">
+
+    <style>
+        .error-page {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 120px 0 60px;
+        }
+        .error-card {
+            background: var(--white);
+            border-radius: var(--border-radius-xl);
+            box-shadow: var(--box-shadow-lg);
+            max-width: 760px;
+            width: calc(100% - 32px);
+            padding: 48px 28px;
+            text-align: center;
+            margin: 0 auto;
+        }
+        .error-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: inherit;
+            margin-bottom: 18px;
+        }
+        .error-logo img {
+            height: 44px;
+            width: auto;
+        }
+        .error-code {
+            font-size: 72px;
+            font-weight: 900;
+            letter-spacing: -1px;
+            color: var(--avocado-green-dark);
+            margin: 6px 0 10px;
+            line-height: 1;
+        }
+        .error-title {
+            font-size: 1.6rem;
+            color: var(--avocado-green-dark);
+            margin-bottom: 10px;
+        }
+        .error-desc {
+            color: var(--dark-gray);
+            max-width: 560px;
+            margin: 0 auto 26px;
+        }
+        .error-actions {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .error-actions a {
+            text-decoration: none;
+        }
+        .error-actions .btn-outline {
+            border: 2px solid var(--avocado-green);
+            color: var(--avocado-green);
+            background: transparent;
+            padding: 12px 18px;
+            border-radius: 14px;
+            font-weight: 700;
+            transition: all var(--transition-normal);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .error-actions .btn-outline:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--box-shadow-md);
+        }
+        .error-actions .btn-primary {
+            padding: 12px 18px;
+            border-radius: 14px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .error-path {
+            margin-top: 22px;
+            color: var(--medium-gray);
+            font-size: 0.95rem;
+            word-break: break-word;
+        }
+    </style>
+</head>
+<body>
+    <main class="error-page">
+        <section class="error-card">
+            <a class="error-logo" href="/">
+                <img src="images/logo.png" alt="Uganda Avocado">
+                <span class="year"></span>
+            </a>
+
+            <div class="error-code">404</div>
+            <h1 class="error-title">Page not found</h1>
+            <p class="error-desc">The link may be broken or the page may have been moved. Check the spelling, or use the buttons below.</p>
+
+            <div class="error-actions">
+                <a class="btn btn-primary" href="/"><i class="fa-solid fa-house"></i> Back to Home</a>
+                <a class="btn-outline" href="/registration.html"><i class="fa-solid fa-id-card"></i> Register</a>
+                <a class="btn-outline" href="/program.html"><i class="fa-solid fa-calendar-days"></i> Program</a>
+            </div>
+
+            <div class="error-path" id="requestedPath"></div>
+        </section>
+    </main>
+
+    <script>
+        try {
+            var el = document.getElementById('requestedPath');
+            if (el) el.textContent = 'Requested URL: ' + window.location.href;
+        } catch (e) {}
+    </script>
+</body>
+</html>

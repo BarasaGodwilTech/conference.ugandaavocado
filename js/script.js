@@ -1,6 +1,26 @@
 // Wait for the DOM to load
 document.addEventListener('DOMContentLoaded', function() {
 
+    // Offline support (Service Worker + offline page)
+    try {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js');
+        }
+    } catch (e) {}
+
+    function redirectToOfflinePage() {
+        try {
+            const path = window.location.pathname || '';
+            if (path.endsWith('/offline.html') || path.endsWith('/offline')) return;
+            if (navigator.onLine) return;
+
+            const from = encodeURIComponent(path + window.location.search + window.location.hash);
+            window.location.replace('/offline.html?from=' + from);
+        } catch (e) {}
+    }
+
+    redirectToOfflinePage();
+    window.addEventListener('offline', redirectToOfflinePage);
 
     // Add this function for mobile dropdowns
     window.toggleDropdown = function(element) {
@@ -188,6 +208,34 @@ if (thematicGrid && typeof conferenceData !== 'undefined') {
 const pricingGrid = document.getElementById('pricing-grid');
 if (pricingGrid && typeof conferenceData !== 'undefined') {
     pricingGrid.innerHTML = ''; // Clear existing
+
+    function renderPriceMarkup(priceText, periodText) {
+        const raw = String(priceText || '').trim();
+        const match = raw.match(/^([^()]+?)(?:\s*\(([^)]+)\))?$/);
+        const usd = (match?.[1] || raw).trim();
+        const ugx = (match?.[2] || '').trim();
+
+        if (!ugx) {
+            return `
+                <div class="price">
+                    <div class="price-usd">${usd}</div>
+                    <div class="price-ugx-line">
+                        <small class="price-period">/${periodText}</small>
+                    </div>
+                </div>
+            `;
+        }
+
+        return `
+            <div class="price">
+                <div class="price-usd">${usd}</div>
+                <div class="price-ugx-line">
+                    <span class="price-ugx">${ugx}</span>
+                    <small class="price-period">/${periodText}</small>
+                </div>
+            </div>
+        `;
+    }
     
     conferenceData.sponsorshipPackages.forEach(pkg => {
         const card = document.createElement('div');
@@ -200,7 +248,7 @@ if (pricingGrid && typeof conferenceData !== 'undefined') {
 
         card.innerHTML = `
             <h3>${pkg.title}</h3>
-            <div class="price">${pkg.price}<small>/${pkg.period}</small></div>
+            ${renderPriceMarkup(pkg.price, pkg.period)}
             <ul>${featuresList}</ul>
             <a href="registration.html?package=${encodeURIComponent(pkg.title.toLowerCase())}#registration-form" class="btn btn-primary">Select Plan</a>
         `;
