@@ -1239,25 +1239,16 @@
 
 
 <script>
-
-document.getElementById('country').addEventListener('change', function() {
-
-    const selectedOption = this.options[this.selectedIndex];
-
-    const countryCode = selectedOption.getAttribute('data-code');
-
-    if (countryCode) {
-
-        document.getElementById('countryCodeDisplay').textContent = countryCode;
-
-    } else {
-
-        document.getElementById('countryCodeDisplay').textContent = '+256'; // Default
-
-    }
-
-});
-
+window.updateCountryCodeDisplay = function() {
+    const countryEl = document.getElementById('country');
+    const codeEl = document.getElementById('countryCodeDisplay');
+    if (!countryEl || !codeEl) return;
+    const selectedOption = countryEl.options[countryEl.selectedIndex];
+    const countryCode = selectedOption?.getAttribute('data-code');
+    codeEl.textContent = countryCode || '+256';
+};
+document.getElementById('country')?.addEventListener('change', window.updateCountryCodeDisplay);
+document.addEventListener('DOMContentLoaded', () => window.updateCountryCodeDisplay?.());
 </script>
 
 
@@ -1282,11 +1273,23 @@ document.getElementById('country').addEventListener('change', function() {
 
                                         <div class="package-price">
 
-                                            <span class="price-early">Early: UGX 110,000 / $30</span>
+                                            <div class="price-phase-row price-early">
+                                                <span class="phase">Early</span>
+                                                <span class="price-major">USD 30</span>
+                                                <span class="price-minor">UGX 110,000</span>
+                                            </div>
 
-                                            <span class="price-regular">Regular: UGX 165,000 / $45</span>
+                                            <div class="price-phase-row price-regular">
+                                                <span class="phase">Regular</span>
+                                                <span class="price-major">USD 45</span>
+                                                <span class="price-minor">UGX 165,000</span>
+                                            </div>
 
-                                            <span class="price-late">Late: UGX 220,000 / $60</span>
+                                            <div class="price-phase-row price-late">
+                                                <span class="phase">Late</span>
+                                                <span class="price-major">USD 60</span>
+                                                <span class="price-minor">UGX 220,000</span>
+                                            </div>
 
                                         </div>
 
@@ -1324,11 +1327,23 @@ document.getElementById('country').addEventListener('change', function() {
 
                                         <div class="package-price">
 
-                                            <span class="price-early">Early: UGX 1,100,000 / $300</span>
+                                            <div class="price-phase-row price-early">
+                                                <span class="phase">Early</span>
+                                                <span class="price-major">USD 300</span>
+                                                <span class="price-minor">UGX 1,100,000</span>
+                                            </div>
 
-                                            <span class="price-regular">Regular: UGX 1,320,000 / $360</span>
+                                            <div class="price-phase-row price-regular">
+                                                <span class="phase">Regular</span>
+                                                <span class="price-major">USD 360</span>
+                                                <span class="price-minor">UGX 1,320,000</span>
+                                            </div>
 
-                                            <span class="price-late">Late: UGX 1,540,000 / $420</span>
+                                            <div class="price-phase-row price-late">
+                                                <span class="phase">Late</span>
+                                                <span class="price-major">USD 420</span>
+                                                <span class="price-minor">UGX 1,540,000</span>
+                                            </div>
 
                                         </div>
 
@@ -1366,11 +1381,23 @@ document.getElementById('country').addEventListener('change', function() {
 
                                         <div class="package-price">
 
-                                            <span class="price-early">Early: UGX 11,000,000 / $3,000</span>
+                                            <div class="price-phase-row price-early">
+                                                <span class="phase">Early</span>
+                                                <span class="price-major">USD 3,000</span>
+                                                <span class="price-minor">UGX 11,000,000</span>
+                                            </div>
 
-                                            <span class="price-regular">Regular: UGX 13,200,000 / $3,600</span>
+                                            <div class="price-phase-row price-regular">
+                                                <span class="phase">Regular</span>
+                                                <span class="price-major">USD 3,600</span>
+                                                <span class="price-minor">UGX 13,200,000</span>
+                                            </div>
 
-                                            <span class="price-late">Late: UGX 15,400,000 / $4,200</span>
+                                            <div class="price-phase-row price-late">
+                                                <span class="phase">Late</span>
+                                                <span class="price-major">USD 4,200</span>
+                                                <span class="price-minor">UGX 15,400,000</span>
+                                            </div>
 
                                         </div>
 

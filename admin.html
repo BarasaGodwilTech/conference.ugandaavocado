@@ -47,6 +47,11 @@
             color: var(--text-dark);
         }
 
+        body.auth-loading #loginContainer,
+        body.auth-loading #dashboard {
+            display: none !important;
+        }
+
         .admin-logo-img {
             height: 42px;
             width: auto;
@@ -1133,7 +1138,7 @@
         }
     </style>
 </head>
-<body>
+<body class="auth-loading">
     <!-- Login Form -->
     <div class="login-container" id="loginContainer">
         <div class="login-card">
@@ -2041,6 +2046,8 @@
     <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.31/dist/jspdf.plugin.autotable.min.js"></script>
     <script src="js/ui-popups.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
     <!-- Firebase + Admin Logic -->
     <script type="module">
         import {
@@ -2069,6 +2076,8 @@
         const SUPER_ADMIN_UID = '3mkgredw2lMvsmylcGsvx4rl77B3';
         const SUPER_ADMIN_SETTINGS_PIN = '4826';
         const SITE_CONFIG_DOC = { collection: 'siteConfig', doc: 'conference' };
+
+        const INACTIVITY_LOGOUT_MS = 30 * 60 * 1000;
 
         // Global variables
         let allRegistrations = [];
@@ -2287,6 +2296,31 @@
             loadCampaigns();
         }
 
+        let inactivityTimerId = null;
+        function clearInactivityTimer() {
+            if (inactivityTimerId) {
+                clearTimeout(inactivityTimerId);
+                inactivityTimerId = null;
+            }
+        }
+
+        function resetInactivityTimer() {
+            clearInactivityTimer();
+            inactivityTimerId = setTimeout(async () => {
+                try {
+                    await signOut(auth);
+                } catch (e) {}
+                window.UACPopup?.alert('You were logged out due to inactivity.', { type: 'info', title: 'Session ended' });
+            }, INACTIVITY_LOGOUT_MS);
+        }
+
+        function attachInactivityListeners() {
+            const events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'click'];
+            events.forEach(evt => window.addEventListener(evt, resetInactivityTimer, { passive: true }));
+        }
+
+        attachInactivityListeners();
+
         async function loadSiteConfigIntoSettingsUI() {
             const startEl = document.getElementById('confStart');
             const endEl = document.getElementById('confEnd');
@@ -2352,7 +2386,10 @@
 
         // Auth state
         onAuthStateChanged(auth, async (user) => {
+            document.body.classList.remove('auth-loading');
+
             if (!user) {
+                clearInactivityTimer();
                 currentClaims = null;
                 currentAdminProfile = null;
                 setDashboardVisible(false);
@@ -2404,6 +2441,7 @@
             setSuperAdminUIState();
             applyPermissionsToNavigation();
             applySettingsUIAccess();
+            resetInactivityTimer();
             await initializeAdmin();
         });
 
@@ -2996,10 +3034,109 @@ Conference Team`,
             `).join('');
         }
 
+        let packageChartInstance = null;
+        let trendChartInstance = null;
+
+        function getPackageCounts(regs) {
+            const counts = { delegate: 0, partner: 0, sponsor: 0, other: 0 };
+            regs.forEach(r => {
+                const t = (r.package?.type || '').toLowerCase();
+                if (t === 'delegate') counts.delegate += 1;
+                else if (t === 'partner') counts.partner += 1;
+                else if (t === 'sponsor') counts.sponsor += 1;
+                else counts.other += 1;
+            });
+            return counts;
+        }
+
+        function getTrendCountsByDay(regs, daysBack = 30) {
+            const now = new Date();
+            const start = new Date(now);
+            start.setHours(0, 0, 0, 0);
+            start.setDate(start.getDate() - (daysBack - 1));
+
+            const counts = new Map();
+            for (let i = 0; i < daysBack; i++) {
+                const d = new Date(start);
+                d.setDate(start.getDate() + i);
+                const key = d.toISOString().slice(0, 10);
+                counts.set(key, 0);
+            }
+
+            regs.forEach(r => {
+                const dt = r.timestamp instanceof Date ? r.timestamp : (r.timestamp?.toDate ? r.timestamp.toDate() : null);
+                if (!dt) return;
+                const key = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate()).toISOString().slice(0, 10);
+                if (counts.has(key)) counts.set(key, (counts.get(key) || 0) + 1);
+            });
+
+            return {
+                labels: Array.from(counts.keys()),
+                data: Array.from(counts.values())
+            };
+        }
+
         // Initialize charts
         function initCharts() {
-            // This would normally use Chart.js, but for demo we'll create placeholder
-            console.log('Charts initialized');
+            if (!window.Chart) {
+                console.warn('Chart.js not available');
+                return;
+            }
+
+            const pkgCanvas = document.getElementById('packageChart');
+            const trendCanvas = document.getElementById('trendChart');
+            if (!pkgCanvas || !trendCanvas) return;
+
+            const counts = getPackageCounts(allRegistrations);
+            const trend = getTrendCountsByDay(allRegistrations, 30);
+
+            if (packageChartInstance) packageChartInstance.destroy();
+            if (trendChartInstance) trendChartInstance.destroy();
+
+            packageChartInstance = new Chart(pkgCanvas.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Delegate', 'Partner', 'Sponsor', 'Other'],
+                    datasets: [{
+                        data: [counts.delegate, counts.partner, counts.sponsor, counts.other],
+                        backgroundColor: ['#4CAF50', '#2E7D32', '#F4B400', '#94a3b8'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+
+            trendChartInstance = new Chart(trendCanvas.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: trend.labels,
+                    datasets: [{
+                        label: 'Registrations',
+                        data: trend.data,
+                        borderColor: '#4CAF50',
+                        backgroundColor: 'rgba(76, 175, 80, 0.15)',
+                        fill: true,
+                        tension: 0.35,
+                        pointRadius: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, ticks: { precision: 0 } }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
         }
 
         // Show details modal

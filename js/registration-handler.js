@@ -40,11 +40,84 @@ function getPriceMatrix() {
     };
 }
 
+function getNationalNumberLengthByCountry(countryCode) {
+    // Keep this strict only where you are confident.
+    // Example request: Uganda = 9 digits after +256.
+    const map = {
+        UG: 9
+    };
+    return map[countryCode] || null;
+}
+
+function digitsOnly(value) {
+    return (value || '').toString().replace(/\D/g, '');
+}
+
+function applyPhoneRules() {
+    const phoneEl = document.getElementById('phone');
+    const countryEl = document.getElementById('country');
+    const hintEl = document.querySelector('.phone-hint');
+    if (!phoneEl || !countryEl) return;
+
+    const country = countryEl.value;
+    const len = getNationalNumberLengthByCountry(country);
+
+    phoneEl.value = digitsOnly(phoneEl.value);
+
+    if (len) {
+        phoneEl.setAttribute('maxlength', String(len));
+        phoneEl.setAttribute('inputmode', 'numeric');
+        phoneEl.setAttribute('pattern', `\\d{${len}}`);
+        if (hintEl) hintEl.textContent = `Enter ${len} digits without country code`;
+    } else {
+        phoneEl.removeAttribute('maxlength');
+        phoneEl.setAttribute('inputmode', 'numeric');
+        phoneEl.setAttribute('pattern', `\\d{6,15}`);
+        if (hintEl) hintEl.textContent = 'Enter number without country code';
+    }
+
+    phoneEl.setCustomValidity('');
+}
+
+function validatePhoneOrThrow() {
+    const phoneEl = document.getElementById('phone');
+    const countryEl = document.getElementById('country');
+    if (!phoneEl || !countryEl) return true;
+
+    const raw = digitsOnly(phoneEl.value);
+    const country = countryEl.value;
+    const len = getNationalNumberLengthByCountry(country);
+
+    if (len && raw.length !== len) {
+        phoneEl.setCustomValidity(`Phone number must be exactly ${len} digits for the selected country.`);
+        return false;
+    }
+
+    if (!len && (raw.length < 6 || raw.length > 15)) {
+        phoneEl.setCustomValidity('Phone number must be between 6 and 15 digits.');
+        return false;
+    }
+
+    phoneEl.setCustomValidity('');
+    return true;
+}
+
 // Registration Form Handler
 document.addEventListener('DOMContentLoaded', function() {
     const registrationForm = document.getElementById('confRegistrationForm');
     
     if (registrationForm) {
+        document.getElementById('country')?.addEventListener('change', () => {
+            try { window.updateCountryCodeDisplay?.(); } catch (e) {}
+            applyPhoneRules();
+        });
+
+        document.getElementById('phone')?.addEventListener('input', () => {
+            applyPhoneRules();
+        });
+
+        applyPhoneRules();
+
         const submitBtnForValidation = registrationForm.querySelector('button[type="submit"]');
         if (submitBtnForValidation) {
             submitBtnForValidation.addEventListener('click', function(e) {
@@ -77,6 +150,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
         registrationForm.addEventListener('submit', async function(e) {
             e.preventDefault();
+
+            if (!validatePhoneOrThrow()) {
+                const phoneEl = document.getElementById('phone');
+                const msg = phoneEl?.validationMessage || 'Please enter a valid phone number.';
+                if (window.UACPopup?.alert) {
+                    window.UACPopup.alert(msg, { type: 'error', title: 'Invalid phone number' });
+                } else {
+                    alert(msg);
+                }
+                try {
+                    phoneEl?.focus();
+                } catch (err) {}
+                return;
+            }
             
             // Show loading state
             const submitBtn = this.querySelector('button[type="submit"]');
@@ -94,7 +181,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 const countrySelect = document.getElementById('country');
                 const selectedOption = countrySelect?.options?.[countrySelect.selectedIndex];
                 const phoneCountryCode = selectedOption?.getAttribute('data-code') || document.getElementById('countryCodeDisplay')?.textContent || '';
-                const phoneFull = `${phoneCountryCode}${data.phone || ''}`;
+                const phoneNational = digitsOnly(data.phone || '');
+                const phoneFull = `${phoneCountryCode}${phoneNational}`;
                 
                 const nowUtc = new Date();
                 const timing = getRegistrationPhase(nowUtc, siteCfg);
@@ -116,7 +204,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         firstName: data.firstName,
                         lastName: data.lastName,
                         email: data.email,
-                        phone: data.phone,
+                        phone: phoneNational,
                         phoneCountryCode: phoneCountryCode,
                         phoneFull: phoneFull,
                         country: data.country,
