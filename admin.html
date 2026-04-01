@@ -90,6 +90,7 @@
             font-size: 2rem;
             margin-bottom: 10px;
             background: linear-gradient(135deg, var(--avocado-green), var(--avocado-green-dark));
+            background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -211,6 +212,7 @@
         .nav-brand h2 {
             font-size: 1.5rem;
             background: linear-gradient(135deg, var(--avocado-green), var(--avocado-green-dark));
+            background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -1127,48 +1129,54 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link" data-section="registrations">
+                        <a href="#" class="nav-link" data-section="registrations" data-perm="view_registrations">
                             <i class="fas fa-users"></i>
                             <span>Registrations</span>
                             <span class="badge" id="regBadge">0</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link" data-section="inquiries">
+                        <a href="#" class="nav-link" data-section="inquiries" data-perm="view_inquiries">
                             <i class="fas fa-question-circle"></i>
                             <span>Inquiries</span>
                             <span class="badge" id="inqBadge">0</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link" data-section="email">
+                        <a href="#" class="nav-link" data-section="email" data-perm="manage_email_campaigns">
                             <i class="fas fa-envelope"></i>
                             <span>Email Campaigns</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link" data-section="templates">
+                        <a href="#" class="nav-link" data-section="templates" data-perm="manage_templates">
                             <i class="fas fa-file-alt"></i>
                             <span>Email Templates</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link" data-section="subscribers">
+                        <a href="#" class="nav-link" data-section="subscribers" data-perm="view_subscribers">
                             <i class="fas fa-envelope-open"></i>
                             <span>Subscribers</span>
                             <span class="badge" id="subBadge">0</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link" data-section="reports">
+                        <a href="#" class="nav-link" data-section="reports" data-perm="view_reports">
                             <i class="fas fa-chart-bar"></i>
                             <span>Reports</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link" data-section="settings">
+                        <a href="#" class="nav-link" data-section="settings" data-perm="manage_settings">
                             <i class="fas fa-cog"></i>
                             <span>Settings</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" id="navAdminManagement" style="display:none;">
+                        <a href="#" class="nav-link" data-section="admin-management" data-perm="manage_admins">
+                            <i class="fas fa-user-shield"></i>
+                            <span>Admin Management</span>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -1263,7 +1271,7 @@
                     <!-- Quick Actions -->
                     <h3 style="margin-bottom: 15px;">Quick Actions</h3>
                     <div class="quick-actions">
-                        <div class="action-card" onclick="showSection('email')">
+                        <div class="action-card" data-perm="manage_email_campaigns" onclick="showSection('email')">
                             <i class="fas fa-bullhorn"></i>
                             <h4>Send Campaign</h4>
                             <p>Email all registrants</p>
@@ -1273,12 +1281,12 @@
                             <h4>Export Data</h4>
                             <p>Download as Excel</p>
                         </div>
-                        <div class="action-card" onclick="showSection('registrations')">
+                        <div class="action-card" data-perm="view_registrations" onclick="showSection('registrations')">
                             <i class="fas fa-search"></i>
                             <h4>View Registrations</h4>
                             <p>Manage attendees</p>
                         </div>
-                        <div class="action-card" onclick="showSection('reports')">
+                        <div class="action-card" data-perm="view_reports" onclick="showSection('reports')">
                             <i class="fas fa-file-pdf"></i>
                             <h4>Generate Report</h4>
                             <p>PDF summary</p>
@@ -1709,6 +1717,112 @@
                     </div>
                 </div>
 
+                <!-- Admin Management Section -->
+                <div class="content-section" id="section-admin-management">
+                    <div class="table-container" style="margin-bottom: 25px; padding: 30px;">
+                        <div style="display:flex; align-items:center; justify-content:space-between; gap: 12px; flex-wrap: wrap;">
+                            <div>
+                                <h3 style="margin-bottom: 5px;">Admin Management</h3>
+                                <p style="color: var(--text-light);">Invite admins, edit rights, and manage access.</p>
+                            </div>
+                            <div style="display:flex; gap: 10px; flex-wrap: wrap;">
+                                <button class="btn btn-outline btn-sm" type="button" id="refreshAdminMgmtBtn"><i class="fas fa-rotate"></i> Refresh</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-container" style="padding: 30px; margin-bottom: 25px;">
+                        <h3 style="margin-bottom: 12px;">Create Admin Invite</h3>
+                        <div id="createAdminBox" style="display: grid; gap: 12px;">
+                            <div class="form-group">
+                                <label>Admin Email</label>
+                                <input type="email" id="newAdminEmail" placeholder="e.g. richard@company.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Display Name</label>
+                                <input type="text" id="newAdminName" placeholder="e.g. Richard Welishe">
+                            </div>
+                            <div class="form-group">
+                                <label>Role Label (optional)</label>
+                                <input type="text" id="newAdminRole" placeholder="e.g. Senior Official">
+                            </div>
+                            <div class="form-group">
+                                <label>Permissions</label>
+                                <div style="display: grid; gap: 8px;">
+                                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="perm-checkbox" value="view_registrations"> <span>View registrations</span></label>
+                                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="perm-checkbox" value="export_registrations"> <span>Export registrations</span></label>
+                                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="perm-checkbox" value="view_inquiries"> <span>View inquiries</span></label>
+                                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="perm-checkbox" value="manage_email_campaigns"> <span>Manage email campaigns</span></label>
+                                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="perm-checkbox" value="manage_templates"> <span>Manage templates</span></label>
+                                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="perm-checkbox" value="view_subscribers"> <span>View subscribers</span></label>
+                                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="perm-checkbox" value="export_subscribers"> <span>Export subscribers</span></label>
+                                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="perm-checkbox" value="view_reports"> <span>View reports</span></label>
+                                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="perm-checkbox" value="manage_settings"> <span>Manage settings</span></label>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-primary" type="button" id="createAdminBtn">
+                                <i class="fas fa-user-plus"></i> Create Admin Invite
+                            </button>
+                            <div class="form-group">
+                                <label>Invite Notes</label>
+                                <textarea id="newAdminResetLink" rows="3" readonly placeholder="Invite details will appear here..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-container" style="margin-bottom: 25px;">
+                        <div class="table-header">
+                            <div class="table-title">
+                                <h3>Admins</h3>
+                                <p>All admins who have accepted their invite</p>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Status</th>
+                                        <th>Last Login</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminUsersBody">
+                                    <tr><td colspan="6" style="text-align:center;">Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <div class="table-header">
+                            <div class="table-title">
+                                <h3>Invited Admins</h3>
+                                <p>Pending invites (not yet used)</p>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Email</th>
+                                        <th>Name</th>
+                                        <th>Role</th>
+                                        <th>Created</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminInvitesBody">
+                                    <tr><td colspan="5" style="text-align:center;">Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Settings Section -->
                 <div class="content-section" id="section-settings">
                     <div class="table-container" style="padding: 30px;">
@@ -1763,49 +1877,6 @@
                         </div>
 
                         <div style="height: 20px;"></div>
-
-                        <h3 style="margin-bottom: 12px;">Super Admin</h3>
-                        <div style="display: grid; gap: 12px; margin-bottom: 18px;">
-                            <div id="bootstrapHint" style="color: var(--text-light); font-size: 0.9rem;">
-                                Super admin is enforced by UID. Only invited users can access this dashboard.
-                            </div>
-                        </div>
-
-                        <h3 style="margin-bottom: 12px;">Create Admin Account</h3>
-                        <div id="createAdminBox" style="display: grid; gap: 12px;">
-                            <div class="form-group">
-                                <label>Admin Email</label>
-                                <input type="email" id="newAdminEmail" placeholder="e.g. richard@company.com">
-                            </div>
-                            <div class="form-group">
-                                <label>Display Name</label>
-                                <input type="text" id="newAdminName" placeholder="e.g. Richard Welishe">
-                            </div>
-                            <div class="form-group">
-                                <label>Role Label (optional)</label>
-                                <input type="text" id="newAdminRole" placeholder="e.g. Senior Official">
-                            </div>
-                            <div class="form-group">
-                                <label>Permissions</label>
-                                <div style="display: grid; gap: 8px;">
-                                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="perm-checkbox" value="view_registrations"> <span>View registrations</span></label>
-                                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="perm-checkbox" value="export_registrations"> <span>Export registrations</span></label>
-                                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="perm-checkbox" value="view_inquiries"> <span>View inquiries</span></label>
-                                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="perm-checkbox" value="manage_email_campaigns"> <span>Manage email campaigns</span></label>
-                                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="perm-checkbox" value="manage_templates"> <span>Manage templates</span></label>
-                                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="perm-checkbox" value="view_subscribers"> <span>View subscribers</span></label>
-                                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="perm-checkbox" value="export_subscribers"> <span>Export subscribers</span></label>
-                                </div>
-                            </div>
-
-                            <button class="btn btn-primary" type="button" id="createAdminBtn">
-                                <i class="fas fa-user-plus"></i> Create Admin Invite
-                            </button>
-                            <div class="form-group">
-                                <label>Invite Notes</label>
-                                <textarea id="newAdminResetLink" rows="3" readonly placeholder="Invite details will appear here..."></textarea>
-                            </div>
-                        </div>
 
                         <button class="btn btn-primary" onclick="saveSettings()">
                             <i class="fas fa-save"></i> Save Settings
@@ -1940,6 +2011,44 @@
             if (isSuperAdminUser(auth.currentUser, currentAdminProfile)) return true;
             const perms = getPermissionsFromProfile(currentAdminProfile);
             return perms[key] === true;
+        }
+
+        function getSectionRequiredPermission(section) {
+            const map = {
+                registrations: 'view_registrations',
+                inquiries: 'view_inquiries',
+                email: 'manage_email_campaigns',
+                templates: 'manage_templates',
+                subscribers: 'view_subscribers',
+                reports: 'view_reports',
+                settings: 'manage_settings',
+                'admin-management': 'manage_admins'
+            };
+            return map[section] || null;
+        }
+
+        function applyPermissionsToNavigation() {
+            const isSuper = isSuperAdminUser(auth.currentUser, currentAdminProfile);
+            const adminMgmtNav = document.getElementById('navAdminManagement');
+            if (adminMgmtNav) {
+                adminMgmtNav.style.display = isSuper ? '' : 'none';
+            }
+
+            document.querySelectorAll('.nav-link[data-section]').forEach(link => {
+                const section = link.dataset.section;
+                const required = getSectionRequiredPermission(section);
+                if (!required) return;
+
+                const allowed = hasPermission(required);
+                const navItem = link.closest('.nav-item');
+                if (navItem) navItem.style.display = allowed ? '' : 'none';
+            });
+
+            document.querySelectorAll('.action-card[data-perm]').forEach(card => {
+                const required = card.dataset.perm;
+                const allowed = required ? hasPermission(required) : true;
+                card.style.display = allowed ? '' : 'none';
+            });
         }
 
         async function getAdminProfile(uid) {
@@ -2111,9 +2220,26 @@
                 return;
             }
 
+            if (currentAdminProfile?.disabled === true) {
+                currentAdminProfile = null;
+                await signOut(auth);
+                window.UACPopup?.alert('Access denied. Your admin account has been disabled.', { type: 'error', title: 'Account disabled' });
+                return;
+            }
+
+            try {
+                await updateDoc(doc(db, 'adminUsers', user.uid), {
+                    lastLoginAt: serverTimestamp(),
+                    updatedAt: serverTimestamp()
+                });
+            } catch (e) {
+                // ignore
+            }
+
             updateUserUI(user);
             setDashboardVisible(true);
             setSuperAdminUIState();
+            applyPermissionsToNavigation();
             await initializeAdmin();
         });
 
@@ -3402,11 +3528,25 @@ Conference Team`,
 
         // Show section
         window.showSection = function(section) {
+            const required = getSectionRequiredPermission(section);
+            if (required && !hasPermission(required)) {
+                window.UACPopup?.alert('You do not have rights to access this section.', { type: 'error', title: 'Access denied' });
+                return;
+            }
+
             document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-            document.getElementById(`section-${section}`).classList.add('active');
+            const sectionEl = document.getElementById(`section-${section}`);
+            if (!sectionEl) {
+                window.UACPopup?.alert('This section is not available.', { type: 'error', title: 'Not found' });
+                return;
+            }
+            sectionEl.classList.add('active');
             
-            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-            document.querySelector(`[data-section="${section}"]`).classList.add('active');
+            document.querySelectorAll('.nav-link[data-section]').forEach(link => link.classList.remove('active'));
+            const navLink = document.querySelector(`.nav-link[data-section="${section}"]`);
+            if (navLink) {
+                navLink.classList.add('active');
+            }
 
             // Close mobile sidebar
             document.getElementById('sidebar').classList.remove('mobile-open');
@@ -3497,18 +3637,263 @@ Conference Team`,
         };
 
         function setSuperAdminUIState() {
-            const createBox = document.getElementById('createAdminBox');
-            const hint = document.getElementById('bootstrapHint');
-            if (!createBox) return;
-
             const isSuper = isSuperAdminUser(auth.currentUser, currentAdminProfile);
-            createBox.style.opacity = isSuper ? '1' : '0.55';
-            createBox.style.pointerEvents = isSuper ? 'auto' : 'none';
+            const navAdmin = document.getElementById('navAdminManagement');
+            if (navAdmin) navAdmin.style.display = isSuper ? '' : 'none';
+        }
 
-            if (hint) {
-                hint.style.display = isSuper ? 'none' : 'block';
+        async function loadAdminManagementData() {
+            if (!isSuperAdminUser(auth.currentUser, currentAdminProfile)) return;
+
+            const usersBody = document.getElementById('adminUsersBody');
+            const invitesBody = document.getElementById('adminInvitesBody');
+
+            if (usersBody) usersBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Loading...</td></tr>';
+            if (invitesBody) invitesBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Loading...</td></tr>';
+
+            let adminUsers = [];
+            let adminInvites = [];
+
+            try {
+                const userSnap = await getDocs(query(collection(db, 'adminUsers'), orderBy('updatedAt', 'desc')));
+                adminUsers = userSnap.docs.map(d => ({ id: d.id, ...(d.data() || {}) }));
+            } catch (e) {
+                adminUsers = [];
+            }
+
+            try {
+                const inviteSnap = await getDocs(query(collection(db, 'adminInvites'), orderBy('createdAt', 'desc')));
+                adminInvites = inviteSnap.docs.map(d => ({ id: d.id, ...(d.data() || {}) }));
+            } catch (e) {
+                adminInvites = [];
+            }
+
+            const now = Date.now();
+            const onlineMs = 30 * 60 * 1000;
+
+            if (usersBody) {
+                if (adminUsers.length === 0) {
+                    usersBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No admins found</td></tr>';
+                } else {
+                    usersBody.innerHTML = adminUsers.map(u => {
+                        const name = u.displayName || '—';
+                        const email = u.email || '—';
+                        const role = u.roleLabel || (u.super_admin ? 'Super Admin' : 'Admin');
+                        const disabled = u.disabled === true;
+
+                        const lastLogin = u.lastLoginAt?.toDate ? u.lastLoginAt.toDate() : null;
+                        const lastLoginText = lastLogin ? lastLogin.toLocaleString() : '—';
+                        const isOnline = lastLogin ? (now - lastLogin.getTime() <= onlineMs) : false;
+
+                        const status = disabled ? 'Disabled' : (isOnline ? 'Online' : 'Active');
+                        const statusClass = disabled ? 'status-pending' : (isOnline ? 'status-paid' : 'status-new');
+
+                        const actions = u.super_admin ? '' : `
+                            <button class="btn btn-sm btn-outline" onclick="event.stopPropagation(); window.openAdminRightsModal('${u.id}')"><i class="fas fa-user-gear"></i></button>
+                            <button class="btn btn-sm btn-outline" onclick="event.stopPropagation(); window.toggleAdminDisabled('${u.id}', ${disabled ? 'false' : 'true'})"><i class="fas ${disabled ? 'fa-unlock' : 'fa-ban'}"></i></button>
+                        `;
+
+                        return `
+                            <tr>
+                                <td>${name}</td>
+                                <td>${email}</td>
+                                <td>${role}</td>
+                                <td><span class="status-badge ${statusClass}">${status}</span></td>
+                                <td>${lastLoginText}</td>
+                                <td style="display:flex; gap: 8px; flex-wrap: wrap;">${actions || '<span style="color: var(--text-light);">—</span>'}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
+            }
+
+            const pendingInvites = adminInvites.filter(i => !i.usedAt && !i.revokedAt);
+            if (invitesBody) {
+                if (pendingInvites.length === 0) {
+                    invitesBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No pending invites</td></tr>';
+                } else {
+                    invitesBody.innerHTML = pendingInvites.map(inv => {
+                        const created = inv.createdAt?.toDate ? inv.createdAt.toDate().toLocaleString() : '—';
+                        return `
+                            <tr>
+                                <td>${inv.email || inv.id}</td>
+                                <td>${inv.displayName || '—'}</td>
+                                <td>${inv.roleLabel || 'Admin'}</td>
+                                <td>${created}</td>
+                                <td style="display:flex; gap: 8px; flex-wrap: wrap;">
+                                    <button class="btn btn-sm btn-outline" onclick="event.stopPropagation(); window.openInviteRightsModal('${inv.id}')"><i class="fas fa-user-gear"></i></button>
+                                    <button class="btn btn-sm btn-outline" onclick="event.stopPropagation(); window.revokeInvite('${inv.id}')"><i class="fas fa-user-slash"></i></button>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
             }
         }
+
+        function renderRightsEditorHTML(perms) {
+            const p = perms && typeof perms === 'object' ? perms : {};
+            const checked = (k) => (p[k] === true ? 'checked' : '');
+            return `
+                <div style="display:grid; gap: 10px;">
+                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="rights-edit" value="view_registrations" ${checked('view_registrations')}> <span>View registrations</span></label>
+                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="rights-edit" value="export_registrations" ${checked('export_registrations')}> <span>Export registrations</span></label>
+                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="rights-edit" value="view_inquiries" ${checked('view_inquiries')}> <span>View inquiries</span></label>
+                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="rights-edit" value="manage_email_campaigns" ${checked('manage_email_campaigns')}> <span>Manage email campaigns</span></label>
+                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="rights-edit" value="manage_templates" ${checked('manage_templates')}> <span>Manage templates</span></label>
+                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="rights-edit" value="view_subscribers" ${checked('view_subscribers')}> <span>View subscribers</span></label>
+                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="rights-edit" value="export_subscribers" ${checked('export_subscribers')}> <span>Export subscribers</span></label>
+                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="rights-edit" value="view_reports" ${checked('view_reports')}> <span>View reports</span></label>
+                    <label style="display:flex; gap:10px; align-items:center;"><input type="checkbox" class="rights-edit" value="manage_settings" ${checked('manage_settings')}> <span>Manage settings</span></label>
+                </div>
+            `;
+        }
+
+        async function openRightsModalForAdminUser(uid) {
+            if (!isSuperAdminUser(auth.currentUser, currentAdminProfile)) return;
+            const profile = await getAdminProfile(uid);
+            if (!profile) {
+                window.UACPopup?.alert('Admin profile not found.', { type: 'error', title: 'Not found' });
+                return;
+            }
+
+            const html = `
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">Email</div>
+                        <div class="detail-value">${profile.email || uid}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Role</div>
+                        <div class="detail-value">${profile.roleLabel || 'Admin'}</div>
+                    </div>
+                    <div class="detail-item full-width">
+                        <div class="detail-label">Rights</div>
+                        ${renderRightsEditorHTML(profile.permissions || {})}
+                    </div>
+                </div>
+                <button class="btn btn-primary" type="button" id="saveRightsBtn"><i class="fas fa-save"></i> Save Rights</button>
+            `;
+
+            const title = document.getElementById('modalTitle');
+            const body = document.getElementById('modalBody');
+            const modal = document.getElementById('detailModal');
+            if (title) title.textContent = 'Edit Admin Rights';
+            if (body) body.innerHTML = html;
+            if (modal) modal.classList.add('active');
+
+            document.getElementById('saveRightsBtn')?.addEventListener('click', async function() {
+                const perms = {};
+                document.querySelectorAll('.rights-edit').forEach(cb => {
+                    if (cb.checked) perms[cb.value] = true;
+                });
+
+                try {
+                    await updateDoc(doc(db, 'adminUsers', uid), {
+                        permissions: perms,
+                        updatedAt: serverTimestamp()
+                    });
+                    window.UACPopup?.alert('Rights updated.', { type: 'success', title: 'Saved' });
+                    await loadAdminManagementData();
+                    applyPermissionsToNavigation();
+                } catch (e) {
+                    console.error('update rights failed:', e);
+                    window.UACPopup?.alert('Failed to update rights.', { type: 'error', title: 'Save failed' });
+                }
+            }, { once: true });
+        }
+
+        async function openRightsModalForInvite(inviteId) {
+            if (!isSuperAdminUser(auth.currentUser, currentAdminProfile)) return;
+            const snap = await getDoc(doc(db, 'adminInvites', inviteId));
+            if (!snap.exists()) {
+                window.UACPopup?.alert('Invite not found.', { type: 'error', title: 'Not found' });
+                return;
+            }
+            const invite = snap.data() || {};
+
+            const html = `
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">Email</div>
+                        <div class="detail-value">${invite.email || inviteId}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Role</div>
+                        <div class="detail-value">${invite.roleLabel || 'Admin'}</div>
+                    </div>
+                    <div class="detail-item full-width">
+                        <div class="detail-label">Rights</div>
+                        ${renderRightsEditorHTML(invite.permissions || {})}
+                    </div>
+                </div>
+                <button class="btn btn-primary" type="button" id="saveInviteRightsBtn"><i class="fas fa-save"></i> Save Invite Rights</button>
+            `;
+
+            const title = document.getElementById('modalTitle');
+            const body = document.getElementById('modalBody');
+            const modal = document.getElementById('detailModal');
+            if (title) title.textContent = 'Edit Invite Rights';
+            if (body) body.innerHTML = html;
+            if (modal) modal.classList.add('active');
+
+            document.getElementById('saveInviteRightsBtn')?.addEventListener('click', async function() {
+                const perms = {};
+                document.querySelectorAll('.rights-edit').forEach(cb => {
+                    if (cb.checked) perms[cb.value] = true;
+                });
+
+                try {
+                    await updateDoc(doc(db, 'adminInvites', inviteId), {
+                        permissions: perms,
+                        updatedAt: serverTimestamp()
+                    });
+                    window.UACPopup?.alert('Invite rights updated.', { type: 'success', title: 'Saved' });
+                    await loadAdminManagementData();
+                } catch (e) {
+                    console.error('update invite rights failed:', e);
+                    window.UACPopup?.alert('Failed to update invite rights.', { type: 'error', title: 'Save failed' });
+                }
+            }, { once: true });
+        }
+
+        window.openAdminRightsModal = function(uid) {
+            openRightsModalForAdminUser(uid);
+        };
+
+        window.openInviteRightsModal = function(inviteId) {
+            openRightsModalForInvite(inviteId);
+        };
+
+        window.toggleAdminDisabled = async function(uid, disabled) {
+            if (!isSuperAdminUser(auth.currentUser, currentAdminProfile)) return;
+            try {
+                await updateDoc(doc(db, 'adminUsers', uid), {
+                    disabled: !!disabled,
+                    updatedAt: serverTimestamp()
+                });
+                await loadAdminManagementData();
+                window.UACPopup?.alert(disabled ? 'Admin disabled.' : 'Admin enabled.', { type: 'success', title: 'Updated' });
+            } catch (e) {
+                console.error('toggleAdminDisabled failed:', e);
+                window.UACPopup?.alert('Failed to update admin status.', { type: 'error', title: 'Update failed' });
+            }
+        };
+
+        window.revokeInvite = async function(inviteId) {
+            if (!isSuperAdminUser(auth.currentUser, currentAdminProfile)) return;
+            try {
+                await updateDoc(doc(db, 'adminInvites', inviteId), {
+                    revokedAt: serverTimestamp(),
+                    revokedBy: auth.currentUser?.uid || ''
+                });
+                await loadAdminManagementData();
+                window.UACPopup?.alert('Invite revoked.', { type: 'success', title: 'Revoked' });
+            } catch (e) {
+                console.error('revokeInvite failed:', e);
+                window.UACPopup?.alert('Failed to revoke invite.', { type: 'error', title: 'Revoke failed' });
+            }
+        };
 
         document.getElementById('createAdminBtn')?.addEventListener('click', async function() {
             if (!isSuperAdminUser(auth.currentUser, currentAdminProfile)) {
@@ -3539,7 +3924,8 @@ Conference Team`,
                     permissions: perms,
                     createdBy: auth.currentUser?.uid || '',
                     createdAt: serverTimestamp(),
-                    usedAt: null
+                    usedAt: null,
+                    revokedAt: null
                 }, { merge: true });
 
                 const out = document.getElementById('newAdminResetLink');
@@ -3548,9 +3934,20 @@ Conference Team`,
                 }
 
                 window.UACPopup?.alert('Invite created. Send instructions to the admin.', { type: 'success', title: 'Invite created' });
+                await loadAdminManagementData();
             } catch (err) {
                 console.error('createAdminInvite failed:', err);
                 window.UACPopup?.alert('Failed to create invite. Check Firestore permissions/rules.', { type: 'error', title: 'Create failed' });
+            }
+        });
+
+        document.getElementById('refreshAdminMgmtBtn')?.addEventListener('click', async function() {
+            await loadAdminManagementData();
+        });
+
+        document.querySelector('[data-section="admin-management"]')?.addEventListener('click', async function() {
+            if (isSuperAdminUser(auth.currentUser, currentAdminProfile)) {
+                await loadAdminManagementData();
             }
         });
     </script>
