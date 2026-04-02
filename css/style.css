@@ -960,6 +960,51 @@ h3 {
     text-align: center;
 }
 
+.uac-selected-package-banner {
+    margin-top: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: rgba(46, 125, 50, 0.08);
+    border: 1px solid rgba(46, 125, 50, 0.22);
+}
+
+.uac-selected-package-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--avocado-green);
+    color: var(--white);
+    font-weight: 800;
+    font-size: 0.78rem;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+.uac-selected-package-text {
+    color: var(--avocado-green-dark);
+    font-weight: 800;
+    font-size: 0.95rem;
+    line-height: 1.1;
+    white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+    .uac-selected-package-banner {
+        max-width: 100%;
+        justify-content: center;
+        padding: 10px 12px;
+        gap: 8px;
+    }
+    .uac-selected-package-text {
+        white-space: normal;
+        text-align: center;
+    }
+}
+
 .package-price .price-ugx {
     font-size: 1.05rem;
     font-weight: 700;

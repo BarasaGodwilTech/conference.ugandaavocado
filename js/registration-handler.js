@@ -88,14 +88,23 @@ function updatePackageCardsUI(phase) {
 function updateSelectedPackageBanner(pkg) {
     const el = document.getElementById('selectedPackageBanner');
     if (!el) return;
-    const p = (pkg || '').toString().toLowerCase();
+    const p = normalizePackageValue(pkg);
     if (!p) {
         el.style.display = 'none';
-        el.textContent = '';
+        el.innerHTML = '';
         return;
     }
-    const label = p.charAt(0).toUpperCase() + p.slice(1);
-    el.textContent = `Selected package: ${label}`;
+    const labelMap = {
+        delegate: 'Delegate',
+        partner: 'Partner',
+        sponsor: 'Sponsor'
+    };
+    const label = labelMap[p] || (p.charAt(0).toUpperCase() + p.slice(1));
+
+    el.innerHTML = `
+        <span class="uac-selected-package-badge">Selected</span>
+        <span class="uac-selected-package-text">${label} Package</span>
+    `;
     el.style.display = 'block';
 }
 
@@ -104,7 +113,8 @@ function normalizePackageValue(value) {
     if (!raw) return '';
     if (raw.includes('delegate')) return 'delegate';
     if (raw.includes('partner')) return 'partner';
-    if (raw.includes('sponsor')) return 'sponsor';
+    if (raw.includes('sponsor') || raw.includes('sponsorship')) return 'sponsor';
+    if (raw.includes('exhibitor') || raw.includes('exhibition')) return 'sponsor';
     return raw;
 }
 
@@ -113,18 +123,18 @@ function updateRegistrationHeaderForPackage(pkg) {
     const descEl = document.getElementById('registrationHeaderDescription');
     if (!titleEl || !descEl) return;
 
-    const p = (pkg || '').toString().toLowerCase();
+    const p = normalizePackageValue(pkg);
     const map = {
         delegate: {
-            title: 'Complete Your Delegate Registration',
+            label: 'Delegate',
             desc: 'Fill in the form below to secure your delegate pass for Uganda Avocado 2026'
         },
         partner: {
-            title: 'Complete Your Partner Registration',
+            label: 'Partner',
             desc: 'Fill in the form below to secure your partner package for Uganda Avocado 2026'
         },
         sponsor: {
-            title: 'Complete Your Sponsor Registration',
+            label: 'Sponsor',
             desc: 'Fill in the form below to secure your sponsorship package for Uganda Avocado 2026'
         }
     };
@@ -135,8 +145,17 @@ function updateRegistrationHeaderForPackage(pkg) {
         return;
     }
 
-    titleEl.textContent = map[p].title;
+    titleEl.innerHTML = `Complete Your <span class="text-gradient">${map[p].label}</span> Registration`;
     descEl.textContent = map[p].desc;
+}
+
+function updateSelectedPackageUiFromCurrentSelection() {
+    try {
+        const checked = document.querySelector('input[name="registrationPackage"]:checked');
+        const val = normalizePackageValue(checked?.value || '');
+        updateSelectedPackageBanner(val);
+        updateRegistrationHeaderForPackage(val);
+    } catch (e) {}
 }
 
 function safeDigitsOnly(value) {
@@ -232,8 +251,7 @@ function initRegistrationPage() {
                         const normalized = normalizePackageValue(i.value);
                         localStorage.setItem('uac_selected_package', normalized);
                         localStorage.setItem('uac_selected_package_at', new Date().toISOString());
-                        updateSelectedPackageBanner(normalized);
-                        updateRegistrationHeaderForPackage(normalized);
+                        updateSelectedPackageUiFromCurrentSelection();
                     }
                 });
             });
@@ -246,8 +264,7 @@ function initRegistrationPage() {
             if (preferred && allowed.includes(preferred)) {
                 const selectedInput = document.querySelector(`input[name="registrationPackage"][value="${preferred}"]`);
                 if (selectedInput) selectedInput.checked = true;
-                updateSelectedPackageBanner(preferred);
-                updateRegistrationHeaderForPackage(preferred);
+                updateSelectedPackageUiFromCurrentSelection();
             } else {
                 updateRegistrationHeaderForPackage('');
             }
