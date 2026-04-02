@@ -1963,12 +1963,11 @@
                             <input type="date" id="regularDeadline">
                         </div>
 
-                        <div class="form-group" id="autoDeadlinesTools" style="display:none;">
-                            <label>Deadline Tools (Super Admin)</label>
-                            <div style="display:flex; gap: 10px; flex-wrap: wrap; align-items:center;">
-                                <button type="button" class="btn btn-outline btn-sm" id="autoComputeDeadlinesBtn"><i class="fas fa-magic"></i> Auto-calculate Early/Regular</button>
-                                <button type="button" class="btn btn-outline btn-sm" id="autoFillConfEndBtn"><i class="fas fa-calendar-plus"></i> Auto-fill Conference End</button>
-                                <span style="color: var(--text-light); font-size: 0.9rem;">Uses today and the conference start date.</span>
+                        <div class="form-group" id="autoDeadlinesRow" style="display:none;">
+                            <label>Auto-set Deadlines</label>
+                            <div style="display:flex; gap: 12px; flex-wrap: wrap; align-items:center;">
+                                <button type="button" class="btn btn-outline" id="autoSetDeadlinesBtn"><i class="fas fa-magic"></i> Auto-set from today</button>
+                                <span style="color: var(--text-light); font-size: 0.9rem;">Uses today's date and the conference start date.</span>
                             </div>
                         </div>
 
@@ -2183,85 +2182,6 @@
             });
         }
 
-        function toIsoDayLocal(d) {
-            if (!d || isNaN(d.getTime?.())) return '';
-            const y = d.getFullYear();
-            const m = String(d.getMonth() + 1).padStart(2, '0');
-            const day = String(d.getDate()).padStart(2, '0');
-            return `${y}-${m}-${day}`;
-        }
-
-        function startOfTodayLocal() {
-            const now = new Date();
-            return new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        }
-
-        function parseIsoDayLocal(isoDay) {
-            if (!isoDay) return null;
-            const m = /^\d{4}-\d{2}-\d{2}$/.test(isoDay) ? isoDay : null;
-            if (!m) return null;
-            const [y, mo, d] = isoDay.split('-').map(n => parseInt(n, 10));
-            if (!y || !mo || !d) return null;
-            return new Date(y, mo - 1, d);
-        }
-
-        function autoCalculateDeadlinesFromToday() {
-            if (!isSuperAdminUser(auth.currentUser, currentAdminProfile)) return;
-            const startIso = document.getElementById('confStart')?.value || '';
-            const confStart = parseIsoDayLocal(startIso);
-            if (!confStart) {
-                window.UACPopup?.alert('Set the conference start date first.', { type: 'error', title: 'Missing date' });
-                return;
-            }
-
-            const today = startOfTodayLocal();
-            const ms = confStart.getTime() - today.getTime();
-            const totalDays = Math.max(0, Math.floor(ms / (1000 * 60 * 60 * 24)));
-
-            if (totalDays < 3) {
-                const earlyEl = document.getElementById('earlyDeadline');
-                const regularEl = document.getElementById('regularDeadline');
-                if (earlyEl) earlyEl.value = toIsoDayLocal(today);
-                if (regularEl) regularEl.value = toIsoDayLocal(today);
-                window.UACPopup?.alert('Conference is very close. Deadlines set to today.', { type: 'success', title: 'Auto-calculated' });
-                return;
-            }
-
-            const earlyDays = Math.max(1, Math.min(totalDays - 2, Math.floor(totalDays * 0.33)));
-            const regularDays = Math.max(earlyDays + 1, Math.min(totalDays - 1, Math.floor(totalDays * 0.66)));
-
-            const early = new Date(today);
-            early.setDate(early.getDate() + earlyDays);
-            const regular = new Date(today);
-            regular.setDate(regular.getDate() + regularDays);
-
-            const earlyEl = document.getElementById('earlyDeadline');
-            const regularEl = document.getElementById('regularDeadline');
-            if (earlyEl) earlyEl.value = toIsoDayLocal(early);
-            if (regularEl) regularEl.value = toIsoDayLocal(regular);
-
-            window.UACPopup?.alert('Deadlines auto-calculated from today to the conference start date.', { type: 'success', title: 'Auto-calculated' });
-        }
-
-        function autoFillConferenceEndFromStart() {
-            if (!isSuperAdminUser(auth.currentUser, currentAdminProfile)) return;
-            const startIso = document.getElementById('confStart')?.value || '';
-            const confStart = parseIsoDayLocal(startIso);
-            if (!confStart) {
-                window.UACPopup?.alert('Set the conference start date first.', { type: 'error', title: 'Missing date' });
-                return;
-            }
-
-            const end = new Date(confStart);
-            end.setDate(end.getDate() + 2);
-            const endEl = document.getElementById('confEnd');
-            if (endEl) endEl.value = toIsoDayLocal(end);
-            window.UACPopup?.alert('Conference end date auto-filled (3-day event).', { type: 'success', title: 'Auto-filled' });
-        }
-
-        document.getElementById('autoComputeDeadlinesBtn')?.addEventListener('click', autoCalculateDeadlinesFromToday);
-        document.getElementById('autoFillConfEndBtn')?.addEventListener('click', autoFillConferenceEndFromStart);
-
         async function getAdminProfile(uid) {
             if (!uid) return null;
             try {
@@ -2448,13 +2368,14 @@
                 el.disabled = disabled;
             };
 
+            // Conference dates/deadlines are Super Admin-only
             disable(document.getElementById('confStart'), !isSuper);
             disable(document.getElementById('confEnd'), !isSuper);
             disable(document.getElementById('earlyDeadline'), !isSuper);
             disable(document.getElementById('regularDeadline'), !isSuper);
 
-            const tools = document.getElementById('autoDeadlinesTools');
-            if (tools) tools.style.display = (isSuper && canManage) ? '' : 'none';
+            const autoRow = document.getElementById('autoDeadlinesRow');
+            if (autoRow) autoRow.style.display = isSuper ? '' : 'none';
 
             const paymentSection = document.getElementById('paymentMethodsSection');
             const paymentHint = document.getElementById('paymentMethodsReadonlyHint');
@@ -3972,32 +3893,28 @@ Conference Team`,
             }
 
             const isSuper = isSuperAdminUser(auth.currentUser, currentAdminProfile);
-            if (!isSuper) {
-                window.UACPopup?.alert('Only the Super Admin can update conference dates and deadlines.', { type: 'error', title: 'Access denied' });
-                return;
-            }
-            const confStart = document.getElementById('confStart')?.value || '';
-            const confEnd = document.getElementById('confEnd')?.value || '';
-            const earlyDeadline = document.getElementById('earlyDeadline')?.value || '';
-            const regularDeadline = document.getElementById('regularDeadline')?.value || '';
-
             const payload = {
-                confStart,
-                confEnd,
-                earlyDeadline,
-                regularDeadline,
                 updatedAt: serverTimestamp(),
                 updatedBy: auth.currentUser?.uid || ''
             };
 
-            const paymentMethods = {
-                bankTransfer: document.getElementById('payBankTransfer')?.checked === true,
-                mobileMoney: document.getElementById('payMobileMoney')?.checked === true,
-                creditCard: document.getElementById('payCreditCard')?.checked === true
-            };
+            if (isSuper) {
+                payload.confStart = document.getElementById('confStart')?.value || '';
+                payload.confEnd = document.getElementById('confEnd')?.value || '';
+                payload.earlyDeadline = document.getElementById('earlyDeadline')?.value || '';
+                payload.regularDeadline = document.getElementById('regularDeadline')?.value || '';
+            }
 
-            if (paymentsUnlocked) {
-                payload.paymentMethods = paymentMethods;
+            if (isSuper) {
+                const paymentMethods = {
+                    bankTransfer: document.getElementById('payBankTransfer')?.checked === true,
+                    mobileMoney: document.getElementById('payMobileMoney')?.checked === true,
+                    creditCard: document.getElementById('payCreditCard')?.checked === true
+                };
+
+                if (paymentsUnlocked) {
+                    payload.paymentMethods = paymentMethods;
+                }
             }
 
             try {
@@ -4008,6 +3925,69 @@ Conference Team`,
                 window.UACPopup?.alert('Failed to save settings. Check Firestore rules.', { type: 'error', title: 'Save failed' });
             }
         };
+
+        function addDaysToIsoDay(isoDay, days) {
+            const d = isoDay ? new Date(isoDay + 'T00:00:00') : null;
+            if (!d || Number.isNaN(d.getTime())) return '';
+            d.setDate(d.getDate() + (Number(days) || 0));
+            return d.toISOString().slice(0, 10);
+        }
+
+        function isoTodayLocal() {
+            const now = new Date();
+            const local = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            return local.toISOString().slice(0, 10);
+        }
+
+        function computeAutoDeadlines(confStartIso) {
+            const todayIso = isoTodayLocal();
+            const start = confStartIso ? new Date(confStartIso + 'T00:00:00') : null;
+            const today = new Date(todayIso + 'T00:00:00');
+            if (!start || Number.isNaN(start.getTime())) return null;
+
+            const totalDays = Math.max(0, Math.round((start.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)));
+            if (totalDays < 3) {
+                // Too close: keep early today, regular tomorrow (best effort)
+                return {
+                    early: todayIso,
+                    regular: addDaysToIsoDay(todayIso, 1)
+                };
+            }
+
+            const earlyOffset = Math.max(1, Math.floor(totalDays * 0.4));
+            const regularOffset = Math.max(earlyOffset + 1, Math.floor(totalDays * 0.75));
+
+            const early = addDaysToIsoDay(todayIso, earlyOffset);
+            const regular = addDaysToIsoDay(todayIso, Math.min(regularOffset, totalDays - 1));
+
+            return { early, regular };
+        }
+
+        document.getElementById('autoSetDeadlinesBtn')?.addEventListener('click', function() {
+            if (!isSuperAdminUser(auth.currentUser, currentAdminProfile)) {
+                window.UACPopup?.alert('Only the Super Admin can auto-set deadlines.', { type: 'error', title: 'Access denied' });
+                return;
+            }
+
+            const confStartIso = document.getElementById('confStart')?.value || '';
+            if (!confStartIso) {
+                window.UACPopup?.alert('Set the conference start date first.', { type: 'error', title: 'Missing date' });
+                return;
+            }
+
+            const res = computeAutoDeadlines(confStartIso);
+            if (!res) {
+                window.UACPopup?.alert('Could not compute deadlines. Check the conference start date.', { type: 'error', title: 'Failed' });
+                return;
+            }
+
+            const earlyEl = document.getElementById('earlyDeadline');
+            const regularEl = document.getElementById('regularDeadline');
+            if (earlyEl) earlyEl.value = res.early;
+            if (regularEl) regularEl.value = res.regular;
+
+            window.UACPopup?.alert('Deadlines updated. Click “Save Settings” to publish.', { type: 'success', title: 'Ready to save' });
+        });
 
         document.getElementById('unlockPaymentsBtn')?.addEventListener('click', function() {
             if (!isSuperAdminUser(auth.currentUser, currentAdminProfile)) return;
