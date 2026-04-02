@@ -75,7 +75,7 @@
                 <div class="page-hero-meta">
                     <div class="meta-item">
                         <i class="fas fa-calendar-alt"></i>
-                        <span>July 29-31, 2026</span>
+                        <span id="uacProgramDateRange">July 29-31, 2026</span>
                     </div>
                    <a href="registration.html#venue" style="text-decoration: none; color: white;">
                       <div class="meta-item">
@@ -676,6 +676,53 @@
             </div>
         </div>
     </footer>
+
+    <script type="module">
+        import { db, doc, getDoc } from "./js/firebase-config.js";
+
+        function parseIsoDay(isoDay) {
+            const raw = (isoDay || '').toString().trim();
+            if (!raw) return null;
+            const d = new Date(raw + 'T00:00:00');
+            if (Number.isNaN(d.getTime())) return null;
+            return d;
+        }
+
+        function formatShortRange(confStartIso, confEndIso) {
+            const start = parseIsoDay(confStartIso);
+            const end = parseIsoDay(confEndIso);
+            if (!start) return '';
+
+            const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            const s = `${months[start.getMonth()]} ${start.getDate()}, ${start.getFullYear()}`;
+            if (!end) return s;
+
+            const sameYear = start.getFullYear() === end.getFullYear();
+            const sameMonth = start.getMonth() === end.getMonth();
+            if (sameYear && sameMonth) return `${months[start.getMonth()]} ${start.getDate()}-${end.getDate()}, ${start.getFullYear()}`;
+            if (sameYear) return `${months[start.getMonth()]} ${start.getDate()} - ${months[end.getMonth()]} ${end.getDate()}, ${start.getFullYear()}`;
+            return `${months[start.getMonth()]} ${start.getDate()}, ${start.getFullYear()} - ${months[end.getMonth()]} ${end.getDate()}, ${end.getFullYear()}`;
+        }
+
+        async function applyProgramDates() {
+            const el = document.getElementById('uacProgramDateRange');
+            if (!el) return;
+
+            try {
+                const snap = await getDoc(doc(db, 'siteConfig', 'conference'));
+                const cfg = snap.exists() ? (snap.data() || {}) : {};
+                const text = formatShortRange(cfg.confStart, cfg.confEnd);
+                if (text) el.textContent = text;
+            } catch (e) {
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', applyProgramDates);
+        } else {
+            applyProgramDates();
+        }
+    </script>
 
     <script src="js/script.js"></script>
 </body>

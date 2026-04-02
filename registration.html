@@ -272,7 +272,7 @@
 
                     <i class="fas fa-calendar-alt"></i>
 
-                    <span>29th - 31st July 2026 • Kampala, Uganda</span>
+                    <span id="uacRegistrationDateRange">29th - 31st July 2026 • Kampala, Uganda</span>
 
                 </div>
 
@@ -2089,31 +2089,27 @@
 
         });
 
-        
+    </script>
 
-        // ============================================
+    
 
-        // COUNTDOWN TIMER FUNCTIONALITY
+    <!-- ============================================ -->
 
-        // ============================================
+    <!-- COUNTDOWN TIMER FUNCTIONALITY -->
 
-        function initCountdownTimer() {
+    <!-- ============================================ -->
 
-            // Set target date to July 29, 2026 at 08:00:00 UTC
+    <script type="module">
 
-            const targetDate = new Date('2026-07-29T08:00:00Z').getTime();
+        import { db, doc, getDoc } from "./js/firebase-config.js";
 
-            
+        async function initCountdownTimer() {
 
             const countdownElement = document.getElementById('conferenceCountdown');
 
             const expiredElement = document.getElementById('countdownExpired');
 
-            
-
             if (!countdownElement) return;
-
-            
 
             const daysElement = document.getElementById('countdownDays');
 
@@ -2123,19 +2119,69 @@
 
             const secondsElement = document.getElementById('countdownSeconds');
 
-            
+            function parseCountdownTargetMs(confStartValue) {
+                const fallback = new Date('2026-07-29T08:00:00Z').getTime();
+                const raw = (confStartValue || '').toString().trim();
+                if (!raw) return fallback;
+
+                const candidate = raw.includes('T') ? raw : `${raw}T00:00:00`;
+                const parsed = new Date(candidate);
+                const ms = parsed.getTime();
+                if (Number.isFinite(ms)) return ms;
+                return fallback;
+            }
+
+            let targetDateMs = new Date('2026-07-29T08:00:00Z').getTime();
+
+            try {
+                const snap = await getDoc(doc(db, 'siteConfig', 'conference'));
+                const cfg = snap.exists() ? (snap.data() || {}) : {};
+
+                targetDateMs = parseCountdownTargetMs(cfg?.confStart);
+
+                const startMeta = document.querySelector('meta[name="event:start_date"]');
+                if (startMeta && cfg.confStart) startMeta.setAttribute('content', String(cfg.confStart));
+                const endMeta = document.querySelector('meta[name="event:end_date"]');
+                if (endMeta && cfg.confEnd) endMeta.setAttribute('content', String(cfg.confEnd));
+
+                const dateRangeEl = document.getElementById('uacRegistrationDateRange');
+                if (dateRangeEl && cfg.confStart && cfg.confEnd) {
+                    const rawStart = String(cfg.confStart).trim();
+                    const rawEnd = String(cfg.confEnd).trim();
+                    const start = new Date(rawStart + 'T00:00:00');
+                    const end = new Date(rawEnd + 'T00:00:00');
+                    if (!Number.isNaN(start.getTime()) && !Number.isNaN(end.getTime())) {
+                        const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+                        const formatOrdinalDay = (n) => {
+                            const num = Number(n);
+                            const mod100 = num % 100;
+                            if (mod100 >= 11 && mod100 <= 13) return `${num}th`;
+                            const mod10 = num % 10;
+                            if (mod10 === 1) return `${num}st`;
+                            if (mod10 === 2) return `${num}nd`;
+                            if (mod10 === 3) return `${num}rd`;
+                            return `${num}th`;
+                        };
+
+                        const citySuffix = ' • Kampala, Uganda';
+                        if (start.getFullYear() === end.getFullYear() && start.getMonth() === end.getMonth()) {
+                            dateRangeEl.textContent = `${formatOrdinalDay(start.getDate())} - ${formatOrdinalDay(end.getDate())} ${months[start.getMonth()]} ${start.getFullYear()}${citySuffix}`;
+                        } else {
+                            dateRangeEl.textContent = `${formatOrdinalDay(start.getDate())} ${months[start.getMonth()]} ${start.getFullYear()} - ${formatOrdinalDay(end.getDate())} ${months[end.getMonth()]} ${end.getFullYear()}${citySuffix}`;
+                        }
+                    }
+                }
+            } catch (e) {
+                console.warn('Countdown: failed to load conference confStart from Firestore. Using fallback.', e);
+            }
 
             function updateCountdown() {
 
                 const now = new Date().getTime();
 
-                const distance = targetDate - now;
-
-                
+                const distance = targetDateMs - now;
 
                 if (distance < 0) {
-
-                    // Conference has started
 
                     countdownElement.style.display = 'none';
 
@@ -2145,10 +2191,6 @@
 
                 }
 
-                
-
-                // Calculate time units
-
                 const days = Math.floor(distance / (1000 * 60 * 60 * 24));
 
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -2156,10 +2198,6 @@
                 const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
 
                 const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-                
-
-                // Update display with leading zeros
 
                 if (daysElement) daysElement.textContent = String(days).padStart(2, '0');
 
@@ -2171,23 +2209,11 @@
 
             }
 
-            
-
-            // Update immediately and then every second
-
             updateCountdown();
 
             setInterval(updateCountdown, 1000);
 
-            
-
-            console.log('✅ Countdown timer initialized - Target: July 29, 2026 08:00:00 UTC');
-
         }
-
-        
-
-        // Initialize countdown timer when DOM is ready
 
         if (document.readyState === 'loading') {
 
