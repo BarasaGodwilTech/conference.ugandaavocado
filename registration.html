@@ -566,9 +566,9 @@
 
                 <span class="section-tag">Register Now</span>
 
-                <h2>Complete Your <span class="text-gradient">Conference Registration</span></h2>
+                <h2 id="registrationHeaderTitle">Complete Your <span class="text-gradient">Conference Registration</span></h2>
 
-                <p class="section-description">Fill in the form below to secure your place at Uganda Avocado 2026</p>
+                <p class="section-description" id="registrationHeaderDescription">Fill in the form below to secure your place at Uganda Avocado 2026</p>
 
                 <div id="selectedPackageBanner" style="display:none; margin-top: 10px; font-weight: 700; color: var(--avocado-green-dark);"></div>
 
@@ -1078,6 +1078,21 @@
 
     box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
 
+}
+
+/* Invalid phone state */
+.phone-input-wrapper.phone-invalid {
+    border-color: var(--danger-red) !important;
+    box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.12) !important;
+}
+
+.phone-input-wrapper.phone-invalid .country-code {
+    background: rgba(244, 67, 54, 0.08) !important;
+    color: var(--danger-red) !important;
+}
+
+.phone-input-wrapper input.phone-invalid {
+    color: var(--danger-red);
 }
 
 
@@ -2004,6 +2019,34 @@
 
                 
 
+                function renderPriceMarkup(priceText, periodText) {
+                    const raw = String(priceText || '').trim();
+                    const match = raw.match(/^([^()]+?)(?:\s*\(([^)]+)\))?$/);
+                    const usd = (match?.[1] || raw).trim();
+                    const ugx = (match?.[2] || '').trim();
+
+                    if (!ugx) {
+                        return `
+                            <div class="price">
+                                <div class="price-usd">${usd}</div>
+                                <div class="price-ugx-line">
+                                    <small class="price-period">/${periodText}</small>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    return `
+                        <div class="price">
+                            <div class="price-usd">${usd}</div>
+                            <div class="price-ugx-line">
+                                <span class="price-ugx">${ugx}</span>
+                                <small class="price-period">/${periodText}</small>
+                            </div>
+                        </div>
+                    `;
+                }
+
                 conferenceData.sponsorshipPackages.forEach(pkg => {
 
                     const card = document.createElement('div');
@@ -2026,7 +2069,7 @@
 
                         <h3>${pkg.title}</h3>
 
-                        <div class="price">${pkg.price}<small>/${pkg.period}</small></div>
+                        ${renderPriceMarkup(pkg.price, pkg.period)}
 
                         <ul>${featuresList}</ul>
 

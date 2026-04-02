@@ -99,6 +99,37 @@ function updateSelectedPackageBanner(pkg) {
     el.style.display = 'block';
 }
 
+function updateRegistrationHeaderForPackage(pkg) {
+    const titleEl = document.getElementById('registrationHeaderTitle');
+    const descEl = document.getElementById('registrationHeaderDescription');
+    if (!titleEl || !descEl) return;
+
+    const p = (pkg || '').toString().toLowerCase();
+    const map = {
+        delegate: {
+            title: 'Complete Your Delegate Registration',
+            desc: 'Fill in the form below to secure your delegate pass for Uganda Avocado 2026'
+        },
+        partner: {
+            title: 'Complete Your Partner Registration',
+            desc: 'Fill in the form below to secure your partner package for Uganda Avocado 2026'
+        },
+        sponsor: {
+            title: 'Complete Your Sponsor Registration',
+            desc: 'Fill in the form below to secure your sponsorship package for Uganda Avocado 2026'
+        }
+    };
+
+    if (!map[p]) {
+        titleEl.innerHTML = 'Complete Your <span class="text-gradient">Conference Registration</span>';
+        descEl.textContent = 'Fill in the form below to secure your place at Uganda Avocado 2026';
+        return;
+    }
+
+    titleEl.textContent = map[p].title;
+    descEl.textContent = map[p].desc;
+}
+
 function safeDigitsOnly(value) {
     return (value || '').toString().replace(/\D+/g, '');
 }
@@ -138,8 +169,24 @@ function applyPhoneDigitLimits() {
 
     function sanitizeAndTrim() {
         const limit = currentLimit();
-        const digits = safeDigitsOnly(phoneEl.value).slice(0, limit);
-        if (phoneEl.value !== digits) phoneEl.value = digits;
+        let digits = safeDigitsOnly(phoneEl.value);
+        if (digits.startsWith('0')) digits = digits.replace(/^0+/, '');
+        const trimmed = digits.slice(0, limit);
+        if (phoneEl.value !== trimmed) phoneEl.value = trimmed;
+        validatePhone(false);
+    }
+
+    function validatePhone(force) {
+        const limit = currentLimit();
+        const digits = safeDigitsOnly(phoneEl.value);
+        const ok = digits.length === limit;
+        const shouldShowInvalid = force ? !ok : (digits.length > 0 && !ok);
+
+        phoneEl.setCustomValidity(ok ? '' : `Phone number must be exactly ${limit} digits (without country code).`);
+        const wrapper = phoneEl.closest('.phone-input-wrapper');
+        if (wrapper) wrapper.classList.toggle('phone-invalid', shouldShowInvalid);
+        phoneEl.classList.toggle('phone-invalid', shouldShowInvalid);
+        return ok;
     }
 
     updateConstraints();
@@ -149,6 +196,9 @@ function applyPhoneDigitLimits() {
     });
     phoneEl.addEventListener('input', sanitizeAndTrim);
     phoneEl.addEventListener('paste', () => setTimeout(sanitizeAndTrim, 0));
+
+    // validate on blur too
+    phoneEl.addEventListener('blur', () => validatePhone(true));
 }
 
 // Registration Form Handler
@@ -184,6 +234,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 const selectedInput = document.querySelector(`input[name="registrationPackage"][value="${preferred}"]`);
                 if (selectedInput) selectedInput.checked = true;
                 updateSelectedPackageBanner(preferred);
+                updateRegistrationHeaderForPackage(preferred);
+            } else {
+                updateRegistrationHeaderForPackage('');
             }
         } catch (e) {}
     })();
@@ -223,6 +276,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
         registrationForm.addEventListener('submit', async function(e) {
             e.preventDefault();
+
+            // Block submit if phone is invalid
+            const phoneEl = document.getElementById('phone');
+            if (phoneEl) {
+                // Force invalid styles to show on submit attempts
+                try {
+                    const ev = new Event('blur');
+                    phoneEl.dispatchEvent(ev);
+                } catch (e) {}
+
+                if (!phoneEl.checkValidity()) {
+                    try { phoneEl.reportValidity(); } catch (err) {}
+                    return;
+                }
+            }
             
             // Show loading state
             const submitBtn = this.querySelector('button[type="submit"]');

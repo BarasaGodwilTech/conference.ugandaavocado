@@ -3572,8 +3572,7 @@ Conference Team`,
                 "Currency": reg.package?.currency || '',
                 "Payment Status": reg.paymentStatus || '',
                 "Status": reg.status || '',
-                "Newsletter": reg.newsletter ? 'Yes' : 'No',
-                "Source": reg.source || ''
+                "Newsletter": reg.newsletter ? 'Yes' : 'No'
             };
         }
 
@@ -3590,8 +3589,7 @@ Conference Team`,
                 "Package Interest": inq.interests?.package || '',
                 "Booth Size": inq.interests?.boothSize || '',
                 "Status": inq.status || '',
-                "Additional Info": inq.interests?.additionalInfo || '',
-                "Source": inq.source || ''
+                "Additional Info": inq.interests?.additionalInfo || ''
             };
         }
 
@@ -3599,8 +3597,7 @@ Conference Team`,
             return {
                 "Name": sub.name || '',
                 "Email": sub.email || '',
-                "Date": safeDate(sub.date),
-                "Source": sub.source || ''
+                "Date": safeDate(sub.date)
             };
         }
 
@@ -3724,6 +3721,23 @@ Conference Team`,
             if (!window.XLSX) throw new Error('Excel export library not loaded');
             const wb = window.XLSX.utils.book_new();
             const ws = window.XLSX.utils.json_to_sheet(rows);
+
+            try {
+                const headers = Object.keys(rows[0] || {});
+                const widths = headers.map(h => {
+                    const base = Math.max(String(h).length, 10);
+                    let maxLen = base;
+                    for (let i = 0; i < Math.min(rows.length, 200); i++) {
+                        const v = rows[i]?.[h];
+                        const s = (v ?? '').toString();
+                        if (s.length > maxLen) maxLen = s.length;
+                    }
+                    const capped = Math.min(Math.max(maxLen, base), 45);
+                    return { wch: capped };
+                });
+                ws['!cols'] = widths;
+            } catch (e) {}
+
             window.XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
             window.XLSX.writeFile(wb, filename);
         }
@@ -3743,10 +3757,11 @@ Conference Team`,
                 head,
                 body,
                 startY: 60,
-                styles: { fontSize: 8, cellPadding: 4 },
+                styles: { fontSize: 8, cellPadding: 4, overflow: 'linebreak' },
                 headStyles: { fillColor: [46, 125, 50] },
                 theme: 'striped',
-                margin: { left: 40, right: 40 }
+                margin: { left: 40, right: 40 },
+                tableWidth: 'auto'
             });
 
             doc.save(filename);
