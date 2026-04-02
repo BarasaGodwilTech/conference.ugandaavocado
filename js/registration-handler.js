@@ -99,6 +99,15 @@ function updateSelectedPackageBanner(pkg) {
     el.style.display = 'block';
 }
 
+function normalizePackageValue(value) {
+    const raw = (value || '').toString().trim().toLowerCase();
+    if (!raw) return '';
+    if (raw.includes('delegate')) return 'delegate';
+    if (raw.includes('partner')) return 'partner';
+    if (raw.includes('sponsor')) return 'sponsor';
+    return raw;
+}
+
 function updateRegistrationHeaderForPackage(pkg) {
     const titleEl = document.getElementById('registrationHeaderTitle');
     const descEl = document.getElementById('registrationHeaderDescription');
@@ -139,6 +148,9 @@ function applyPhoneDigitLimits() {
     const countryEl = document.getElementById('country');
     const codeEl = document.getElementById('countryCodeDisplay');
     if (!phoneEl || !countryEl) return;
+
+    if (phoneEl.dataset?.digitLimitsBound === '1') return;
+    if (phoneEl.dataset) phoneEl.dataset.digitLimitsBound = '1';
 
     const digitLimits = {
         UG: 9,
@@ -201,8 +213,7 @@ function applyPhoneDigitLimits() {
     phoneEl.addEventListener('blur', () => validatePhone(true));
 }
 
-// Registration Form Handler
-document.addEventListener('DOMContentLoaded', function() {
+function initRegistrationPage() {
     const registrationForm = document.getElementById('confRegistrationForm');
 
     // Package selection persistence + dynamic price phase (from Firestore config)
@@ -218,16 +229,18 @@ document.addEventListener('DOMContentLoaded', function() {
             inputs.forEach(i => {
                 i.addEventListener('change', () => {
                     if (i.checked) {
-                        localStorage.setItem('uac_selected_package', i.value);
+                        const normalized = normalizePackageValue(i.value);
+                        localStorage.setItem('uac_selected_package', normalized);
                         localStorage.setItem('uac_selected_package_at', new Date().toISOString());
-                        updateSelectedPackageBanner(i.value);
+                        updateSelectedPackageBanner(normalized);
+                        updateRegistrationHeaderForPackage(normalized);
                     }
                 });
             });
 
             const params = new URLSearchParams(window.location.search);
-            const fromQuery = (params.get('package') || '').toLowerCase();
-            const fromStorage = (localStorage.getItem('uac_selected_package') || '').toLowerCase();
+            const fromQuery = normalizePackageValue(params.get('package') || '');
+            const fromStorage = normalizePackageValue(localStorage.getItem('uac_selected_package') || '');
             const preferred = fromQuery || fromStorage;
             const allowed = ['delegate', 'partner', 'sponsor'];
             if (preferred && allowed.includes(preferred)) {
@@ -478,7 +491,14 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => notification.remove(), 300);
         }, 5000);
     }
-});
+}
+
+// Registration Form Handler (works even if module loads after DOMContentLoaded on GitHub Pages)
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initRegistrationPage);
+} else {
+    initRegistrationPage();
+}
 
 // Add CSS animations
 const style = document.createElement('style');

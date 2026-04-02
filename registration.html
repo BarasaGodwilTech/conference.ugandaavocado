@@ -2047,6 +2047,15 @@
                     `;
                 }
 
+                function normalizePackageKey(value) {
+                    const raw = (value || '').toString().trim().toLowerCase();
+                    if (!raw) return '';
+                    if (raw.includes('delegate')) return 'delegate';
+                    if (raw.includes('partner')) return 'partner';
+                    if (raw.includes('sponsor')) return 'sponsor';
+                    return raw;
+                }
+
                 conferenceData.sponsorshipPackages.forEach(pkg => {
 
                     const card = document.createElement('div');
@@ -2063,32 +2072,19 @@
 
                     });
 
-
-
                     card.innerHTML = `
-
                         <h3>${pkg.title}</h3>
-
                         ${renderPriceMarkup(pkg.price, pkg.period)}
-
                         <ul>${featuresList}</ul>
-
-                        <a href="registration.html?package=${encodeURIComponent(pkg.title.toLowerCase())}#registration-form" class="btn btn-primary">Select Plan</a>
-
+                        <a href="registration.html?package=${encodeURIComponent(normalizePackageKey(pkg.title))}#registration-form" class="btn btn-primary">Select Plan</a>
                     `;
 
                     pricingGrid.appendChild(card);
-
                 });
-
             }
 
-            
-
             // Update year display
-
             const yearElements = document.querySelectorAll('.year');
-
             yearElements.forEach(el => el.textContent = '2026');
 
         });

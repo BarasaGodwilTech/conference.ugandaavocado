@@ -250,6 +250,15 @@ const pricingGrid = document.getElementById('pricing-grid');
 if (pricingGrid && typeof conferenceData !== 'undefined') {
     pricingGrid.innerHTML = ''; // Clear existing
 
+    function normalizePackageKey(value) {
+        const raw = (value || '').toString().trim().toLowerCase();
+        if (!raw) return '';
+        if (raw.includes('delegate')) return 'delegate';
+        if (raw.includes('partner')) return 'partner';
+        if (raw.includes('sponsor')) return 'sponsor';
+        return raw;
+    }
+    
     function renderPriceMarkup(priceText, periodText) {
         const raw = String(priceText || '').trim();
         const match = raw.match(/^([^()]+?)(?:\s*\(([^)]+)\))?$/);
@@ -291,7 +300,7 @@ if (pricingGrid && typeof conferenceData !== 'undefined') {
             <h3>${pkg.title}</h3>
             ${renderPriceMarkup(pkg.price, pkg.period)}
             <ul>${featuresList}</ul>
-            <a href="registration.html?package=${encodeURIComponent(pkg.title.toLowerCase())}#registration-form" class="btn btn-primary">Select Plan</a>
+            <a href="registration.html?package=${encodeURIComponent(normalizePackageKey(pkg.title))}#registration-form" class="btn btn-primary">Select Plan</a>
         `;
         pricingGrid.appendChild(card);
     });
