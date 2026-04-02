@@ -2323,12 +2323,37 @@
             if (adminInitialized) return;
             adminInitialized = true;
 
-            await loadAllData();
-            await loadSiteConfigIntoSettingsUI();
+            try {
+                await loadAllData();
+            } catch (e) {
+                console.error('initializeAdmin: loadAllData failed:', e);
+            }
+
+            try {
+                await loadSiteConfigIntoSettingsUI();
+            } catch (e) {
+                console.error('initializeAdmin: loadSiteConfigIntoSettingsUI failed:', e);
+            }
+
             applySettingsUIAccess();
-            initCharts();
-            loadTemplates();
-            loadCampaigns();
+
+            try {
+                initCharts();
+            } catch (e) {
+                console.error('initializeAdmin: initCharts failed:', e);
+            }
+
+            try {
+                loadTemplates();
+            } catch (e) {
+                console.error('initializeAdmin: loadTemplates failed:', e);
+            }
+
+            try {
+                loadCampaigns();
+            } catch (e) {
+                console.error('initializeAdmin: loadCampaigns failed:', e);
+            }
         }
 
         async function loadSiteConfigIntoSettingsUI() {
@@ -2355,7 +2380,8 @@
                 if (momo) momo.checked = pay.mobileMoney === true;
                 if (card) card.checked = pay.creditCard === true;
             } catch (e) {
-                // ignore
+                console.error('loadSiteConfigIntoSettingsUI failed:', e);
+                window.UACPopup?.alert('Failed to load conference dates/deadlines. Check Firestore rules / connectivity.', { type: 'error', title: 'Settings load failed' });
             }
         }
 
