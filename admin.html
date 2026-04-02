@@ -2362,26 +2362,41 @@
             const earlyEl = document.getElementById('earlyDeadline');
             const regularEl = document.getElementById('regularDeadline');
 
-            try {
-                const cfgRef = doc(db, SITE_CONFIG_DOC.collection, SITE_CONFIG_DOC.doc);
-                const snap = await getDoc(cfgRef);
-                const data = snap.exists() ? (snap.data() || {}) : {};
+            const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-                if (startEl) startEl.value = data.confStart || '';
-                if (endEl) endEl.value = data.confEnd || '';
-                if (earlyEl) earlyEl.value = data.earlyDeadline || '';
-                if (regularEl) regularEl.value = data.regularDeadline || '';
+            const maxAttempts = 3;
+            for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+                try {
+                    const cfgRef = doc(db, SITE_CONFIG_DOC.collection, SITE_CONFIG_DOC.doc);
+                    const snap = await getDoc(cfgRef);
+                    const data = snap.exists() ? (snap.data() || {}) : {};
 
-                const pay = data.paymentMethods || {};
-                const bank = document.getElementById('payBankTransfer');
-                const momo = document.getElementById('payMobileMoney');
-                const card = document.getElementById('payCreditCard');
-                if (bank) bank.checked = pay.bankTransfer === true;
-                if (momo) momo.checked = pay.mobileMoney === true;
-                if (card) card.checked = pay.creditCard === true;
-            } catch (e) {
-                console.error('loadSiteConfigIntoSettingsUI failed:', e);
-                window.UACPopup?.alert('Failed to load conference dates/deadlines. Check Firestore rules / connectivity.', { type: 'error', title: 'Settings load failed' });
+                    if (startEl) startEl.value = data.confStart || '';
+                    if (endEl) endEl.value = data.confEnd || '';
+                    if (earlyEl) earlyEl.value = data.earlyDeadline || '';
+                    if (regularEl) regularEl.value = data.regularDeadline || '';
+
+                    const pay = data.paymentMethods || {};
+                    const bank = document.getElementById('payBankTransfer');
+                    const momo = document.getElementById('payMobileMoney');
+                    const card = document.getElementById('payCreditCard');
+                    if (bank) bank.checked = pay.bankTransfer === true;
+                    if (momo) momo.checked = pay.mobileMoney === true;
+                    if (card) card.checked = pay.creditCard === true;
+                    return;
+                } catch (e) {
+                    console.error(`loadSiteConfigIntoSettingsUI failed (attempt ${attempt}/${maxAttempts}):`, e);
+                    if (attempt < maxAttempts) {
+                        await sleep(500 * attempt);
+                        continue;
+                    }
+
+                    const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
+                    const msg = offline
+                        ? 'You appear to be offline. Please check your internet connection and try again.'
+                        : 'Settings are temporarily unavailable. Please refresh and try again.';
+                    window.UACPopup?.alert(msg, { type: 'error', title: 'Settings unavailable' });
+                }
             }
         }
 
