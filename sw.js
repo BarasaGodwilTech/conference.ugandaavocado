@@ -45,13 +45,17 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   if (request.method !== 'GET') return;
 
+  const url = new URL(request.url);
+  const isHttp = url.protocol === 'http:' || url.protocol === 'https:';
+  if (!isHttp) return;
+
   // Offline-first for navigation: try network, fallback to offline page
   if (isNavigationRequest(request)) {
     event.respondWith(
       fetch(request)
         .then((response) => {
           const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy)).catch(() => {});
           return response;
         })
         .catch(() => caches.match(OFFLINE_URL))
@@ -66,7 +70,7 @@ self.addEventListener('fetch', (event) => {
         // Only cache successful, basic responses
         if (response && response.status === 200 && response.type === 'basic') {
           const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy)).catch(() => {});
         }
         return response;
       }))

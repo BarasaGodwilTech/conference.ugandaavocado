@@ -87,6 +87,11 @@ service cloud.firestore {
       allow write: if hasPerm('manage_email_campaigns');
     }
 
+    match /siteConfig/conference {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }
