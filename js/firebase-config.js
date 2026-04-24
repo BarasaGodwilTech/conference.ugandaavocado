@@ -7,7 +7,7 @@ import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/
 // Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDB0vJdDle5OFRPlSroj9-fGcg17t1_Dno",
-  authDomain: "avocado-conference.firebaseapp.com",
+  authDomain: "app.ugandaavocados.org",
   projectId: "avocado-conference",
   storageBucket: "avocado-conference.firebasestorage.app",
   messagingSenderId: "926227966647",
